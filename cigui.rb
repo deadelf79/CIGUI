@@ -47,7 +47,7 @@ module CIGUI
       :start=>'start|запустить',
       :finish=>'finish|завершить',
       :flush=>'flush|очистить'
-    }
+    },
 	:text=>{
 		:main=>'text',
 		:bigger=>'(?:make)*[\s]*bigger',
@@ -56,19 +56,28 @@ module CIGUI
 		:set_font=>'(?:set)*[\s]*font',
 	}
   }
+  
   # 
   class <<self
-	# Инициализирует массив $do, если он еще не был создан. В этот массив пользователь подает
+    # Требуется выполнить этот метод перед началом работы с CIGUI.<br>
+	# Пример:
+	#	begin
+	#		CIGUI.setup
+	#		#~~~ some code fragment ~~~
+	#		CIGUI.update
+	#		#~~~ some other code fragment ~~~
+	#	end
+    # Инициализирует массив $do, если он еще не был создан. В этот массив пользователь подает
 	# команды для исполнения при следующем запуске метода #update.<br>
 	# Если даже массив $do был инициализирован ранее,
 	# то исполняет команду <i>cigui start</i> прежде всего.
 	#
-    def initialize
+	def setup
 	  $do||=[]
 	  $do.insert 0,'cigui start'
 	  @last_action
-    end
-    
+	end	
+	
 	# Вызывает все методы обработки команд, содержащиеся в массиве $do.<br>
 	# Помимо приватных методов обработки вызывает также метод #update_by_user, который может быть
 	# модифицирован пользователем (подробнее смотри в описании метода).
@@ -141,7 +150,14 @@ module CIGUI
     private
 	
     def _cigui?(string)
-      matches=string.match(//)
+      matches=string.match(/((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+/)
+	  puts 'found!' if matches
     end
   end
+end
+
+# test zone
+begin
+	CIGUI.setup
+	CIGUI.update
 end
