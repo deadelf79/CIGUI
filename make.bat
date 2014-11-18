@@ -1,0 +1,1 @@
+rdoc --format=darkfish --encoding=UTF-8 --line-numbers cigui.rb

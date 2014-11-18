@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>module CIGUI - RDoc Documentation</title>
+
+<link href="./fonts.css" rel="stylesheet">
+<link href="./rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script src="./js/jquery.js"></script>
+<script src="./js/navigation.js"></script>
+<script src="./js/search_index.js"></script>
+<script src="./js/search.js"></script>
+<script src="./js/searcher.js"></script>
+<script src="./js/darkfish.js"></script>
+
+
+<body id="top" role="document" class="module">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="./index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="./table_of_contents.html#pages">Pages</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-c-new">::new</a>
+    
+    <li ><a href="#method-i-decimal">#decimal</a>
+    
+    <li ><a href="#method-i-fraction">#fraction</a>
+    
+    <li ><a href="#method-i-update">#update</a>
+    
+    <li ><a href="#method-i-update_by_user">#update_by_user</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="module-CIGUI">
+  <h1 id="module-CIGUI" class="module">
+    module CIGUI
+  </h1>
+
+  <section class="description">
+    
+<p>Основной модуль, обеспечивающий работу Cigui.<br> Для передачи команд
+используйте массив $do, например:</p>
+<ul><li>
+<p>$do&lt;&lt;“команда”</p>
+</li><li>
+<p>$do.push(“команда”)</p>
+</li></ul>
+
+<p>Оба варианта имеют одно и то же действие.<br> Для исполнения команд
+вызовите метод <a href="CIGUI.html#method-i-update">#update</a>.<br></p>
+
+  </section>
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+    <section class="constants-list">
+      <header>
+        <h3>Constants</h3>
+      </header>
+      <dl>
+      
+        <dt id="VOCAB">VOCAB
+        
+        <dd><p>Специальный словарь, содержащий все используемые команды Cigui.<br> Для
+удобства поиска разбит по категориям:</p>
+<ul><li>
+<p>cigui - управление интерпретатором;</p>
+</li><li>
+<p>window - окнами;</p>
+</li><li>
+<p>sprite - изображениями;</p>
+</li><li>
+<p>text - текстом и шрифтами</p>
+</li></ul>
+        
+      
+      </dl>
+    </section>
+    
+
+    
+
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+    
+      <div id="method-c-new" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">new</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Инициализирует массив $do, если он еще не был создан. В этот массив
+пользователь подает команды для исполнения при следующем запуске метода <a
+href="CIGUI.html#method-i-update">update</a>.<br> Если даже массив $do был
+инициализирован ранее, то исполняет команду <em>cigui start</em> прежде
+всего.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="new-source">
+            <pre><span class="ruby-comment"># File cigui.rb, line 66</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>
+      <span class="ruby-identifier">$do</span><span class="ruby-operator">||=</span>[]
+      <span class="ruby-identifier">$do</span>.<span class="ruby-identifier">insert</span> <span class="ruby-value">0</span>,<span class="ruby-string">&#39;cigui start&#39;</span>
+      <span class="ruby-ivar">@last_action</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-decimal" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">decimal</span><span
+            class="method-args">(source_string,std_conversion=true)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Данный метод возвращает первое попавшееся целое число, найденное в строке
+source_string.<br> Производит поиск только в том случае, если число
+записано:</p>
+<ul><li>
+<p>в скобки, например (10);</p>
+</li><li>
+<p>в квадратные скобки, например [23];</p>
+</li><li>
+<p>в кавычки(апострофы), например &#39;45&#39;;</p>
+</li><li>
+<p>в двойные кавычки, например “8765”.</p>
+</li></ul>
+
+<p>Также, вернет всю целую часть числа записанную:</p>
+<ul><li>
+<p>до точки, так здесь [1.35] вернет 1;</p>
+</li><li>
+<p>до запятой, так здесь (103,81) вернет 103;</p>
+</li><li>
+<p>до первого пробела (при стандартной конвертации в целое число), так здесь
+“816 586,64” вернет только 816;</p>
+</li><li>
+<p>через символ подчеркивания, так здесь &#39;1_000_0_0_0,143&#39; вернет
+ровно один миллион (1000000).</p>
+</li></ul>
+
+<p>Если присвоить std_conversion значение false, то это отменит стандартную
+конвертацию строки, встроенную в Ruby, и метод попробует найти число,
+игнорируя пробелы, табуляцию и знаки подчеркивания. Выключение
+std_conversion может привести к неожиданным последствиям.</p>
+
+<pre class="ruby"><span class="ruby-identifier">decimal</span>(<span class="ruby-string">&#39;[10,25]&#39;</span>) <span class="ruby-comment"># =&gt; 10</span>
+<span class="ruby-identifier">decimal</span>(<span class="ruby-string">&#39;[1 0 2]&#39;</span>,<span class="ruby-keyword">false</span>) <span class="ruby-comment"># =&gt; 102</span>
+<span class="ruby-identifier">decimal</span>(<span class="ruby-string">&#39;[1_234_5678 89]&#39;</span>,<span class="ruby-keyword">false</span>) <span class="ruby-comment"># =&gt; 123456789</span>
+</pre>
+          
+          
+
+          
+          <div class="method-source-code" id="decimal-source">
+            <pre><span class="ruby-comment"># File cigui.rb, line 115</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">decimal</span>(<span class="ruby-identifier">source_string</span>,<span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
+      <span class="ruby-identifier">fraction</span>(<span class="ruby-identifier">source_string</span>,<span class="ruby-identifier">std_conversion</span>).<span class="ruby-identifier">to_i</span>
+    <span class="ruby-keyword">rescue</span>
+      <span class="ruby-identifier">raise</span> <span class="ruby-constant">CIGUIERR</span><span class="ruby-operator">::</span><span class="ruby-constant">CantReadNumber</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-fraction" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">fraction</span><span
+            class="method-args">(source_string,std_conversion=true)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Данный метод работает по аналогии с <a
+href="CIGUI.html#method-i-decimal">decimal</a>, но возвращает рациональное
+число (число с плавающей запятой или точкой).<br> Имеется пара замечаний к
+правилам использования в дополнение к  упомянутым в <a
+href="CIGUI.html#method-i-decimal">decimal</a>:</p>
+<ul><li>
+<p>Все цифры после запятой или точки считаются дробной частью и также могут
+содержать помимо цифр символ подчёркивания;</p>
+</li><li>
+<p>При наличии между цифрами в дробной части пробела вернет ноль (в
+стандартной конвертации в целое или дробное число).</p>
+</li></ul>
+
+<p>Если присвоить std_conversion значение false, то это отменит стандартную
+конвертацию строки, встроенную в Ruby, и метод попробует найти число,
+игнорируя пробелы, табуляцию и знаки подчеркивания. Выключение
+std_conversion может привести к неожиданным последствиям.</p>
+
+<pre class="ruby"><span class="ruby-identifier">fraction</span>(<span class="ruby-string">&#39;(109,86)&#39;</span>) <span class="ruby-comment"># =&gt; 109.86</span>
+<span class="ruby-identifier">fraction</span>(<span class="ruby-string">&#39;(1 0 9 , 8 6)&#39;</span>,<span class="ruby-keyword">false</span>) <span class="ruby-comment"># =&gt; 109.86</span>
+</pre>
+          
+          
+
+          
+          <div class="method-source-code" id="fraction-source">
+            <pre><span class="ruby-comment"># File cigui.rb, line 133</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">fraction</span>(<span class="ruby-identifier">source_string</span>,<span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
+  <span class="ruby-identifier">match</span>=<span class="ruby-string">&#39;(?:[\[|&quot;\(\])[\s]*([\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)(?:[\]|&quot;\)\])&#39;</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">match</span>)[<span class="ruby-value">1</span>].<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">/[\s_]*/</span>){}.<span class="ruby-identifier">to_f</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">std_conversion</span>
+  <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">match</span>)[<span class="ruby-value">1</span>].<span class="ruby-identifier">to_f</span>
+<span class="ruby-keyword">rescue</span>
+  <span class="ruby-identifier">raise</span> <span class="ruby-constant">CIGUIERR</span><span class="ruby-operator">::</span><span class="ruby-constant">CantReadNumber</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-update" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">update</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Вызывает все методы обработки команд, содержащиеся в массиве $do.<br>
+Помимо приватных методов обработки вызывает также метод <a
+href="CIGUI.html#method-i-update_by_user">update_by_user</a>, который может
+быть модифицирован пользователем (подробнее смотри в описании метода).</p>
+          
+          
+
+          
+          <div class="method-source-code" id="update-source">
+            <pre><span class="ruby-comment"># File cigui.rb, line 76</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">update</span>
+            <span class="ruby-identifier">$do</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
+                    <span class="ruby-identifier">_cigui?</span> <span class="ruby-identifier">line</span>
+                    <span class="ruby-comment">#_create? line</span>
+                    <span class="ruby-comment">#_move? line</span>
+                    <span class="ruby-comment">#_rotate? line</span>
+                    <span class="ruby-comment">#_scale? line</span>
+                    <span class="ruby-comment">#_</span>
+                    <span class="ruby-identifier">update_by_user</span>
+            <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-update_by_user" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">update_by_user</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Метод обработки текста, созданный для пользовательских модификаций, не
+влияющих на работу встроенных обработчиков. Используйте <em>alias</em>
+этого метода для добавления обработки собственных команд.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="update_by_user-source">
+            <pre><span class="ruby-comment"># File cigui.rb, line 92</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">update_by_user</span>
+
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.1.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+
