@@ -1,4 +1,5 @@
 CIGUI
 =====
 
-No one know what it is
+What is it?
+ - Command interpreter for graphics user interface made for use in RGSS3 projects
