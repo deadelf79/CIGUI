@@ -10,7 +10,7 @@ module CIGUIERR
   class CantStart < StandardError
 	private
 	def message
-		''
+		'Could not initialize module'
 	end
   end
   
@@ -31,6 +31,7 @@ end
 # * $do<<"команда"
 # * $do.push("команда")
 # Оба варианта имеют одно и то же действие.<br>
+# Перед запуском модуля вызовите метод CIGUI.setup.<br>
 # Для исполнения команд вызовите метод CIGUI.update.<br>
 #
 module CIGUI
@@ -75,7 +76,7 @@ module CIGUI
 	def setup
 	  $do||=[]
 	  $do.insert 0,'cigui start'
-	  @last_action
+	  @last_action = nil
 	end	
 	
 	# Вызывает все методы обработки команд, содержащиеся в массиве $do.<br>
@@ -146,12 +147,27 @@ module CIGUI
 	rescue
 	  raise CIGUIERR::CantReadNumber
 	end
+	
+	# Возвращает сообщение о последнем произведенном действии
+	# или классе последнего использованного объекта, используя метод
+	# Kernel.inspect.
+	#
+	def last
+		@last_action.is_a?(String) ? @last_action : @last_action.inspect
+	end
     
     private
 	
     def _cigui?(string)
-      matches=string.match(/((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+/)
-	  puts 'found!' if matches
+		# start?
+		matches=string.match(/((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+/)
+		if matches
+			begin
+				@last_action = 'CIGUI started'
+			rescue
+				raise CIGUI::CantStart
+			end
+		end
     end
   end
 end
@@ -160,4 +176,5 @@ end
 begin
 	CIGUI.setup
 	CIGUI.update
+	puts CIGUI.last
 end
