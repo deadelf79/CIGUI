@@ -59,8 +59,12 @@ module CIGUI
       :main=>'cigui|сигуи',
       :start=>'start|запустить',
       :finish=>'finish|завершить',
-      :flush=>'flush|очистить'
+      :flush=>'flush|очист(?:к[аойеу]|[ить])'
     },
+	:window=>{
+		:main=>'window|окно',
+		:create=>'create|созда(?:[йть]|ва[йть])'
+	}
 	:text=>{
 		:main=>'text',
 		:bigger=>'(?:make)*[\s]*bigger',
@@ -181,6 +185,8 @@ module CIGUI
 	def _setup
 	  @last_action = nil
 	  @finished = false
+	  @windows = []
+	  @sprites = []
 	end
 	
     def _cigui?(string)
