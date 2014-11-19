@@ -202,7 +202,7 @@ std_conversion может привести к неожиданным после�
 
           
           <div class="method-source-code" id="decimal-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 125</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 145</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">decimal</span>(<span class="ruby-identifier">source_string</span>,<span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
       <span class="ruby-identifier">fraction</span>(<span class="ruby-identifier">source_string</span>,<span class="ruby-identifier">std_conversion</span>).<span class="ruby-identifier">to_i</span>
     <span class="ruby-keyword">rescue</span>
@@ -257,7 +257,7 @@ std_conversion может привести к неожиданным после�
 
           
           <div class="method-source-code" id="fraction-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 143</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 163</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">fraction</span>(<span class="ruby-identifier">source_string</span>,<span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
   <span class="ruby-identifier">match</span>=<span class="ruby-string">&#39;(?:[\[|&quot;\(\])[\s]*([\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)(?:[\]|&quot;\)\])&#39;</span>
   <span class="ruby-keyword">return</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">match</span>)[<span class="ruby-value">1</span>].<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">/[\s_]*/</span>){}.<span class="ruby-identifier">to_f</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">std_conversion</span>
@@ -295,9 +295,9 @@ std_conversion может привести к неожиданным после�
 
           
           <div class="method-source-code" id="last-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 155</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 175</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">last</span>
-        <span class="ruby-ivar">@last_action</span>.<span class="ruby-identifier">is_a?</span> <span class="ruby-constant">String</span> <span class="ruby-operator">?</span> <span class="ruby-ivar">@last_action</span> <span class="ruby-operator">:</span> <span class="ruby-ivar">@last_action</span>.<span class="ruby-identifier">inspect</span>
+        <span class="ruby-ivar">@last_action</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">?</span> <span class="ruby-ivar">@last_action</span> <span class="ruby-operator">:</span> <span class="ruby-ivar">@last_action</span>.<span class="ruby-identifier">inspect</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -342,11 +342,11 @@ href="CIGUI.html#method-i-update">update</a>.<br> Если даже массив
 
           
           <div class="method-source-code" id="setup-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 76</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 88</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">setup</span>
   <span class="ruby-identifier">$do</span><span class="ruby-operator">||=</span>[]
   <span class="ruby-identifier">$do</span>.<span class="ruby-identifier">insert</span> <span class="ruby-value">0</span>,<span class="ruby-string">&#39;cigui start&#39;</span>
-  <span class="ruby-ivar">@last_action</span> = <span class="ruby-keyword">nil</span>
+  <span class="ruby-identifier">_setup</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -362,7 +362,7 @@ href="CIGUI.html#method-i-update">update</a>.<br> Если даже массив
         
         <div class="method-heading">
           <span class="method-name">update</span><span
-            class="method-args">()</span>
+            class="method-args">(clear_after_update=true)</span>
           
           <span class="method-click-advice">click to toggle source</span>
           
@@ -372,17 +372,25 @@ href="CIGUI.html#method-i-update">update</a>.<br> Если даже массив
         <div class="method-description">
           
           <p>Вызывает все методы обработки команд, содержащиеся в массиве $do.<br>
-Помимо приватных методов обработки вызывает также метод <a
+Вызовет исключение <a
+href="CIGUIERR/CantInterpretCommand.html">CIGUIERR::CantInterpretCommand</a>
+в том случае, если после выполнения <em>cigui finish</em> в массиве $do
+будут находится новые команды для обработки.<br> По умолчанию очищает
+массив $do после обработки всех команд. Если clear_after_update поставить
+значение false, то все команды из массива $do будут выполнены повторно при
+следующем запуске этого метода.<br> Помимо приватных методов обработки
+вызывает также метод <a
 href="CIGUI.html#method-i-update_by_user">update_by_user</a>, который может
-быть модифицирован пользователем (подробнее смотри в описании метода).</p>
+быть модифицирован пользователем (подробнее смотри в описании метода).<br></p>
           
           
 
           
           <div class="method-source-code" id="update-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 86</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">update</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 104</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">update</span>(<span class="ruby-identifier">clear_after_update</span>=<span class="ruby-keyword">true</span>)
             <span class="ruby-identifier">$do</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
+                    <span class="ruby-identifier">raise</span> <span class="ruby-constant">CIGUIERR</span><span class="ruby-operator">::</span><span class="ruby-constant">CantInterpretCommand</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@finished</span>
                     <span class="ruby-identifier">_cigui?</span> <span class="ruby-identifier">line</span>
                     <span class="ruby-comment">#_create? line</span>
                     <span class="ruby-comment">#_move? line</span>
@@ -391,6 +399,7 @@ href="CIGUI.html#method-i-update_by_user">update_by_user</a>, который м�
                     <span class="ruby-comment">#_</span>
                     <span class="ruby-identifier">update_by_user</span>
             <span class="ruby-keyword">end</span>
+            <span class="ruby-identifier">$do</span>.<span class="ruby-identifier">clear</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">clear_after_update</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -423,7 +432,7 @@ href="CIGUI.html#method-i-update_by_user">update_by_user</a>, который м�
 
           
           <div class="method-source-code" id="update_by_user-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 102</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 122</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">update_by_user</span>
 
 <span class="ruby-keyword">end</span></pre>

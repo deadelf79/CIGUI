@@ -3,6 +3,7 @@
 # Включает в себя:
 # * CIGUIERR::CantStart
 # * CIGUIERR::CantReadNumber
+# * CIGUIERR::CantInterpretCommand
 #
 module CIGUIERR
   # Ошибка, которая появляется при неудачной попытке запуска интерпретатора Cigui
@@ -25,7 +26,18 @@ module CIGUIERR
 		'Could not find numerical value in this string'
 	end
   end
+  
+  # Ошибка, которая появляется при попытке работать с Cigui после
+  # вызова команды <i>cigui finish</i>.
+  #
+  class CantInterpretCommand < StandardError
+	private
+	def message
+		'Unable to process the command after CIGUI was finished'
+	end
+  end
 end
+
 # Основной модуль, обеспечивающий работу Cigui.<br>
 # Для передачи команд используйте массив $do, например:
 # * $do<<"команда"
@@ -76,15 +88,22 @@ module CIGUI
 	def setup
 	  $do||=[]
 	  $do.insert 0,'cigui start'
-	  @last_action = nil
+	  _setup
 	end	
 	
 	# Вызывает все методы обработки команд, содержащиеся в массиве $do.<br>
+	# Вызовет исключение CIGUIERR::CantInterpretCommand в том случае,
+	# если после выполнения <i>cigui finish</i> в массиве $do будут находится
+	# новые команды для обработки.<br>
+	# По умолчанию очищает массив $do после обработки всех команд. Если clear_after_update
+	# поставить значение false, то все команды из массива $do будут выполнены повторно
+	# при следующем запуске этого метода.<br>
 	# Помимо приватных методов обработки вызывает также метод #update_by_user, который может быть
-	# модифицирован пользователем (подробнее смотри в описании метода).
+	# модифицирован пользователем (подробнее смотри в описании метода).<br>
 	#
-    def update
+    def update(clear_after_update=true)
 		$do.each do |line|
+			raise CIGUIERR::CantInterpretCommand if @finished
 			_cigui? line
 			#_create? line
 			#_move? line
@@ -93,6 +112,7 @@ module CIGUI
 			#_
 			update_by_user
 		end
+		$do.clear if clear_after_update
     end
 	
 	# Метод обработки текста, созданный для пользовательских модификаций, не влияющих на работу
@@ -158,8 +178,17 @@ module CIGUI
     
     private
 	
+	def _setup
+	  @last_action = nil
+	  @finished = false
+	end
+	
     def _cigui?(string)
-		# start?
+		__start? string
+		__finish? string
+    end
+	
+	def __start?(string)
 		matches=string.match(/((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+/)
 		if matches
 			begin
@@ -168,12 +197,27 @@ module CIGUI
 				raise CIGUI::CantStart
 			end
 		end
-    end
+	end
+	
+	def __finish?(string)
+		matches=string.match(/((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:finish]})+)+/)
+		if matches
+			@finished = true
+			@last_action = 'CIGUI finished'
+		end
+	end
   end
 end
 
 # test zone
 begin
+	$do=[
+		'create window',
+		'cigui finish'
+	]
+	CIGUI.setup
+	CIGUI.update
+	puts CIGUI.last
 	CIGUI.setup
 	CIGUI.update
 	puts CIGUI.last
