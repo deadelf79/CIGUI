@@ -111,6 +111,7 @@ module CIGUI
 		$do.each do |line|
 			raise CIGUIERR::CantInterpretCommand if @finished
 			_cigui? line
+			_window? line
 			#_create? line
 			#_move? line
 			#_rotate? line
@@ -148,8 +149,8 @@ module CIGUI
 	#	decimal('[1 0 2]',false) # => 102
 	#	decimal('[1_234_5678 89]',false) # => 123456789
 	#
-    def decimal(source_string,std_conversion=true)
-	  fraction(source_string,std_conversion).to_i
+    def decimal(source_string, std_conversion=true)
+	  fraction(source_string, std_conversion).to_i
 	rescue
 	  raise CIGUIERR::CantReadNumber
     end
@@ -166,8 +167,41 @@ module CIGUI
 	#	fraction('(109,86)') # => 109.86
 	#	fraction('(1 0 9 , 8 6)',false) # => 109.86
 	#
-	def fraction(source_string,std_conversion=true)
+	def fraction(source_string, std_conversion=true)
 	  match='(?:[\[|"\(\'])[\s]*([\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)(?:[\]|"\)\'])'
+	  return source_string.match(match)[1].gsub!(/[\s_]*/){}.to_f if !std_conversion
+	  source_string.match(match)[1].to_f
+	rescue
+	  raise CIGUIERR::CantReadNumber
+	end
+	
+	# Данный метод работает по аналогии с #decimal, но производит поиск в строке
+	# с учетом указанных префикса (текста перед числом) и постфикса (после числа).<br>
+	# Метод не требует обязательного указания символов квадратных и круглых скобок,
+	# а также одинарных и двойных кавычек вокруг числа.<br>
+	# prefix и postfix могут содержать символы, используемые в регулярных выражениях
+	# для более точного поиска.
+	#	dec('x=1cm','x=','cm') # => 1
+	#	dec('y=120 m','[xy]=','[\s]*(?:cm|m|km)') # => 120
+	# В отличие от #frac, возвращает целое число.
+	#
+	def dec(source_string, prefix='', postfix='', std_conversion=true)
+	  frac(source_string, prefix, postfix, std_conversion).to_i
+	rescue
+	  raise CIGUIERR::CantReadNumber
+	end
+	# Данный метод работает по аналогии с #fraction, но производит поиск в строке
+	# с учетом указанных префикса (текста перед числом) и постфикса (после числа).<br>
+	# Метод не требует обязательного указания символов квадратных и круглых скобок,
+	# а также одинарных и двойных кавычек вокруг числа.<br>
+	# prefix и postfix могут содержать символы, используемые в регулярных выражениях
+	# для более точного поиска.
+	#	frac('x=31.2mm','x=','mm') # => 31.2
+	#	frac('y=987,67 m','[xy]=','[\s]*(?:cm|m|km)') # => 987.67
+	# В отличие от #dec, возвращает рациональное число.
+	# 
+	def frac(source_string, prefix='', postfix='', std_conversion=true)
+	  match=prefix+'([\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)'+postfix
 	  return source_string.match(match)[1].gsub!(/[\s_]*/){}.to_f if !std_conversion
 	  source_string.match(match)[1].to_f
 	rescue
@@ -214,19 +248,33 @@ module CIGUI
 			@last_action = 'CIGUI finished'
 		end
 	end
+	
+	def _window?(string)
+		__create? string
+	end
+	
+	# create window (default position and size) 
+	# create window at x=DEC, y=DEC
+	# create window with width=DEC,height=DEC
+	# create window at x=DEC, y=DEC with w=DEC, h=DEC
+	def __create?(string)
+		matches=string.match(/((?:#{VOCAB[:window][:create]})+[\s]*(?:#{VOCAB[:window][:main]})+)+/)
+		if matches
+			begin
+				@windows = Window.new
+				@last_action = 'CIGUI started'
+			rescue
+				#raise CIGUI::CantStart
+			end
+		end
+	end
   end
 end
 
 # test zone
 begin
-	$do=[
-		'create window',
-		'cigui finish'
-	]
 	CIGUI.setup
-	CIGUI.update
-	puts CIGUI.last
-	CIGUI.setup
-	CIGUI.update
-	puts CIGUI.last
+	#CIGUI.update
+	puts CIGUI.dec('x987 m','x','[\s]*(?:cm|m|km)')
+	puts CIGUI.frac('x987,67 m','x','[\s]*(?:cm|m|km)')
 end
