@@ -12,7 +12,7 @@ Installation
 OR
 
  1. Download test project from here: https://github.com/deadelf79/CIGUI/tree/master/test
- 2. Test cigui working
+ 2. Test cigui working (if not - [e-mail it to me](mailto:deadelf79@gmail.com))
  3. Copy script 'CIGUI' into your project
  
 Simple configurations
@@ -26,8 +26,8 @@ What is it?
    - RGSS3 projects
    - 'Rogue Project' projects (in future version)
 How to use help?
- - Open 'doc' dir, find 'index.html' file and open it
+ - Open 'doc' dir, find 'index.html' file and open it in any browser
 How to update help?
- - Install [last stable version of Ruby](http://rubyinstaller.org/) (this link for Windows)
- - Run 'make.bat' in root OR open command line and call command like this:
+ - Install [last stable version of Ruby](http://rubyinstaller.org/ ) (this link for Windows)
+ - Run 'make.bat' in root OR open command line, move to dir where cigui is and call command like this (without quotes):
  "rdoc --format=darkfish --encoding=UTF-8 --line-numbers cigui.rb"
