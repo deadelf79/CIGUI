@@ -55,16 +55,18 @@ module CIGUI
   # * text - текстом и шрифтами
   # 
   VOCAB={
+	:please=>'please|п[оа]жал[у]?[й]?ста',
+	:last=>'last|this|последн(?:ее|юю|яя)|это',
     :cigui=>{
       :main=>'cigui|сигуи',
-      :start=>'start|запустить',
+      :start=>'start|запус(?:ти(?:ть)?|к)',
       :finish=>'finish|завершить',
       :flush=>'flush|очист(?:к[аойеу]|[ить])'
     },
 	:window=>{
 		:main=>'window|окно',
 		:create=>'create|созда(?:[йть]|ва[йть])'
-	}
+	},
 	:text=>{
 		:main=>'text',
 		:bigger=>'(?:make)*[\s]*bigger',
