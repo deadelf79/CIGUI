@@ -9,6 +9,12 @@ Installation
  4. Copy all text from this file
  5. Paste in new page in <Material> section
  
+OR
+
+ 1. Download test project from here: https://github.com/deadelf79/CIGUI/tree/master/test
+ 2. Test cigui working
+ 3. Copy script 'CIGUI' into your project
+ 
 Simple configurations
 ---
 I will write later on
