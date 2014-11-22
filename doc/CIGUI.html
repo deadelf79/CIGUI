@@ -179,13 +179,16 @@ prefix и postfix могут содержать символы, использу
 </pre>
 
 <p>В отличие от <a href="CIGUI.html#method-i-frac">frac</a>, возвращает целое
-число.</p>
+число. <br> Метод работает вне зависимости от работы модуля - нет
+необходимости запускать для вычисления <a
+href="CIGUI.html#method-i-setup">setup</a> и <a
+href="CIGUI.html#method-i-update">update</a>.</p>
           
           
 
           
           <div class="method-source-code" id="dec-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 188</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 197</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">dec</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">prefix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">postfix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
   <span class="ruby-identifier">frac</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">prefix</span>, <span class="ruby-identifier">postfix</span>, <span class="ruby-identifier">std_conversion</span>).<span class="ruby-identifier">to_i</span>
 <span class="ruby-keyword">rescue</span>
@@ -249,12 +252,16 @@ std_conversion может привести к неожиданным после�
 <span class="ruby-identifier">decimal</span>(<span class="ruby-string">&#39;[1 0 2]&#39;</span>,<span class="ruby-keyword">false</span>) <span class="ruby-comment"># =&gt; 102</span>
 <span class="ruby-identifier">decimal</span>(<span class="ruby-string">&#39;[1_234_5678 89]&#39;</span>,<span class="ruby-keyword">false</span>) <span class="ruby-comment"># =&gt; 123456789</span>
 </pre>
+
+<p><br> Метод работает вне зависимости от работы модуля - нет необходимости
+запускать для вычисления <a href="CIGUI.html#method-i-setup">setup</a> и <a
+href="CIGUI.html#method-i-update">update</a>.</p>
           
           
 
           
           <div class="method-source-code" id="decimal-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 152</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 155</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">decimal</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
       <span class="ruby-identifier">fraction</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">std_conversion</span>).<span class="ruby-identifier">to_i</span>
     <span class="ruby-keyword">rescue</span>
@@ -296,13 +303,16 @@ prefix и postfix могут содержать символы, использу
 </pre>
 
 <p>В отличие от <a href="CIGUI.html#method-i-dec">dec</a>, возвращает
-рациональное число.</p>
+рациональное число. <br> Метод работает вне зависимости от работы модуля -
+нет необходимости запускать для вычисления <a
+href="CIGUI.html#method-i-setup">setup</a> и <a
+href="CIGUI.html#method-i-update">update</a>.</p>
           
           
 
           
           <div class="method-source-code" id="frac-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 203</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 215</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">frac</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">prefix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">postfix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
   <span class="ruby-identifier">match</span>=<span class="ruby-identifier">prefix</span><span class="ruby-operator">+</span><span class="ruby-string">&#39;([\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)&#39;</span><span class="ruby-operator">+</span><span class="ruby-identifier">postfix</span>
   <span class="ruby-keyword">return</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">match</span>)[<span class="ruby-value">1</span>].<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">/[\s_]*/</span>){}.<span class="ruby-identifier">to_f</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">std_conversion</span>
@@ -354,12 +364,16 @@ std_conversion может привести к неожиданным после�
 <pre class="ruby"><span class="ruby-identifier">fraction</span>(<span class="ruby-string">&#39;(109,86)&#39;</span>) <span class="ruby-comment"># =&gt; 109.86</span>
 <span class="ruby-identifier">fraction</span>(<span class="ruby-string">&#39;(1 0 9 , 8 6)&#39;</span>,<span class="ruby-keyword">false</span>) <span class="ruby-comment"># =&gt; 109.86</span>
 </pre>
+
+<p><br> Метод работает вне зависимости от работы модуля - нет необходимости
+запускать для вычисления <a href="CIGUI.html#method-i-setup">setup</a> и <a
+href="CIGUI.html#method-i-update">update</a>.</p>
           
           
 
           
           <div class="method-source-code" id="fraction-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 170</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 176</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">fraction</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
   <span class="ruby-identifier">match</span>=<span class="ruby-string">&#39;(?:[\[|&quot;\(\])[\s]*([\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)(?:[\]|&quot;\)\])&#39;</span>
   <span class="ruby-keyword">return</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">match</span>)[<span class="ruby-value">1</span>].<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">/[\s_]*/</span>){}.<span class="ruby-identifier">to_f</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">std_conversion</span>
@@ -397,7 +411,7 @@ std_conversion может привести к неожиданным после�
 
           
           <div class="method-source-code" id="last-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 215</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 227</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">last</span>
         <span class="ruby-ivar">@last_action</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">?</span> <span class="ruby-ivar">@last_action</span> <span class="ruby-operator">:</span> <span class="ruby-ivar">@last_action</span>.<span class="ruby-identifier">inspect</span>
 <span class="ruby-keyword">end</span></pre>

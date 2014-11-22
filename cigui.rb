@@ -148,6 +148,9 @@ module CIGUI
 	#	decimal('[10,25]') # => 10
 	#	decimal('[1 0 2]',false) # => 102
 	#	decimal('[1_234_5678 89]',false) # => 123456789
+	# <br>
+	# Метод работает вне зависимости от работы модуля - нет необходимости
+	# запускать для вычисления #setup и #update.
 	#
     def decimal(source_string, std_conversion=true)
 	  fraction(source_string, std_conversion).to_i
@@ -166,6 +169,9 @@ module CIGUI
 	# Выключение std_conversion может привести к неожиданным последствиям.
 	#	fraction('(109,86)') # => 109.86
 	#	fraction('(1 0 9 , 8 6)',false) # => 109.86
+	# <br>
+	# Метод работает вне зависимости от работы модуля - нет необходимости
+	# запускать для вычисления #setup и #update.
 	#
 	def fraction(source_string, std_conversion=true)
 	  match='(?:[\[|"\(\'])[\s]*([\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)(?:[\]|"\)\'])'
@@ -184,6 +190,9 @@ module CIGUI
 	#	dec('x=1cm','x=','cm') # => 1
 	#	dec('y=120 m','[xy]=','[\s]*(?:cm|m|km)') # => 120
 	# В отличие от #frac, возвращает целое число.
+	# <br>
+	# Метод работает вне зависимости от работы модуля - нет необходимости
+	# запускать для вычисления #setup и #update.
 	#
 	def dec(source_string, prefix='', postfix='', std_conversion=true)
 	  frac(source_string, prefix, postfix, std_conversion).to_i
@@ -199,6 +208,9 @@ module CIGUI
 	#	frac('x=31.2mm','x=','mm') # => 31.2
 	#	frac('y=987,67 m','[xy]=','[\s]*(?:cm|m|km)') # => 987.67
 	# В отличие от #dec, возвращает рациональное число.
+	# <br>
+	# Метод работает вне зависимости от работы модуля - нет необходимости
+	# запускать для вычисления #setup и #update.
 	# 
 	def frac(source_string, prefix='', postfix='', std_conversion=true)
 	  match=prefix+'([\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)'+postfix
@@ -273,7 +285,7 @@ end
 
 # test zone
 begin
-	CIGUI.setup
+	#CIGUI.setup
 	#CIGUI.update
 	puts CIGUI.dec('x987 m','x','[\s]*(?:cm|m|km)')
 	puts CIGUI.frac('x987,67 m','x','[\s]*(?:cm|m|km)')
