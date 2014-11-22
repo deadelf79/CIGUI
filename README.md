@@ -21,13 +21,19 @@ I will write later on
 
 FAQ
 ---
-**What is it?**
+###What is it?
  - Command interpreter for graphics user interface made for use in:
    - RGSS3 projects
    - 'Rogue Project' projects (in future version)
-**How to use help?**
+
+
+
+###How to use help?
  - Open 'doc' dir, find 'index.html' file and open it in any browser
-**How to update help?**
+
+
+
+###How to update help?
  - Install [last stable version of Ruby](http://rubyinstaller.org/ ) (this link for Windows)
  - Run 'make.bat' in root OR open command line, move to dir where cigui is and call command like this:
-> rdoc --format=darkfish --encoding=UTF-8 --line-numbers cigui.rb
+`rdoc --format=darkfish --encoding=UTF-8 --line-numbers cigui.rb`
