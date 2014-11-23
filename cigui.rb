@@ -1,4 +1,15 @@
-﻿# Модуль, содержащий данные обо всех возможных ошибках, которые
+﻿# = Руководство Cigui
+# В данном руководстве описана работа модуля CIGUI,
+# а также методы для управления его работой.<br>
+# Рекомендуется к прочтению пользователям, имеющим навыки программирования
+# (написания скриптов) на Ruby.<br>
+# Для получения помощи по командам, обрабатываемым Cigui,
+# перейдите по адресу: <https://github.com/deadelf79/CIGUI/wiki>
+# ---
+# Author:: Sergey 'DeadElf79' Anikin (mailto:deadelf79@gmail.com)
+# License:: Public Domain (see <http://unlicense.org> for more information)
+
+# Модуль, содержащий данные обо всех возможных ошибках, которые
 # может выдать CIGUI при некорректной работе.<br>
 # Включает в себя:
 # * CIGUIERR::CantStart
@@ -47,10 +58,24 @@ end
 
 # Класс окна с реализацией всех возможностей, доступных при помощи Cigui.<br>
 # Реализация выполнена для RGSS3.
-class Win3 #< Window_Command
-	def initialize(x,y,width,height)
-		#super
-		#self.x,self.y,self.width,self.height = x,y,width,height
+if RUBY_VERSION.to_f>1.9
+	begin
+		class Win3 < Window
+			def initialize
+				super 0,0,192,64
+				@items={}
+			end
+			
+			def add_item(command,procname,enabled=true)
+				@items+={
+					:command=>command,
+					:procname=>procname,
+					:enabled=>enabled
+				}
+			end
+		end
+	rescue
+		puts 'Class \'Window\' not found'
 	end
 end
 
@@ -116,6 +141,8 @@ module CIGUI
 	:window=>{
 		:main=>'window|окно',
 		:create=>'create|созда(?:[йть]|ва[йть])',
+		:at=>'at',
+		:with=>'with',
 		:dispose=>'dispose|delete',
 		:move=>'move',
 		:resize=>'resize',
@@ -123,7 +150,8 @@ module CIGUI
 		:x=>'x|х|икс',
 		:y=>'y|у|игрек',
 		:width=>'width',
-		:height=>'height'
+		:height=>'height',
+		:label=>'label|link'
 	}
   }
   
@@ -131,7 +159,10 @@ module CIGUI
   # На данный момент почти не используется, создан для будущих версий.
   CMB={
 	:cigui_start=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+",
-	
+	:cigui_finish=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:finish]})+)+",
+	:cigui_flush=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:flush]})+)+",
+	:window_create=>"(((?:#{VOCAB[:window][:create]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
+	"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:create]})+)",
   }
   
   # 
@@ -308,13 +339,13 @@ module CIGUI
 				@finished = false
 				@last_action = 'CIGUI started'
 			rescue
-				raise CIGUI::CantStart
+				raise "#{CIGUIERR::CantStart}\n\tcurrent line of $do: #{string}"
 			end
 		end
 	end
 	
 	def __finish?(string)
-		matches=string.match(/((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:finish]})+)+/)
+		matches=string.match(/#{CMB[:cigui_finish]}/)
 		if matches
 			@finished = true
 			@last_action = 'CIGUI finished'
@@ -322,7 +353,7 @@ module CIGUI
 	end
 	
 	def __flush?(string)
-		matches=string.match(/((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:flush]})+)+/)
+		matches=string.match(/#{CMB[:cigui_flush]}/)
 		if matches
 			@windows.each{|item|item.dispose}
 			@windows.clear
@@ -341,24 +372,32 @@ module CIGUI
 	# create window with width=DEC,height=DEC
 	# create window at x=DEC, y=DEC with w=DEC, h=DEC
 	def __create?(string)
-		matches=string.match(/((?:#{VOCAB[:window][:create]})+[\s]*(?:#{VOCAB[:window][:main]})+)+/)
+		matches=string.match(/#{CMB[:window_create]}/)
+		# Only create
 		if matches
 			begin
-				@windows<<[ Win3.new ] if RUBY_VERSION > 1.9
+				begin
+					@windows<<Win3.new if RUBY_VERSION > 1.9
+				rescue
+					@windows<<NilClass
+				end
 				@last_action = @windows.last
 			rescue
-				raise CIGUI::CannotCreateWindow
+				raise "#{CIGUIERR::CannotCreateWindow}\n\tcurrent line of $do: #{string}"
 			end
 		end
+		# Read params
+		
 	end
   end
 end
 
 # test zone
 begin
+	$do=[
+		'create window'
+	]
 	CIGUI.setup
 	CIGUI.update
 	puts CIGUI.last
-	puts CIGUI.dec('x987 m','x','[\s]*(?:cm|m|km)')
-	puts CIGUI.frac('x987,67 m','x','[\s]*(?:cm|m|km)')
 end

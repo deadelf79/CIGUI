@@ -195,7 +195,7 @@ href="CIGUI.html#method-i-update">update</a>.</p>
 
           
           <div class="method-source-code" id="dec-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 220</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 286</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">dec</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">prefix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">postfix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
   <span class="ruby-identifier">frac</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">prefix</span>, <span class="ruby-identifier">postfix</span>, <span class="ruby-identifier">std_conversion</span>).<span class="ruby-identifier">to_i</span>
 <span class="ruby-keyword">rescue</span>
@@ -268,7 +268,7 @@ href="CIGUI.html#method-i-update">update</a>.</p>
 
           
           <div class="method-source-code" id="decimal-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 178</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 244</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">decimal</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
       <span class="ruby-identifier">fraction</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">std_conversion</span>).<span class="ruby-identifier">to_i</span>
     <span class="ruby-keyword">rescue</span>
@@ -319,7 +319,7 @@ href="CIGUI.html#method-i-update">update</a>.</p>
 
           
           <div class="method-source-code" id="frac-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 238</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 304</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">frac</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">prefix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">postfix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
   <span class="ruby-identifier">match</span>=<span class="ruby-identifier">prefix</span><span class="ruby-operator">+</span><span class="ruby-string">&#39;([\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)&#39;</span><span class="ruby-operator">+</span><span class="ruby-identifier">postfix</span>
   <span class="ruby-keyword">return</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">match</span>)[<span class="ruby-value">1</span>].<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">/[\s_]*/</span>){}.<span class="ruby-identifier">to_f</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">std_conversion</span>
@@ -380,7 +380,7 @@ href="CIGUI.html#method-i-update">update</a>.</p>
 
           
           <div class="method-source-code" id="fraction-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 199</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 265</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">fraction</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
   <span class="ruby-identifier">match</span>=<span class="ruby-string">&#39;(?:[\[|&quot;\(\])[\s]*([\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)(?:[\]|&quot;\)\])&#39;</span>
   <span class="ruby-keyword">return</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">match</span>)[<span class="ruby-value">1</span>].<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">/[\s_]*/</span>){}.<span class="ruby-identifier">to_f</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">std_conversion</span>
@@ -418,7 +418,7 @@ href="CIGUI.html#method-i-update">update</a>.</p>
 
           
           <div class="method-source-code" id="last-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 250</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 316</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">last</span>
         <span class="ruby-ivar">@last_action</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">?</span> <span class="ruby-ivar">@last_action</span> <span class="ruby-operator">:</span> <span class="ruby-ivar">@last_action</span>.<span class="ruby-identifier">inspect</span>
 <span class="ruby-keyword">end</span></pre>
@@ -465,7 +465,7 @@ href="CIGUI.html#method-i-update">update</a>.<br> Если даже массив
 
           
           <div class="method-source-code" id="setup-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 117</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 183</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">setup</span>
   <span class="ruby-identifier">$do</span><span class="ruby-operator">||=</span>[]
   <span class="ruby-identifier">$do</span>.<span class="ruby-identifier">insert</span> <span class="ruby-value">0</span>,<span class="ruby-string">&#39;cigui start&#39;</span>
@@ -510,7 +510,7 @@ href="CIGUI.html#method-i-update_by_user">update_by_user</a>, который м�
 
           
           <div class="method-source-code" id="update-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 133</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 199</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">update</span>(<span class="ruby-identifier">clear_after_update</span>=<span class="ruby-keyword">true</span>)
             <span class="ruby-identifier">$do</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
                     <span class="ruby-identifier">raise</span> <span class="ruby-constant">CIGUIERR</span><span class="ruby-operator">::</span><span class="ruby-constant">CantInterpretCommand</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@finished</span>
@@ -556,7 +556,7 @@ href="CIGUI.html#method-i-update_by_user">update_by_user</a>, который м�
 
           
           <div class="method-source-code" id="update_by_user-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 152</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 218</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">update_by_user</span>
 
 <span class="ruby-keyword">end</span></pre>
