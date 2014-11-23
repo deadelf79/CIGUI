@@ -75,7 +75,13 @@ if RUBY_VERSION.to_f>1.9
 			end
 		end
 	rescue
-		puts 'Class \'Window\' not found'
+		# Fake class only for test without RPG MAKER
+		class Win3
+			def initialize
+				@x,@y,@width,@height = 0,0,192,64
+				@items
+			end
+		end
 	end
 end
 
@@ -163,6 +169,7 @@ module CIGUI
 	:cigui_flush=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:flush]})+)+",
 	:window_create=>"(((?:#{VOCAB[:window][:create]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
 	"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:create]})+)",
+	:window_create_at=>"(?:#{VOCAB[:window][:at]})+[\s]*(?:#{VOCAB[:window][:x]}|#{VOCAB[:window][:y]})+",
   }
   
   # 
@@ -244,7 +251,7 @@ module CIGUI
     def decimal(source_string, std_conversion=true)
 	  fraction(source_string, std_conversion).to_i
 	rescue
-	  raise CIGUIERR::CantReadNumber
+	  raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{string}"
     end
 	
 	# Данный метод работает по аналогии с #decimal, но возвращает рациональное число
@@ -267,7 +274,7 @@ module CIGUI
 	  return source_string.match(match)[1].gsub!(/[\s_]*/){}.to_f if !std_conversion
 	  source_string.match(match)[1].to_f
 	rescue
-	  raise CIGUIERR::CantReadNumber
+	  raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{string}"
 	end
 	
 	# Данный метод работает по аналогии с #decimal, но производит поиск в строке
@@ -286,7 +293,7 @@ module CIGUI
 	def dec(source_string, prefix='', postfix='', std_conversion=true)
 	  frac(source_string, prefix, postfix, std_conversion).to_i
 	rescue
-	  raise CIGUIERR::CantReadNumber
+	  raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{string}"
 	end
 	# Данный метод работает по аналогии с #fraction, но производит поиск в строке
 	# с учетом указанных префикса (текста перед числом) и постфикса (после числа).<br>
@@ -306,7 +313,7 @@ module CIGUI
 	  return source_string.match(match)[1].gsub!(/[\s_]*/){}.to_f if !std_conversion
 	  source_string.match(match)[1].to_f
 	rescue
-	  raise CIGUIERR::CantReadNumber
+	  raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{string}"
 	end
 	
 	# Возвращает сообщение о последнем произведенном действии
@@ -326,6 +333,7 @@ module CIGUI
 	  @sprites = []
 	end
 	
+	# CIGUI BRANCH
     def _cigui?(string)
 		__start? string
 		__finish? string
@@ -363,6 +371,7 @@ module CIGUI
 		end
 	end
 	
+	# WINDOW BRANCH
 	def _window?(string)
 		__create? string
 	end
@@ -377,7 +386,7 @@ module CIGUI
 		if matches
 			begin
 				begin
-					@windows<<Win3.new if RUBY_VERSION > 1.9
+					@windows<<Win3.new if RUBY_VERSION.to_f > 1.9
 				rescue
 					@windows<<NilClass
 				end
@@ -387,7 +396,12 @@ module CIGUI
 			end
 		end
 		# Read params
+		matches=string.match(/#{}/)
+		begin
 		
+		rescue
+		
+		end
 	end
   end
 end
@@ -395,7 +409,8 @@ end
 # test zone
 begin
 	$do=[
-		'create window'
+		'create window',
+		'create window at x=200, y=100'
 	]
 	CIGUI.setup
 	CIGUI.update
