@@ -36,6 +36,22 @@ module CIGUIERR
 		'Unable to process the command after CIGUI was finished'
 	end
   end
+  
+  class CannotCreateWindow < StandardError
+	private
+	def message
+		'Unable to create window'
+	end
+  end
+end
+
+# Класс окна с реализацией всех возможностей, доступных при помощи Cigui.<br>
+# Реализация выполнена для RGSS3.
+class Win3 #< Window_Command
+	def initialize(x,y,width,height)
+		#super
+		#self.x,self.y,self.width,self.height = x,y,width,height
+	end
 end
 
 # Основной модуль, обеспечивающий работу Cigui.<br>
@@ -74,6 +90,13 @@ module CIGUI
 		:set_font_size=>'(?:set)*[\s]*font[\s]*size',
 		:set_font=>'(?:set)*[\s]*font',
 	}
+  }
+  
+  # Хэш-таблица всех возможных сочетаний слов из VOCAB.<br>
+  # На данный момент почти не используется, создан для будущих версий.
+  CMB={
+	:cigui_start=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+",
+	
   }
   
   # 
@@ -243,7 +266,7 @@ module CIGUI
     end
 	
 	def __start?(string)
-		matches=string.match(/((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+/)
+		matches=string.match(/#{CMB[:cigui_start]}/)
 		if matches
 			begin
 				@last_action = 'CIGUI started'
@@ -273,10 +296,10 @@ module CIGUI
 		matches=string.match(/((?:#{VOCAB[:window][:create]})+[\s]*(?:#{VOCAB[:window][:main]})+)+/)
 		if matches
 			begin
-				@windows = Window.new
-				@last_action = 'CIGUI started'
+				@windows<<[ Win3.new ] if RUBY_VERSION > 1.9
+				@last_action = @windows.last
 			rescue
-				#raise CIGUI::CantStart
+				raise CIGUI::CannotCreateWindow
 			end
 		end
 	end
@@ -285,8 +308,9 @@ end
 
 # test zone
 begin
-	#CIGUI.setup
-	#CIGUI.update
+	CIGUI.setup
+	CIGUI.update
+	puts CIGUI.last
 	puts CIGUI.dec('x987 m','x','[\s]*(?:cm|m|km)')
 	puts CIGUI.frac('x987,67 m','x','[\s]*(?:cm|m|km)')
 end
