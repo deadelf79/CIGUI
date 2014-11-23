@@ -73,22 +73,57 @@ module CIGUI
   VOCAB={
 	:please=>'please|п[оа]жал[у]?[й]?ста',
 	:last=>'last|this|последн(?:ее|юю|яя)|это',
+	:select=>'select', # by index or label
     :cigui=>{
       :main=>'cigui|сигуи',
       :start=>'start|запус(?:ти(?:ть)?|к)',
       :finish=>'finish|завершить',
       :flush=>'flush|очист(?:к[аойеу]|[ить])'
     },
-	:window=>{
-		:main=>'window|окно',
-		:create=>'create|созда(?:[йть]|ва[йть])'
+	:event=>{
+		:maybe=>'in future versions'
+	},
+	:map=>{
+		:maybe=>'in future versions'
+	},
+	:picture=>{
+		:maybe=>'in future versions'
+	},
+	:sprite=>{
+		:main=>'sprite|спрайт',
+		:create=>'create|созда(?:[йть]|ва[йть])',
+		:dispose=>'dispose|delete',
+		:move=>'move',
+		:resize=>'resize',
+		:set=>'set',
+		:x=>'x|х|икс',
+		:y=>'y|у|игрек',
+		:width=>'width',
+		:height=>'height'
 	},
 	:text=>{
 		:main=>'text',
-		:bigger=>'(?:make)*[\s]*bigger',
-		:smaller=>'(?:make)*[\s]*smaller',
-		:set_font_size=>'(?:set)*[\s]*font[\s]*size',
-		:set_font=>'(?:set)*[\s]*font',
+		:make=>'make',
+		:bigger=>'bigger',
+		:smaller=>'smaller',
+		:set=>'set',
+		:font=>'font',
+		:size=>'size'
+		# commented to move in CMB
+		#:set_font_size=>'(?:set)*[\s]*font[\s]*size',
+		#:set_font=>'(?:set)*[\s]*font',
+	},
+	:window=>{
+		:main=>'window|окно',
+		:create=>'create|созда(?:[йть]|ва[йть])',
+		:dispose=>'dispose|delete',
+		:move=>'move',
+		:resize=>'resize',
+		:set=>'set',
+		:x=>'x|х|икс',
+		:y=>'y|у|игрек',
+		:width=>'width',
+		:height=>'height'
 	}
   }
   
@@ -263,12 +298,14 @@ module CIGUI
     def _cigui?(string)
 		__start? string
 		__finish? string
+		__flush? string
     end
 	
 	def __start?(string)
 		matches=string.match(/#{CMB[:cigui_start]}/)
 		if matches
 			begin
+				@finished = false
 				@last_action = 'CIGUI started'
 			rescue
 				raise CIGUI::CantStart
@@ -281,6 +318,17 @@ module CIGUI
 		if matches
 			@finished = true
 			@last_action = 'CIGUI finished'
+		end
+	end
+	
+	def __flush?(string)
+		matches=string.match(/((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:flush]})+)+/)
+		if matches
+			@windows.each{|item|item.dispose}
+			@windows.clear
+			@sprites.each{|item|item.dispose}
+			@sprites.clear
+			@last_action = 'CIGUI cleared'
 		end
 	end
 	
