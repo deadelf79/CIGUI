@@ -76,6 +76,7 @@ if RUBY_VERSION.to_f>1.9
 		end
 	rescue
 		# Fake class only for test without RPG MAKER
+		# It's not the one which documented sometime
 		class Win3
 			def initialize
 				@x,@y,@width,@height = 0,0,192,64
@@ -130,7 +131,7 @@ module CIGUI
 		:x=>'x|х|икс',
 		:y=>'y|у|игрек',
 		:width=>'width',
-		:height=>'height'
+		:height=>'height',
 	},
 	:text=>{
 		:main=>'text',
@@ -139,25 +140,26 @@ module CIGUI
 		:smaller=>'smaller',
 		:set=>'set',
 		:font=>'font',
-		:size=>'size'
-		# commented to move in CMB
-		#:set_font_size=>'(?:set)*[\s]*font[\s]*size',
-		#:set_font=>'(?:set)*[\s]*font',
+		:size=>'size',
 	},
 	:window=>{
 		:main=>'window|окно',
 		:create=>'create|созда(?:[йть]|ва[йть])',
-		:at=>'at',
-		:with=>'with',
+			:at=>'at',
+			:with=>'with',
 		:dispose=>'dispose|delete',
 		:move=>'move',
+			:to=>'to',
+			:speed=>'speed',
 		:resize=>'resize',
 		:set=>'set',
 		:x=>'x|х|икс',
 		:y=>'y|у|игрек',
 		:width=>'width',
 		:height=>'height',
-		:label=>'label|link'
+		:label=>'label|link',
+		:labeled=>'labeled',
+			:as=>'as',
 	}
   }
   
@@ -373,14 +375,16 @@ module CIGUI
 	
 	# WINDOW BRANCH
 	def _window?(string)
-		__create? string
+		__wcreate? string
+		__wdispose? string
+		__wmove? string
 	end
 	
 	# create window (default position and size) 
 	# create window at x=DEC, y=DEC
 	# create window with width=DEC,height=DEC
 	# create window at x=DEC, y=DEC with w=DEC, h=DEC
-	def __create?(string)
+	def __wcreate?(string)
 		matches=string.match(/#{CMB[:window_create]}/)
 		# Only create
 		if matches
@@ -403,6 +407,9 @@ module CIGUI
 		
 		end
 	end
+	
+	def __wdispose?(string);end
+	def __wmove?(string);end
   end
 end
 
