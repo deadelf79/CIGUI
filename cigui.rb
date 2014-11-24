@@ -54,6 +54,13 @@ module CIGUIERR
 		'Unable to create window'
 	end
   end
+  
+  class WrongWindowIndex < StandardError
+	private
+	def message
+		'Index must be included in range of 0 to internal windows array size'
+	end
+  end
 end
 
 # Класс окна с реализацией всех возможностей, доступных при помощи Cigui.<br>
@@ -73,6 +80,10 @@ if RUBY_VERSION.to_f>1.9
 					:enabled=>enabled
 				}
 			end
+			
+			def dispose
+				self.contents.dispose
+			end
 		end
 	rescue
 		# Fake class only for test without RPG MAKER
@@ -80,7 +91,11 @@ if RUBY_VERSION.to_f>1.9
 		class Win3
 			def initialize
 				@x,@y,@width,@height = 0,0,192,64
-				@items
+				@items=[]
+			end
+			
+			def dispose
+			
 			end
 		end
 	end
@@ -158,6 +173,7 @@ module CIGUI
 		:width=>'width',
 		:height=>'height',
 		:label=>'label|link',
+		:index=>'index',
 		:labeled=>'labeled',
 			:as=>'as',
 	}
@@ -172,10 +188,16 @@ module CIGUI
 	:window_create=>"(((?:#{VOCAB[:window][:create]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
 	"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:create]})+)",
 	:window_create_at=>"(?:#{VOCAB[:window][:at]})+[\s]*(?:#{VOCAB[:window][:x]}|#{VOCAB[:window][:y]})+",
+	:window_dispose=>"(((?:#{VOCAB[:window][:dispose]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
+	"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:dispose]})+)",
+	:window_dispose_index=>"((((?:#{VOCAB[:window][:dispose]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
+	"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:dispose]})+))"+
+	"[\s]*#{VOCAB[:window][:index]}\=",
   }
   
   # 
   class <<self
+	attr_reader :windows
     # Требуется выполнить этот метод перед началом работы с CIGUI.<br>
 	# Пример:
 	#	begin
@@ -408,7 +430,27 @@ module CIGUI
 		end
 	end
 	
-	def __wdispose?(string);end
+	def __wdispose?(string)
+		matches=string.match(/#{CMB[:window_dispose]}/)
+		# Only create
+		if matches
+			begin
+				if string.match(/#{CMB[:window_dispose_index]}/)
+					index=dec(string,CMB[:window_dispose_index])
+					if (0...@windows.size).include? index
+						@windows[index].dispose
+						@windows.delete_at(index)
+					else
+						raise "#{CIGUIERR::WrongWindowIndex}\n\tcurrent line of $do: #{string}"
+					end
+				end
+				@last_action = 'CIGUI disposed window'
+			rescue
+				# don't know what error you want to see
+				#raise "#{CIGUIERR::C}"
+			end
+		end
+	end
 	def __wmove?(string);end
   end
 end
@@ -417,9 +459,11 @@ end
 begin
 	$do=[
 		'create window',
-		'create window at x=200, y=100'
+		'create window at x=200, y=100',
+		'dispose window index=0'
 	]
 	CIGUI.setup
 	CIGUI.update
 	puts CIGUI.last
+	puts CIGUI.windows
 end
