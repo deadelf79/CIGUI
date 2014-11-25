@@ -89,6 +89,8 @@ if RUBY_VERSION.to_f>1.9
 		# Fake class only for test without RPG MAKER
 		# It's not the one which documented sometime
 		class Win3
+			attr_accessor :x
+			attr_accessor :y
 			def initialize
 				@x,@y,@width,@height = 0,0,192,64
 				@items=[]
@@ -187,12 +189,15 @@ module CIGUI
 	:cigui_flush=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:flush]})+)+",
 	:window_create=>"(((?:#{VOCAB[:window][:create]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
 	"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:create]})+)",
-	:window_create_at=>"(?:#{VOCAB[:window][:at]})+[\s]*(?:#{VOCAB[:window][:x]}|#{VOCAB[:window][:y]})+",
+	:window_create_atORwith=>"((?:#{VOCAB[:window][:at]})+[\s]*(#{VOCAB[:window][:x]}|#{VOCAB[:window][:y]})+)|"+
+	"((?:#{VOCAB[:window][:with]})+[\s]*(?:#{VOCAB[:window][:width]}|#{VOCAB[:window][:height]}))",
 	:window_dispose=>"(((?:#{VOCAB[:window][:dispose]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
 	"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:dispose]})+)",
 	:window_dispose_index=>"((((?:#{VOCAB[:window][:dispose]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
 	"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:dispose]})+))"+
 	"[\s]*#{VOCAB[:window][:index]}\=",
+	:window_x_equal=>"#{VOCAB[:window][:x]}\=",
+	:window_y_equal=>"#{VOCAB[:window][:y]}\=",
   }
   
   # 
@@ -422,9 +427,14 @@ module CIGUI
 			end
 		end
 		# Read params
-		matches=string.match(/#{}/)
 		begin
-		
+			if string.match(/#{CMB[:window_create_atORwith]}/)
+				new_x = string[/#{CMB[:window_x_equal]}/] ? dec(string,CMB[:window_x_equal]) : @windows.last.x
+				new_y = string[/#{CMB[:window_y_equal]}/] ? dec(string,CMB[:window_y_equal]) : @windows.last.y
+				@windows.last.x = new_x
+				@windows.last.y = new_y
+				@last_action = @windows.last
+			end
 		rescue
 		
 		end
@@ -447,7 +457,7 @@ module CIGUI
 				@last_action = 'CIGUI disposed window'
 			rescue
 				# don't know what error you want to see
-				#raise "#{CIGUIERR::C}"
+				#raise "#{CIGUIERR::CannotDisposeThisStupidWindow}"
 			end
 		end
 	end
@@ -458,12 +468,9 @@ end
 # test zone
 begin
 	$do=[
-		'create window',
 		'create window at x=200, y=100',
-		'dispose window index=0'
 	]
 	CIGUI.setup
 	CIGUI.update
 	puts CIGUI.last
-	puts CIGUI.windows
 end
