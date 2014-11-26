@@ -429,8 +429,12 @@ module CIGUI
 		# Read params
 		begin
 			if string.match(/#{CMB[:window_create_atORwith]}/)
+				# at OR with: check x and y
 				new_x = string[/#{CMB[:window_x_equal]}/] ? dec(string,CMB[:window_x_equal]) : @windows.last.x
+				p new_x
+				p dec('x=120',CMB[:window_x_equal])
 				new_y = string[/#{CMB[:window_y_equal]}/] ? dec(string,CMB[:window_y_equal]) : @windows.last.y
+				p new_y
 				@windows.last.x = new_x
 				@windows.last.y = new_y
 				@last_action = @windows.last
