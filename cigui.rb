@@ -131,12 +131,17 @@ module CIGUI
     },
 	:event=>{
 		:main=>'event|char(?:acter)?',
+		:create=>'create|созда(?:[йть]|ва[йть])',
+			:at=>'at',
+			:with=>'with',
+		:dispose=>'dispose|delete',
+		:load=>'load',
 		# TAB #1
 		#~MESSAGE group
 		:show=>'show',
 			:message=>'message|text',
 			:choices=>'choices',
-			:scrolling=>'scro[l]*(?:ing)?',
+			:scroll=>'scro[l]*(?:ing|er|ed)?',
 		:input=>'input',
 			:key=>'key|bu[t]*on',
 			:number=>'number',
@@ -184,11 +189,39 @@ module CIGUI
 		:comment=>'comment',
 		#~PARTY group
 		:change=>'change',
+			:party=>'party',
+				:member=>'member',
+		#~ACTOR group
+		:hp=>'hp',
+		:sp=>'[ms]p',
+		:recover=>'recover', # may be used for one member
+			:all=>'a[l]*',
+		:exp=>'exp(?:irience)?',
+		:level=>'l[e]?v[e]?l',
+		:params=>'param(?:et[e]?r)s',
+		:nickname=>'nick(?:name)?',
+		# TAB#2
+		#~MOVEMENT group
+		:transfer=>'transfer|teleport(?:ate|ion)',
+			:player=>'player',
+		:map=>'map', # to use as - scroll map || event map x
+			:x=>'x',
+			:y=>'y',
+		:screen=>'scr[e]*n', # to use as - event screen x
+		:route=>'rout(?:e|ing)?',
+			:move=>'move|go',
+				:forward=>'forward|в[\s]*пер[её][дт]',
+				:backward=>'backward|н[ао][\s]*за[дт]',
+				:lower=>'lower',
+				:upper=>'upper',
+			:random=>'rand(?:om[ed]*)?',
+			:toward=>'toward',
+			:away=>'away([\s]*from)?',
+			:step=>'step',
+		:get=>'get',
+			:on=>'on',
+			:off=>'off',
 		
-		:move=>'move|go',
-			
-			:forward=>'forward|в[\s]*пер[её][дт]',
-			:backward=>'backward|н[ао][\s]*за[дт]',
 		:turn=>'turn',
 			:clockwise=>'clockwise', # по часовой
 			:counterclockwise=>'counter[\s]clockwise', # против часовой
@@ -198,10 +231,7 @@ module CIGUI
 				:by_event=>'by[\s]*event',
 			:autorun=>'auto[\s]*run',
 			:parallel=>'para[ll]*el',
-		:map=>'map',
-			:x=>'x',
-			:y=>'y',
-		:screen=>'screen',
+		
 		:wait=>'wait',
 			:frames=>'frame[s]?',
 	},
@@ -251,6 +281,8 @@ module CIGUI
 		:index=>'index',
 		:labeled=>'labeled',
 			:as=>'as',
+		:opacity=>'opacity',
+			:back=>'back',
 	}
   }
   
