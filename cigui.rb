@@ -130,7 +130,30 @@ module CIGUI
       :flush=>'flush|очист(?:к[аойеу]|[ить])'
     },
 	:event=>{
-		:maybe=>'in future versions'
+		:main=>'event',
+		:move=>'move|go',
+			:up=>'up',
+			:down=>'down',
+			:left=>'left',
+			:right=>'right',
+			:forward=>'forward|в[\s]*пер[её][дт]',
+			:backward=>'backward|н[ао][\s]*за[дт]',
+		:turn=>'turn',
+			:clockwise=>'clockwise', # по часовой
+			:counterclockwise=>'counter[\s]clockwise', # против часовой
+		:emulate=>'emulate',
+			:click=>'click|tap',
+			:touch=>'touch|enter',
+		:set=>'set',
+		:map=>'map',
+			:x=>'x',
+			:y=>'y',
+		:screen=>'screen',
+		:show=>'show',
+		:message=>'message',
+		:wait=>'wait',
+			:frames=>'frame[s]?',
+			:seconds=>'sec(?:[ou]nds)?',
 	},
 	:map=>{
 		:maybe=>'in future versions'
