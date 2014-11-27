@@ -130,12 +130,63 @@ module CIGUI
       :flush=>'flush|очист(?:к[аойеу]|[ить])'
     },
 	:event=>{
-		:main=>'event',
+		:main=>'event|char(?:acter)?',
+		# TAB #1
+		#~MESSAGE group
+		:show=>'show',
+			:message=>'message|text',
+			:choices=>'choices',
+			:scrolling=>'scro[l]*(?:ing)?',
+		:input=>'input',
+			:key=>'key|bu[t]*on',
+			:number=>'number',
+		:item=>'item', #to use as - select key item || condition branch item
+		#~GAME PROGRESSION group
+		:set=>'set|cotrol', # other word - see at :condition
+		#~FLOW CONTROL group
+		:condition=>'condition|if|case',
+			:branch=>'bran[ch]|when',
+			:switch=>'swit[ch]',
+			:variable=>'var(?:iable)?',
+			:self=>'self', # to use as - self switch
+			:timer=>'timer',
+				:min=>'min(?:ute[s]?)?',
+				:sec=>'sec(?:[ou]nds)?',
+				:ORmore=>'or[\s]*more',
+				:ORless=>'or[\s]*less',
+			:actor=>'actor',
+				:in_party=>'in[\s]*party',
+				:name=>'name',
+					:applied=>'a[p]*lied',
+				:class=>'cla[s]*',
+				:skill=>'ski[l]*',
+				:weapon=>'wea(?:p(?:on)?)?|wip(?:on)?',
+				:armor=>'armo[u]?r',
+				:state=>'stat(?:e|us)?',
+			:enemy=>'enemy',
+				:appeared=>'a[p]*eared',
+				:inflicted=>'inflicted', # to use as - state inflicted
+			:facing=>'facing', # to use as - event facing
+				:up=>'up',
+				:down=>'down',
+				:left=>'left',
+				:right=>'right',
+			:vehicle=>'vehicle',
+			:gold=>'gold|money',
+			:script=>'script|code',
+		:loop=>'loop',
+			:break=>'break',
+		:exit=>'exit', # to use as - exit event processing
+		:call=>'call',
+			:common=>'common',
+		:label=>'label|link',
+			:jump=>'jump(?:[\s]*to)?',
+		:comment=>'comment',
+		#~PARTY group
+		:change=>'change',
+		
 		:move=>'move|go',
-			:up=>'up',
-			:down=>'down',
-			:left=>'left',
-			:right=>'right',
+			
 			:forward=>'forward|в[\s]*пер[её][дт]',
 			:backward=>'backward|н[ао][\s]*за[дт]',
 		:turn=>'turn',
@@ -144,16 +195,15 @@ module CIGUI
 		:emulate=>'emulate',
 			:click=>'click|tap',
 			:touch=>'touch|enter',
-		:set=>'set',
+				:by_event=>'by[\s]*event',
+			:autorun=>'auto[\s]*run',
+			:parallel=>'para[ll]*el',
 		:map=>'map',
 			:x=>'x',
 			:y=>'y',
 		:screen=>'screen',
-		:show=>'show',
-		:message=>'message',
 		:wait=>'wait',
 			:frames=>'frame[s]?',
-			:seconds=>'sec(?:[ou]nds)?',
 	},
 	:map=>{
 		:maybe=>'in future versions'
