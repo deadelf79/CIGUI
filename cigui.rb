@@ -150,8 +150,11 @@ if RUBY_VERSION.to_f>1.9
 			attr_accessor :width
 			# Height of Window
 			attr_accessor :height
+			# Speed movement
+			attr_accessor :speed
 			def initialize
 				@x,@y,@width,@height = 0,0,192,64
+				@speed=0
 				@items=[]
 			end
 			
@@ -385,6 +388,7 @@ module CIGUI
 	:window_h_equal=>"#{VOCAB[:window][:height]}\=",
 	:window_move=>"(?:(?:#{VOCAB[:last]}#{VOCAB[:window][:main]}#{VOCAB[:window][:move]})|"+
 		"(?:#{VOCAB[:window][:move]}#{VOCAB[:last]}#{VOCAB[:window][:main]}))",
+	:window_s_equal=>"#{VOCAB[:window][:speed]}\=",
   }
   
   # 
@@ -425,6 +429,7 @@ module CIGUI
     def update(clear_after_update=true)
 		$do.each do |line|
 			raise CIGUIERR::CantInterpretCommand if @finished
+			_common? line
 			_cigui? line
 			_window? line
 			#_create? line
@@ -552,6 +557,11 @@ module CIGUI
 	  @sprites = []
 	end
 	
+	# COMMON UNBRANCH
+	def _common(string)
+		# select, please and other
+	end
+	
 	# CIGUI BRANCH
     def _cigui?(string)
 		__start? string
@@ -632,7 +642,7 @@ module CIGUI
 				@last_action = @windows.last
 			end
 		rescue
-			
+			# dunnolol
 		end
 	end
 	
@@ -640,7 +650,23 @@ module CIGUI
 	# this move to x=DEC,y=DEC with speed=1
 	# this move to x=DEC,y=DEC with speed=auto
 	def __wmove?(string)
-	
+		matches=string.match(/#{CMB[:window_move]}/)
+		# Only move
+		if matches
+			begin
+				# Read params
+				new_x = string[/#{CMB[:window_x_equal]}/] ? dec(string,CMB[:window_x_equal]) : @windows.last.x
+				new_y = string[/#{CMB[:window_y_equal]}/] ? dec(string,CMB[:window_y_equal]) : @windows.last.y
+				new_s = string[/#{CMB[:window_s_equal]}/] ? dec(string,CMB[:window_s_equal]) : @windows.last.speed
+				@window.last.x = new_x
+				@window.last.x = new_y
+				@window.last.speed = new_s
+				@last_action = @window.last
+			rescue
+				# dunnolol
+				#raise "#{CIGUIERR::CannotCreateWindow}\n\tcurrent line of $do: #{string}"
+			end
+		end
 	end
 	
 	def __wdispose?(string)
