@@ -220,7 +220,7 @@ module CIGUI
 			:step=>'step',
 		:get=>'get',
 			:on=>'on',
-			:off=>'off',
+			:off=>'off', # to use as - get on/off vehicle
 		
 		:turn=>'turn',
 			:clockwise=>'clockwise', # по часовой
@@ -236,7 +236,11 @@ module CIGUI
 			:frames=>'frame[s]?',
 	},
 	:map=>{
-		:maybe=>'in future versions'
+		:main=>'map',
+		:name=>'name',
+		:width=>'width',
+		:height=>'height',
+		
 	},
 	:picture=>{
 		:maybe=>'in future versions'
@@ -282,7 +286,7 @@ module CIGUI
 		:labeled=>'labeled',
 			:as=>'as',
 		:opacity=>'opacity',
-			:back=>'back',
+			:back=>'back', # to use as - set back opacity
 	}
   }
   
@@ -301,7 +305,7 @@ module CIGUI
 	:window_dispose_index=>"((((?:#{VOCAB[:window][:dispose]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
 	"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:dispose]})+))"+
 	"[\s]*#{VOCAB[:window][:index]}\=",
-	:window_x_equal=>"#{VOCAB[:window][:x]}\=",
+	:window_x_equal=>"x=",#"#{VOCAB[:window][:x]}=",
 	:window_y_equal=>"#{VOCAB[:window][:y]}\=",
   }
   
