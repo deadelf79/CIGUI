@@ -15,6 +15,8 @@
 # * CIGUIERR::CantStart
 # * CIGUIERR::CantReadNumber
 # * CIGUIERR::CantInterpretCommand
+# * CIGUIERR::CannotCreateWindow
+# * CIGUIERR::WrongWindowIndex
 #
 module CIGUIERR
   # Ошибка, которая появляется при неудачной попытке запуска интерпретатора Cigui
@@ -48,6 +50,8 @@ module CIGUIERR
 	end
   end
   
+  # Ошибка создания окна
+  #
   class CannotCreateWindow < StandardError
 	private
 	def message
@@ -55,6 +59,10 @@ module CIGUIERR
 	end
   end
   
+  # Ошибка, которая появляется при попытке обращения
+  # к несуществующему индексу в массиве <i>windows</i></br>
+  # Вызывается при некорректном вводе пользователя
+  #
   class WrongWindowIndex < StandardError
 	private
 	def message
@@ -63,41 +71,93 @@ module CIGUIERR
   end
 end
 
-# Класс окна с реализацией всех возможностей, доступных при помощи Cigui.<br>
-# Реализация выполнена для RGSS3.
 if RUBY_VERSION.to_f>1.9
 	begin
+		# Класс окна с реализацией всех возможностей, доступных при помощи Cigui.<br>
+		# Реализация выполнена для RGSS3.
+		#
 		class Win3 < Window
-			def initialize
+			# Создает окно. По умолчанию задается размер 192х64 и
+			# помещается в координаты 0,0
+			#
+			def initialize(x=0,y=0,w=192,h=64)
 				super 0,0,192,64
-				@items={}
+				@items=[]
 			end
 			
+			# Этот метод добавляет команду во внутренний массив <i>items</i>.
+			# Команды используются для отображения кнопок.<br>
+			# * command - отображаемый текст кнопки
+			# * procname - название вызываемого метода
+			# По умолчанию значение enable равно true, что значит,
+			# что кнопка включена и может быть нажата.
+			# 
 			def add_item(command,procname,enabled=true)
-				@items+={
-					:command=>command,
-					:procname=>procname,
-					:enabled=>enabled
-				}
+				@items+=[
+					{
+						:command=>command,
+						:procname=>procname,
+						:enabled=>enabled,
+						:x=>:auto,
+						:y=>:auto
+					}
+				]
 			end
 			
+			# Включает кнопку.<br>
+			# В параметр commandORindex помещается либо строковое значение,
+			# являющееся названием кнопки, либо целое число - индекс кнопки			
+			# во внутреннем массиве <i>items</i>.
+			#
+			def enable_item(commandORindex)
+				case commandORindex.class
+				when Integer, Float
+					@items[commandORindex.to_i][:enabled]=true if (0...@items.size).include? commandORindex.to_i
+				when String
+					@items.times{|index|@items[index][:enabled]=true if @items[index][:command]==commandORindex}
+				else
+					raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{string}"
+				end
+			end
+			
+			# С помощью этого метода производится полная отрисовка всех
+			# элементов из массива <i>items</i>.<br>
+			# Параметр ignore_disabled отвечает за отображение выключенных 
+			# команд из массива <i>items</i>. Если его значение равно true,
+			# то отрисовка выключенных команд производиться не будет.
+			#
+			def draw_items(ignore_disabled=false)
+				
+			end
+			
+			# Удаляет окно и все связанные с ним ресурсы
+			#
 			def dispose
-				self.contents.dispose
+				super
 			end
 		end
 	rescue
-		# Fake class only for test without RPG MAKER
-		# It's not the one which documented sometime
+
+		# Класс окна с реализацией всех возможностей, доступных при помощи Cigui.<br>
+		# Реализация выполнена для RGSS3.
+		#
 		class Win3
+			# X Coordinate of Window
 			attr_accessor :x
+			# Y Coordinate of Window
 			attr_accessor :y
+			# Width of Window
+			attr_accessor :width
+			# Height of Window
+			attr_accessor :height
 			def initialize
 				@x,@y,@width,@height = 0,0,192,64
 				@items=[]
 			end
 			
+			#
 			def dispose
-			
+				super
 			end
 		end
 	end
@@ -252,8 +312,8 @@ module CIGUI
 		:move=>'move',
 		:resize=>'resize',
 		:set=>'set',
-		:x=>'x|х|икс',
-		:y=>'y|у|игрек',
+		:x=>'(?:x|х|икс)',
+		:y=>'(?:y|у|игрек)',
 		:width=>'width',
 		:height=>'height',
 	},
@@ -277,8 +337,8 @@ module CIGUI
 			:speed=>'speed',
 		:resize=>'resize',
 		:set=>'set',
-		:x=>'x|х|икс',
-		:y=>'y|у|игрек',
+		:x=>'(?:x|х|икс)',
+		:y=>'(?:y|у|игрек)',
 		:width=>'width',
 		:height=>'height',
 		:label=>'label|link',
@@ -305,12 +365,17 @@ module CIGUI
 	:window_dispose_index=>"((((?:#{VOCAB[:window][:dispose]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
 	"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:dispose]})+))"+
 	"[\s]*#{VOCAB[:window][:index]}\=",
-	:window_x_equal=>"x=",#"#{VOCAB[:window][:x]}=",
+	:window_x_equal=>"#{VOCAB[:window][:x]}=",
 	:window_y_equal=>"#{VOCAB[:window][:y]}\=",
+	:window_w_equal=>"#{VOCAB[:window][:width]}=",
+	:window_h_equal=>"#{VOCAB[:window][:height]}\=",
   }
   
   # 
   class <<self
+	# Внутренний массив для вывода информации о всех созданных окнах.</br>
+	# Открыт только для чтения.
+	# 
 	attr_reader :windows
     # Требуется выполнить этот метод перед началом работы с CIGUI.<br>
 	# Пример:
@@ -540,16 +605,19 @@ module CIGUI
 			if string.match(/#{CMB[:window_create_atORwith]}/)
 				# at OR with: check x and y
 				new_x = string[/#{CMB[:window_x_equal]}/] ? dec(string,CMB[:window_x_equal]) : @windows.last.x
-				p new_x
-				p dec('x=120',CMB[:window_x_equal])
 				new_y = string[/#{CMB[:window_y_equal]}/] ? dec(string,CMB[:window_y_equal]) : @windows.last.y
-				p new_y
 				@windows.last.x = new_x
 				@windows.last.y = new_y
+				# at OR with: check w and h
+				new_w = string[/#{CMB[:window_w_equal]}/] ? dec(string,CMB[:window_w_equal]) : @windows.last.width
+				new_h = string[/#{CMB[:window_h_equal]}/] ? dec(string,CMB[:window_h_equal]) : @windows.last.height
+				@windows.last.width = new_w
+				p @windows.last.width
+				@windows.last.height = new_h
 				@last_action = @windows.last
 			end
 		rescue
-		
+			p 'Error! in width'
 		end
 	end
 	
@@ -581,7 +649,7 @@ end
 # test zone
 begin
 	$do=[
-		'create window at x=200, y=100',
+		'create window at x=200, y=100 with width=500',
 	]
 	CIGUI.setup
 	CIGUI.update
