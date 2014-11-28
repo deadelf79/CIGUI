@@ -612,7 +612,6 @@ module CIGUI
 				new_w = string[/#{CMB[:window_w_equal]}/] ? dec(string,CMB[:window_w_equal]) : @windows.last.width
 				new_h = string[/#{CMB[:window_h_equal]}/] ? dec(string,CMB[:window_h_equal]) : @windows.last.height
 				@windows.last.width = new_w
-				p @windows.last.width
 				@windows.last.height = new_h
 				@last_action = @windows.last
 			end
@@ -649,7 +648,7 @@ end
 # test zone
 begin
 	$do=[
-		'create window at x=200, y=100 with width=500',
+		'create window at x=200, y=100 with height=300,width=500',
 	]
 	CIGUI.setup
 	CIGUI.update
