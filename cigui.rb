@@ -180,15 +180,18 @@ module CIGUI
   # * text - текстом и шрифтами
   # 
   VOCAB={
+	#--COMMON unbranch
 	:please=>'please|п[оа]жал[у]?[й]?ста',
 	:last=>'last|this|последн(?:ее|юю|яя)|это',
 	:select=>'select', # by index or label
+	#--CIGUI branch
     :cigui=>{
       :main=>'cigui|сигуи',
       :start=>'start|запус(?:ти(?:ть)?|к)',
       :finish=>'finish|завершить',
       :flush=>'flush|очист(?:к[аойеу]|[ить])'
     },
+	#--EVENT branch
 	:event=>{
 		:main=>'event|char(?:acter)?',
 		:create=>'create|созда(?:[йть]|ва[йть])',
@@ -295,6 +298,7 @@ module CIGUI
 		:wait=>'wait',
 			:frames=>'frame[s]?',
 	},
+	#--MAP branch
 	:map=>{
 		:main=>'map',
 		:name=>'name',
@@ -302,9 +306,11 @@ module CIGUI
 		:height=>'height',
 		
 	},
+	#--PICTURE branch
 	:picture=>{
 		:maybe=>'in future versions'
 	},
+	#--SPRITE branch
 	:sprite=>{
 		:main=>'sprite|спрайт',
 		:create=>'create|созда(?:[йть]|ва[йть])',
@@ -317,6 +323,7 @@ module CIGUI
 		:width=>'width',
 		:height=>'height',
 	},
+	#--TEXT branch
 	:text=>{
 		:main=>'text',
 		:make=>'make',
@@ -326,6 +333,7 @@ module CIGUI
 		:font=>'font',
 		:size=>'size',
 	},
+	#--WINDOW branch
 	:window=>{
 		:main=>'window|окно',
 		:create=>'create|созда(?:[йть]|ва[йть])',
@@ -335,6 +343,7 @@ module CIGUI
 		:move=>'move',
 			:to=>'to',
 			:speed=>'speed',
+				:auto=>'auto',
 		:resize=>'resize',
 		:set=>'set',
 		:x=>'(?:x|х|икс)',
@@ -353,22 +362,29 @@ module CIGUI
   # Хэш-таблица всех возможных сочетаний слов из VOCAB.<br>
   # На данный момент почти не используется, создан для будущих версий.
   CMB={
+	#~COMMON unbranch
+	:select_window=>"(?:(?:#{VOCAB[:select]}#{VOCAB[:window][:main]})|"+
+		"(?:#{VOCAB[:window][:main]}#{VOCAB[:select]}))",
+	#~CIGUI branch
 	:cigui_start=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+",
 	:cigui_finish=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:finish]})+)+",
 	:cigui_flush=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:flush]})+)+",
+	#~WINDOW branch
 	:window_create=>"(((?:#{VOCAB[:window][:create]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
-	"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:create]})+)",
+		"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:create]})+)",
 	:window_create_atORwith=>"((?:#{VOCAB[:window][:at]})+[\s]*(#{VOCAB[:window][:x]}|#{VOCAB[:window][:y]})+)|"+
-	"((?:#{VOCAB[:window][:with]})+[\s]*(?:#{VOCAB[:window][:width]}|#{VOCAB[:window][:height]}))",
+		"((?:#{VOCAB[:window][:with]})+[\s]*(?:#{VOCAB[:window][:width]}|#{VOCAB[:window][:height]}))",
 	:window_dispose=>"(((?:#{VOCAB[:window][:dispose]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
-	"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:dispose]})+)",
+		"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:dispose]})+)",
 	:window_dispose_index=>"((((?:#{VOCAB[:window][:dispose]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
-	"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:dispose]})+))"+
-	"[\s]*#{VOCAB[:window][:index]}\=",
+		"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:dispose]})+))"+
+		"[\s]*#{VOCAB[:window][:index]}\=",
 	:window_x_equal=>"#{VOCAB[:window][:x]}=",
 	:window_y_equal=>"#{VOCAB[:window][:y]}\=",
 	:window_w_equal=>"#{VOCAB[:window][:width]}=",
 	:window_h_equal=>"#{VOCAB[:window][:height]}\=",
+	:window_move=>"(?:(?:#{VOCAB[:last]}#{VOCAB[:window][:main]}#{VOCAB[:window][:move]})|"+
+		"(?:#{VOCAB[:window][:move]}#{VOCAB[:last]}#{VOCAB[:window][:main]}))",
   }
   
   # 
@@ -606,18 +622,25 @@ module CIGUI
 				# at OR with: check x and y
 				new_x = string[/#{CMB[:window_x_equal]}/] ? dec(string,CMB[:window_x_equal]) : @windows.last.x
 				new_y = string[/#{CMB[:window_y_equal]}/] ? dec(string,CMB[:window_y_equal]) : @windows.last.y
-				@windows.last.x = new_x
-				@windows.last.y = new_y
 				# at OR with: check w and h
 				new_w = string[/#{CMB[:window_w_equal]}/] ? dec(string,CMB[:window_w_equal]) : @windows.last.width
 				new_h = string[/#{CMB[:window_h_equal]}/] ? dec(string,CMB[:window_h_equal]) : @windows.last.height
+				@windows.last.x = new_x
+				@windows.last.y = new_y
 				@windows.last.width = new_w
 				@windows.last.height = new_h
 				@last_action = @windows.last
 			end
 		rescue
-			p 'Error! in width'
+			
 		end
+	end
+	
+	# this move to x=DEC,y=DEC
+	# this move to x=DEC,y=DEC with speed=1
+	# this move to x=DEC,y=DEC with speed=auto
+	def __wmove?(string)
+	
 	end
 	
 	def __wdispose?(string)
@@ -649,6 +672,7 @@ end
 begin
 	$do=[
 		'create window at x=200, y=100 with height=300,width=500',
+		'this move to x=150,y=124'
 	]
 	CIGUI.setup
 	CIGUI.update
