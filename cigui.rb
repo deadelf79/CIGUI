@@ -355,7 +355,8 @@ module CIGUI
 		:height=>'height',
 		:label=>'label|link',
 		:index=>'index',
-		:labeled=>'labeled',
+			:indexed=>'indexed',
+		:labeled=>'labeled|linked',
 			:as=>'as',
 		:opacity=>'opacity',
 			:back=>'back', # to use as - set back opacity
@@ -368,6 +369,8 @@ module CIGUI
 	#~COMMON unbranch
 	:select_window=>"(?:(?:#{VOCAB[:select]}#{VOCAB[:window][:main]})|"+
 		"(?:#{VOCAB[:window][:main]}#{VOCAB[:select]}))",
+	:select_by_index=>"(?:#{VOCAB[:window][:index]}\=)",
+	:select_by_label=>"(?:#{VOCAB[:window][:label]}\=)",
 	#~CIGUI branch
 	:cigui_start=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+",
 	:cigui_finish=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:finish]})+)+",
@@ -393,10 +396,16 @@ module CIGUI
   
   # 
   class <<self
-	# Внутренний массив для вывода информации о всех созданных окнах.</br>
+	# Внутренний массив для вывода информации обо всех созданных окнах.</br>
 	# Открыт только для чтения.
 	# 
 	attr_reader :windows
+	
+	# Внутренний массив для вывода информации обо всех созданных спрайтах.</br>
+	# Открыт только для чтения.
+	# 
+	attr_reader :sprites
+	
     # Требуется выполнить этот метод перед началом работы с CIGUI.<br>
 	# Пример:
 	#	begin
@@ -555,11 +564,36 @@ module CIGUI
 	  @finished = false
 	  @windows = []
 	  @sprites = []
+	  @selection = {
+		:type => nil, # may be window or sprite
+		:index => 0  # index in internal array
+	  }
 	end
 	
 	# COMMON UNBRANCH
-	def _common(string)
+	def _common?(string)
 		# select, please and other
+		__swindow? string
+	end
+	
+	def __swindow?(string)
+		matches=string.match(/#{CMB[:select_window]}/)
+		# Only match
+		if matches
+			begin
+				# Read index or label
+				if string.match(/#{CMB[:select_by_index]}/)
+					index = 
+					@selection[:type]=:window
+					@selection[:index]=index
+				elsif string.match(/#{CMB[select_by_label]}/)
+				
+				end
+				@last_action = @selection
+			rescue
+				# do nothing, maybe? 
+			end
+		end
 	end
 	
 	# CIGUI BRANCH
