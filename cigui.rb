@@ -583,18 +583,19 @@ module CIGUI
 			begin
 				# Read index or label
 				if string.match(/#{CMB[:select_by_index]}/)
-					index = 
+					index = dec(string,CMB[:select_by_index])
 					@selection[:type]=:window
 					@selection[:index]=index
-				elsif string.match(/#{CMB[select_by_label]}/)
-				
+				elsif string.match(/#{CMB[:select_by_label]}/)
+					p 'no way out'
 				end
 				@last_action = @selection
 			rescue
-				# do nothing, maybe? 
+				# do nothing, maybe?
+				#p 'some error'				
 			end
 		end
-	end
+	end#--------------------end of '__swindow?'-------------------------
 	
 	# CIGUI BRANCH
     def _cigui?(string)
@@ -678,30 +679,7 @@ module CIGUI
 		rescue
 			# dunnolol
 		end
-	end
-	
-	# this move to x=DEC,y=DEC
-	# this move to x=DEC,y=DEC with speed=1
-	# this move to x=DEC,y=DEC with speed=auto
-	def __wmove?(string)
-		matches=string.match(/#{CMB[:window_move]}/)
-		# Only move
-		if matches
-			begin
-				# Read params
-				new_x = string[/#{CMB[:window_x_equal]}/] ? dec(string,CMB[:window_x_equal]) : @windows.last.x
-				new_y = string[/#{CMB[:window_y_equal]}/] ? dec(string,CMB[:window_y_equal]) : @windows.last.y
-				new_s = string[/#{CMB[:window_s_equal]}/] ? dec(string,CMB[:window_s_equal]) : @windows.last.speed
-				@window.last.x = new_x
-				@window.last.x = new_y
-				@window.last.speed = new_s
-				@last_action = @window.last
-			rescue
-				# dunnolol
-				#raise "#{CIGUIERR::CannotCreateWindow}\n\tcurrent line of $do: #{string}"
-			end
-		end
-	end
+	end #--------------------end of '__wcreate?'-------------------------
 	
 	def __wdispose?(string)
 		matches=string.match(/#{CMB[:window_dispose]}/)
@@ -723,16 +701,42 @@ module CIGUI
 				#raise "#{CIGUIERR::CannotDisposeThisStupidWindow}"
 			end
 		end
-	end
-	def __wmove?(string);end
-  end
-end
+	end#--------------------end of '__wdispose?'-------------------------
+	
+	# this move to x=DEC,y=DEC
+	# this move to x=DEC,y=DEC with speed=1
+	# this move to x=DEC,y=DEC with speed=auto
+	def __wmove?(string)
+		matches=string.match(/#{CMB[:window_move]}/)
+		# Only move
+		if matches
+			begin
+				# Read params
+				new_x = string[/#{CMB[:window_x_equal]}/] ? dec(string,CMB[:window_x_equal]) : @windows.last.x
+				new_y = string[/#{CMB[:window_y_equal]}/] ? dec(string,CMB[:window_y_equal]) : @windows.last.y
+				new_s = string[/#{CMB[:window_s_equal]}/] ? dec(string,CMB[:window_s_equal]) : @windows.last.speed
+				# CHANGED TO SELECTED
+				if @selection[:type]==:window
+					@window[@selection[:index]].x = new_x
+					@window[@selection[:index]].y = new_y
+					@window[@selection[:index]].speed = new_s
+					@last_action = @window[@selection[:index]]
+				end
+			rescue
+				# dunnolol
+				#raise "#{CIGUIERR::CannotCreateWindow}\n\tcurrent line of $do: #{string}"
+			end
+		end
+	end#--------------------end of '__wmove?'-------------------------
+  end# END OF CIGUI CLASS
+end# END OF CIGUI MODULE
 
 # test zone
 begin
 	$do=[
 		'create window at x=200, y=100 with height=300,width=500',
-		'this move to x=150,y=124'
+		'select window by index=0',
+		'this window move to x=150,y=124'
 	]
 	CIGUI.setup
 	CIGUI.update
