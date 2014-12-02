@@ -21,21 +21,21 @@ Simple configurations
 
 __Title menu on map__
 
-`CIGUI.setup
+`CIGUI.setup`
 
-$do<<'go to map indexed 1'
+`$do<<'go to map indexed 1'`
 
-$do<<'screen fade in'
+`$do<<'screen fade in'`
 
-$do<<'create window at x=244,y=240 with width=192,height=96'`
+`$do<<'create window at x=244,y=240 with width=192,height=96'`
 
-`$do<<'last add command "New command"'
+`$do<<'last add command "New command"'`
 
-$do<<'last add command "Continue"'
+`$do<<'last add command "Continue"'`
 
-$do<<'last add command "Exit game"'
+`$do<<'last add command "Exit game"'`
 
-$do<<'last select command=0'`
+`$do<<'last select command=0'`
 
 `CIGUI.update`
 
