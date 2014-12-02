@@ -385,13 +385,15 @@ module CIGUI
 	:window_dispose_index=>"((((?:#{VOCAB[:window][:dispose]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
 		"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:dispose]})+))"+
 		"[\s]*#{VOCAB[:window][:index]}\=",
-	:window_x_equal=>"#{VOCAB[:window][:x]}=",
-	:window_y_equal=>"#{VOCAB[:window][:y]}\=",
-	:window_w_equal=>"#{VOCAB[:window][:width]}=",
-	:window_h_equal=>"#{VOCAB[:window][:height]}\=",
+	:window_x_equal=>"(?:#{VOCAB[:window][:x]})\=",
+	:window_y_equal=>"(?:#{VOCAB[:window][:y]})\=",
+	:window_w_equal=>"(?:#{VOCAB[:window][:width]})=",
+	:window_h_equal=>"(?:#{VOCAB[:window][:height]})\=",
+	:window_s_equal=>"(?:#{VOCAB[:window][:speed]})\=",
 	:window_move=>"(?:(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:move]}))|"+
 		"(?:(?:#{VOCAB[:window][:move]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})))",
-	:window_s_equal=>"#{VOCAB[:window][:speed]}\=",
+	:window_resize=>"(?:(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:resize]}))|"+
+		"(?:(?:#{VOCAB[:window][:resize]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})))",
   }
   
   # 
@@ -640,7 +642,7 @@ module CIGUI
 		__wcreate? string
 		__wdispose? string
 		__wmove? string
-		#__wresize? string
+		__wresize? string
 		#__wlabel? string
 		#__wopacity? string
 	end
@@ -715,9 +717,9 @@ module CIGUI
 		if matches
 			begin
 				# Read params
-				new_x = string[/#{CMB[:window_x_equal]}/] ? dec(string,CMB[:window_x_equal]) : @windows.last.x
-				new_y = string[/#{CMB[:window_y_equal]}/] ? dec(string,CMB[:window_y_equal]) : @windows.last.y
-				new_s = string[/#{CMB[:window_s_equal]}/] ? dec(string,CMB[:window_s_equal]) : @windows.last.speed
+				new_x = string[/#{CMB[:window_x_equal]}/] ? dec(string,CMB[:window_x_equal]) : @windows[@selection[:index]].x
+				new_y = string[/#{CMB[:window_y_equal]}/] ? dec(string,CMB[:window_y_equal]) : @windows[@selection[:index]].y
+				new_s = string[/#{CMB[:window_s_equal]}/] ? dec(string,CMB[:window_s_equal]) : @windows[@selection[:index]].speed
 				# CHANGED TO SELECTED
 				if @selection[:type]==:window
 					@windows[@selection[:index]].x = new_x
@@ -725,12 +727,28 @@ module CIGUI
 					@windows[@selection[:index]].speed = new_s
 					@last_action = @windows[@selection[:index]]
 				end
-			rescue
-				# dunnolol
-				#raise "#{CIGUIERR::CannotCreateWindow}\n\tcurrent line of $do: #{string}"
 			end
 		end
 	end#--------------------end of '__wmove?'-------------------------
+	
+	# this resize to width=DEC,height=DEC
+	def __wresize?(string)
+		matches=string.match(/#{CMB[:window_resize]}/)
+		# Only move
+		if matches
+			begin
+				# Read params
+				new_w = string[/#{CMB[:window_w_equal]}/] ? dec(string,CMB[:window_w_equal]) : @windows[@selection[:index]].width
+				new_h = string[/#{CMB[:window_h_equal]}/] ? dec(string,CMB[:window_h_equal]) : @windows[@selection[:index]].height
+				# CHANGED TO SELECTED
+				if @selection[:type]==:window
+					@windows[@selection[:index]].width = new_w
+					@windows[@selection[:index]].height = new_h
+					@last_action = @windows[@selection[:index]]
+				end
+			end
+		end
+	end#--------------------end of '__wresize?'-------------------------
   end# END OF CIGUI CLASS
 end# END OF CIGUI MODULE
 
@@ -739,7 +757,8 @@ begin
 	$do=[
 		'create window at x=200, y=100 with height=300,width=500',
 		'select window by index=0',
-		'this window move to x=150,y=124'
+		'this window move to x=150,y=124',
+		'resize this window width=4321,height=1564'
 	]
 	CIGUI.setup
 	CIGUI.update
