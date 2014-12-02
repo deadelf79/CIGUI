@@ -389,8 +389,8 @@ module CIGUI
 	:window_y_equal=>"#{VOCAB[:window][:y]}\=",
 	:window_w_equal=>"#{VOCAB[:window][:width]}=",
 	:window_h_equal=>"#{VOCAB[:window][:height]}\=",
-	:window_move=>"(?:(?:#{VOCAB[:last]}#{VOCAB[:window][:main]}#{VOCAB[:window][:move]})|"+
-		"(?:#{VOCAB[:window][:move]}#{VOCAB[:last]}#{VOCAB[:window][:main]}))",
+	:window_move=>"(?:(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:move]}))|"+
+		"(?:(?:#{VOCAB[:window][:move]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})))",
 	:window_s_equal=>"#{VOCAB[:window][:speed]}\=",
   }
   
@@ -640,6 +640,9 @@ module CIGUI
 		__wcreate? string
 		__wdispose? string
 		__wmove? string
+		#__wresize? string
+		#__wlabel? string
+		#__wopacity? string
 	end
 	
 	# create window (default position and size) 
@@ -717,10 +720,10 @@ module CIGUI
 				new_s = string[/#{CMB[:window_s_equal]}/] ? dec(string,CMB[:window_s_equal]) : @windows.last.speed
 				# CHANGED TO SELECTED
 				if @selection[:type]==:window
-					@window[@selection[:index]].x = new_x
-					@window[@selection[:index]].y = new_y
-					@window[@selection[:index]].speed = new_s
-					@last_action = @window[@selection[:index]]
+					@windows[@selection[:index]].x = new_x
+					@windows[@selection[:index]].y = new_y
+					@windows[@selection[:index]].speed = new_s
+					@last_action = @windows[@selection[:index]]
 				end
 			rescue
 				# dunnolol
