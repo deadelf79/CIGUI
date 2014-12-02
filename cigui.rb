@@ -130,6 +130,27 @@ if RUBY_VERSION.to_f>1.9
 				
 			end
 			
+			# Устанавливает новые размеры окна дополнительно изменяя
+			# также и размеры содержимого (contents).<br>
+			# Все части содержимого, которые не помещаются в новые размер,
+			# удаляются безвозратно.
+			#
+			def resize(new_width, new_height)
+				temp=Sprite.new
+				temp.bitmap=self.contents
+				self.contents.dispose
+				src_rect(0,0,temp.width,temp.height)
+				self.contents=Bitmap.new(
+					width - padding * 2,
+					height - padding * 2
+				)
+				self.contents.bit(0,0,temp.bitmap,src_rect,255)
+				temp.bitmap.dispose
+				temp.dispose
+				width=new_width
+				height=new_height
+			end
+			
 			# Удаляет окно и все связанные с ним ресурсы
 			#
 			def dispose
@@ -156,6 +177,12 @@ if RUBY_VERSION.to_f>1.9
 				@x,@y,@width,@height = 0,0,192,64
 				@speed=0
 				@items=[]
+			end
+			
+			#
+			def resize(new_width, new_height)
+				@width=new_width
+				@height=new_height
 			end
 			
 			#
@@ -742,8 +769,7 @@ module CIGUI
 				new_h = string[/#{CMB[:window_h_equal]}/] ? dec(string,CMB[:window_h_equal]) : @windows[@selection[:index]].height
 				# CHANGED TO SELECTED
 				if @selection[:type]==:window
-					@windows[@selection[:index]].width = new_w
-					@windows[@selection[:index]].height = new_h
+					@windows[@selection[:index]].resize(new_w,new_h)
 					@last_action = @windows[@selection[:index]]
 				end
 			end

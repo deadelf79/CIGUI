@@ -83,6 +83,8 @@
     
     <li ><a href="#method-i-enable_item">#enable_item</a>
     
+    <li ><a href="#method-i-resize">#resize</a>
+    
   </ul>
 </div>
 
@@ -315,7 +317,7 @@
 
           
           <div class="method-source-code" id="dispose-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 135</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 156</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">dispose</span>
         <span class="ruby-keyword">super</span>
 <span class="ruby-keyword">end</span></pre>
@@ -398,6 +400,53 @@
         <span class="ruby-keyword">else</span>
                 <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{string}&quot;</span>
         <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-resize" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">resize</span><span
+            class="method-args">(new_width, new_height)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Устанавливает новые размеры окна дополнительно изменяя также и размеры
+содержимого (contents).<br> Все части содержимого, которые не помещаются в
+новые размер, удаляются безвозратно.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="resize-source">
+            <pre><span class="ruby-comment"># File cigui.rb, line 138</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">resize</span>(<span class="ruby-identifier">new_width</span>, <span class="ruby-identifier">new_height</span>)
+        <span class="ruby-identifier">temp</span>=<span class="ruby-constant">Sprite</span>.<span class="ruby-identifier">new</span>
+        <span class="ruby-identifier">temp</span>.<span class="ruby-identifier">bitmap</span>=<span class="ruby-keyword">self</span>.<span class="ruby-identifier">contents</span>
+        <span class="ruby-keyword">self</span>.<span class="ruby-identifier">contents</span>.<span class="ruby-identifier">dispose</span>
+        <span class="ruby-identifier">src_rect</span>(<span class="ruby-value">0</span>,<span class="ruby-value">0</span>,<span class="ruby-identifier">temp</span>.<span class="ruby-identifier">width</span>,<span class="ruby-identifier">temp</span>.<span class="ruby-identifier">height</span>)
+        <span class="ruby-keyword">self</span>.<span class="ruby-identifier">contents</span>=<span class="ruby-constant">Bitmap</span>.<span class="ruby-identifier">new</span>(
+                <span class="ruby-identifier">width</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">padding</span> <span class="ruby-operator">*</span> <span class="ruby-value">2</span>,
+                <span class="ruby-identifier">height</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">padding</span> <span class="ruby-operator">*</span> <span class="ruby-value">2</span>
+        )
+        <span class="ruby-keyword">self</span>.<span class="ruby-identifier">contents</span>.<span class="ruby-identifier">bit</span>(<span class="ruby-value">0</span>,<span class="ruby-value">0</span>,<span class="ruby-identifier">temp</span>.<span class="ruby-identifier">bitmap</span>,<span class="ruby-identifier">src_rect</span>,<span class="ruby-value">255</span>)
+        <span class="ruby-identifier">temp</span>.<span class="ruby-identifier">bitmap</span>.<span class="ruby-identifier">dispose</span>
+        <span class="ruby-identifier">temp</span>.<span class="ruby-identifier">dispose</span>
+        <span class="ruby-identifier">width</span>=<span class="ruby-identifier">new_width</span>
+        <span class="ruby-identifier">height</span>=<span class="ruby-identifier">new_height</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
