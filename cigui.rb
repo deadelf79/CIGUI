@@ -425,6 +425,8 @@ module CIGUI
 		"(?:(?:#{VOCAB[:window][:move]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})))",
 	:window_resize=>"(?:(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:resize]}))|"+
 		"(?:(?:#{VOCAB[:window][:resize]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})))",
+	:window_set=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]}))+[\s]*(?:#{VOCAB[:window][:set]})+)|"+
+		"(?:(?:#{VOCAB[:window][:set]}))+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]}))+)",
   }
   
   # 
@@ -674,6 +676,7 @@ module CIGUI
 		__wdispose? string
 		__wmove? string
 		__wresize? string
+		__wset? string
 		#__wlabel? string
 		#__wopacity? string
 	end
@@ -779,6 +782,29 @@ module CIGUI
 			end
 		end
 	end#--------------------end of '__wresize?'-------------------------
+	
+	# this window set x=DEC,y=DEC,width=DEC,height=DEC
+	# this window set label=[STR]
+	# this window set opacity=DEC
+	# this window set back opacity=DEC
+	def __wset?(string)
+		matches=string.match(/#{CMB[:window_set]}/)
+		# Only move
+		if matches
+			begin
+				# Read params
+				new_x = string[/#{CMB[:window_x_equal]}/] ? dec(string,CMB[:window_x_equal]) : @windows[@selection[:index]].x
+				new_y = string[/#{CMB[:window_y_equal]}/] ? dec(string,CMB[:window_y_equal]) : @windows[@selection[:index]].y
+				new_w = string[/#{CMB[:window_w_equal]}/] ? dec(string,CMB[:window_w_equal]) : @windows[@selection[:index]].width
+				new_h = string[/#{CMB[:window_h_equal]}/] ? dec(string,CMB[:window_h_equal]) : @windows[@selection[:index]].height
+				# CHANGED TO SELECTED
+				if @selection[:type]==:window
+					@windows[@selection[:index]].resize(new_w,new_h)
+					@last_action = @windows[@selection[:index]]
+				end
+			end
+		end
+	end#--------------------end of '__wset?'-------------------------
   end# END OF CIGUI CLASS
 end# END OF CIGUI MODULE
 

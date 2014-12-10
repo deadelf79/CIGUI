@@ -141,7 +141,7 @@
 
         <div class="method-description">
         
-        <p>Speed movement</p>
+        <p>Скорость перемещения</p>
         
         </div>
       </div>
@@ -220,10 +220,11 @@
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 83</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 86</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">x</span>=<span class="ruby-value">0</span>,<span class="ruby-identifier">y</span>=<span class="ruby-value">0</span>,<span class="ruby-identifier">w</span>=<span class="ruby-value">192</span>,<span class="ruby-identifier">h</span>=<span class="ruby-value">64</span>)
         <span class="ruby-keyword">super</span> <span class="ruby-value">0</span>,<span class="ruby-value">0</span>,<span class="ruby-value">192</span>,<span class="ruby-value">64</span>
         <span class="ruby-ivar">@items</span>=[]
+        <span class="ruby-ivar">@speed</span>=<span class="ruby-value">1</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -271,7 +272,7 @@
 
           
           <div class="method-source-code" id="add_item-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 95</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 99</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">add_item</span>(<span class="ruby-identifier">command</span>,<span class="ruby-identifier">procname</span>,<span class="ruby-identifier">enabled</span>=<span class="ruby-keyword">true</span>)
         <span class="ruby-ivar">@items</span><span class="ruby-operator">+=</span>[
                 {
@@ -317,7 +318,7 @@
 
           
           <div class="method-source-code" id="dispose-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 156</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 160</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">dispose</span>
         <span class="ruby-keyword">super</span>
 <span class="ruby-keyword">end</span></pre>
@@ -354,7 +355,7 @@
 
           
           <div class="method-source-code" id="draw_items-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 129</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 133</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">draw_items</span>(<span class="ruby-identifier">ignore_disabled</span>=<span class="ruby-keyword">false</span>)
         
 <span class="ruby-keyword">end</span></pre>
@@ -390,7 +391,7 @@
 
           
           <div class="method-source-code" id="enable_item-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 112</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 116</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">enable_item</span>(<span class="ruby-identifier">commandORindex</span>)
         <span class="ruby-keyword">case</span> <span class="ruby-identifier">commandORindex</span>.<span class="ruby-identifier">class</span>
         <span class="ruby-keyword">when</span> <span class="ruby-constant">Integer</span>, <span class="ruby-constant">Float</span>
@@ -432,7 +433,7 @@
 
           
           <div class="method-source-code" id="resize-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 138</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 142</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">resize</span>(<span class="ruby-identifier">new_width</span>, <span class="ruby-identifier">new_height</span>)
         <span class="ruby-identifier">temp</span>=<span class="ruby-constant">Sprite</span>.<span class="ruby-identifier">new</span>
         <span class="ruby-identifier">temp</span>.<span class="ruby-identifier">bitmap</span>=<span class="ruby-keyword">self</span>.<span class="ruby-identifier">contents</span>
