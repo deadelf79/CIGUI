@@ -79,6 +79,10 @@ if RUBY_VERSION.to_f>1.9
 		class Win3 < Window
 			# Скорость перемещения
 			attr_accessor :speed
+			# Прозрачность окна. Может принимать значения от 0 до 255
+			attr_accessor :opacity
+			# Прозрачность фона окна. Может принимать значения от 0 до 255
+			attr_accessor :back_opacity
 			
 			# Создает окно. По умолчанию задается размер 192х64 и
 			# помещается в координаты 0,0
@@ -177,9 +181,16 @@ if RUBY_VERSION.to_f>1.9
 			attr_accessor :height
 			# Speed movement
 			attr_accessor :speed
+			# Opacity of window. May be in range of 0 to 255
+			attr_accessor :opacity
+			# Back opacity of window. May be in range of 0 to 255
+			attr_accessor :back_opacity
+			
+			#
 			def initialize
-				@x,@y,@width,@height = 0,0,192,64
+				@x,@y,@width,@height = 0, 0, 192, 64
 				@speed=0
+				@opacity, @back_opacity = 255, 255
 				@items=[]
 			end
 			
@@ -421,12 +432,14 @@ module CIGUI
 	:window_w_equal=>"(?:#{VOCAB[:window][:width]})=",
 	:window_h_equal=>"(?:#{VOCAB[:window][:height]})\=",
 	:window_s_equal=>"(?:#{VOCAB[:window][:speed]})\=",
+	:window_a_equal=>"(?:#{VOCAB[:window][:opacity]})\=",
+	:window_ba_equal=>"(?:(?:#{VOCAB[:window][:back]})+[\s]*(?:#{VOCAB[:window][:opacity]}))\=",
 	:window_move=>"(?:(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:move]}))|"+
 		"(?:(?:#{VOCAB[:window][:move]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})))",
 	:window_resize=>"(?:(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:resize]}))|"+
 		"(?:(?:#{VOCAB[:window][:resize]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})))",
-	:window_set=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]}))+[\s]*(?:#{VOCAB[:window][:set]})+)|"+
-		"(?:(?:#{VOCAB[:window][:set]}))+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]}))+)",
+	:window_set=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:set]})+)|"+
+		"(?:(?:#{VOCAB[:window][:set]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+)",
   }
   
   # 
@@ -625,7 +638,7 @@ module CIGUI
 					p 'no way out'
 				end
 				@last_action = @selection
-			rescue
+			#rescue
 				# do nothing, maybe?
 				#p 'some error'				
 			end
@@ -797,9 +810,15 @@ module CIGUI
 				new_y = string[/#{CMB[:window_y_equal]}/] ? dec(string,CMB[:window_y_equal]) : @windows[@selection[:index]].y
 				new_w = string[/#{CMB[:window_w_equal]}/] ? dec(string,CMB[:window_w_equal]) : @windows[@selection[:index]].width
 				new_h = string[/#{CMB[:window_h_equal]}/] ? dec(string,CMB[:window_h_equal]) : @windows[@selection[:index]].height
+				new_a = string[/#{CMB[:window_a_equal]}/] ? dec(string,CMB[:window_a_equal]) : @windows[@selection[:index]].opacity
+				new_ba = string[/#{CMB[:window_ba_equal]}/] ? dec(string,CMB[:window_ba_equal]) : @windows[@selection[:index]].back_opacity
 				# CHANGED TO SELECTED
 				if @selection[:type]==:window
+					@windows[@selection[:index]].x = new_x
+					@windows[@selection[:index]].y = new_y
 					@windows[@selection[:index]].resize(new_w,new_h)
+					@windows[@selection[:index]].opacity = new_a
+					@windows[@selection[:index]].back_opacity = new_ba
 					@last_action = @windows[@selection[:index]]
 				end
 			end
@@ -817,6 +836,12 @@ begin
 		'resize this window width=4321,height=1564'
 	]
 	CIGUI.setup
+	CIGUI.update
+	puts CIGUI.last
+	$do=[
+		'select window by index=0',
+		'set this window x=0,y=0,width=192,height=64,opacity=125,back opacity=128'
+	]
 	CIGUI.update
 	puts CIGUI.last
 end
