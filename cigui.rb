@@ -201,9 +201,25 @@ if RUBY_VERSION.to_f>=1.9
 			end
 			
 			#
-			def dispose
-				
-			end
+			def update;end
+			
+			#
+			def dispose;end
+		end
+		
+		# Класс спрайта. Пока пустой, ожидается обновление во время работы над спрайтами
+		# (ветка work-with-sprites в github).
+		#
+		class Spr3
+			
+			#
+			def initialize;end
+			
+			#
+			def update;end
+			
+			#
+			def dispose;end
 		end
 	end
 end
@@ -489,10 +505,22 @@ module CIGUI
 			_cigui? line
 			_window? line
 			#_
+			update_internal_objects
 			update_by_user
 		end
 		$do.clear if clear_after_update
     end
+	
+	# Вызывает обновление всех объектов из внутренних массивов windows и sprite.
+	#
+	def update_internal_objects
+		@windows.each{ |win|
+			win.update if win.is_a? Win3
+		}
+		@sprites.each{ |spr|
+			spr.update if win.is_a? Spr3
+		}
+	end
 	
 	# Метод обработки текста, созданный для пользовательских модификаций, не влияющих на работу
 	# встроенных обработчиков.
@@ -551,6 +579,14 @@ module CIGUI
 	  source_string.match(match)[1].to_f
 	rescue
 	  raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{string}"
+	end
+	
+	# Данный метод производит поиск подстроки, используемой в качестве параметра.<br>
+	# 	string('[Hello cruel world!]') # => Hello cruel world!
+	#	string("set window label='SomeSome' and no more else") # => SomeSome
+	#
+	def string(source_string)
+		
 	end
 	
 	# Данный метод работает по аналогии с #decimal, но производит поиск в строке
@@ -746,7 +782,9 @@ module CIGUI
 				if string.match(/#{CMB[:select_by_index]}/)
 					index=dec(string,CMB[:select_by_index])
 					if (0...@windows.size).include? index
-						@windows[index].dispose
+						# Проверка удаления для попавшихся объектов класса Nil
+						# в результате ошибки создания окна
+						@windows[index].dispose if @windows[index].method_defined? :dispose
 						@windows.delete_at(index)
 					else
 						raise "#{CIGUIERR::WrongWindowIndex}"+
@@ -755,9 +793,6 @@ module CIGUI
 					end
 				end
 				@last_action = 'CIGUI disposed window'
-			#rescue
-				# don't know what error you want to see
-				#raise "#{CIGUIERR::CannotDisposeThisStupidWindow}"
 			end
 		end
 	end#--------------------end of '__wdispose?'-------------------------
@@ -837,10 +872,10 @@ end# END OF CIGUI MODULE
 # test zone
 begin
 	$do=[
-		'cigui finish',
-		'cigui restart'
+		
 	]
 	CIGUI.setup
 	CIGUI.update
 	puts CIGUI.last
+	puts CIGUI.string('some[window_skin is awesome!]')
 end
