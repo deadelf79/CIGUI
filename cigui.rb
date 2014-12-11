@@ -202,7 +202,7 @@ if RUBY_VERSION.to_f>1.9
 			
 			#
 			def dispose
-				super
+				
 			end
 		end
 	end
@@ -409,8 +409,8 @@ module CIGUI
   # На данный момент почти не используется, создан для будущих версий.
   CMB={
 	#~COMMON unbranch
-	:select_window=>"(?:(?:#{VOCAB[:select]}#{VOCAB[:window][:main]})|"+
-		"(?:#{VOCAB[:window][:main]}#{VOCAB[:select]}))",
+	:select_window=>"(?:(?:#{VOCAB[:select]})+[\s]*(?:#{VOCAB[:window][:main]})+)|"+
+		"(?:(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:select]})+)",
 	:select_by_index=>"(?:#{VOCAB[:window][:index]}\=)",
 	:select_by_label=>"(?:#{VOCAB[:window][:label]}\=)",
 	#~CIGUI branch
@@ -424,9 +424,6 @@ module CIGUI
 		"((?:#{VOCAB[:window][:with]})+[\s]*(?:#{VOCAB[:window][:width]}|#{VOCAB[:window][:height]}))",
 	:window_dispose=>"(((?:#{VOCAB[:window][:dispose]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
 		"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:dispose]})+)",
-	:window_dispose_index=>"((((?:#{VOCAB[:window][:dispose]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
-		"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:dispose]})+))"+
-		"[\s]*#{VOCAB[:window][:index]}\=",
 	:window_x_equal=>"(?:#{VOCAB[:window][:x]})\=",
 	:window_y_equal=>"(?:#{VOCAB[:window][:y]})\=",
 	:window_w_equal=>"(?:#{VOCAB[:window][:width]})=",
@@ -728,7 +725,7 @@ module CIGUI
 				@windows.last.height = new_h
 				@last_action = @windows.last
 			end
-		rescue
+		#rescue
 			# dunnolol
 		end
 	end #--------------------end of '__wcreate?'-------------------------
@@ -738,17 +735,19 @@ module CIGUI
 		# Only create
 		if matches
 			begin
-				if string.match(/#{CMB[:window_dispose_index]}/)
-					index=dec(string,CMB[:window_dispose_index])
+				if string.match(/#{CMB[:select_by_index]}/)
+					index=dec(string,CMB[:select_by_index])
 					if (0...@windows.size).include? index
 						@windows[index].dispose
 						@windows.delete_at(index)
 					else
-						raise "#{CIGUIERR::WrongWindowIndex}\n\tcurrent line of $do: #{string}"
+						raise "#{CIGUIERR::WrongWindowIndex}"+
+						"\n\tinternal windows size: #{@windows.size} (#{index} is not in range of 0..#{@windows.size})"+
+						"\n\tcurrent line of $do: #{string}"
 					end
 				end
 				@last_action = 'CIGUI disposed window'
-			rescue
+			#rescue
 				# don't know what error you want to see
 				#raise "#{CIGUIERR::CannotDisposeThisStupidWindow}"
 			end
@@ -844,4 +843,11 @@ begin
 	]
 	CIGUI.update
 	puts CIGUI.last
+	$do=[
+		'dispose window index=0',
+		'dispose window index=1'
+	]
+	CIGUI.update
+	puts CIGUI.last
+	puts CIGUI.windows.inspect
 end
