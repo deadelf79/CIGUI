@@ -71,7 +71,7 @@ module CIGUIERR
   end
 end
 
-if RUBY_VERSION.to_f>1.9
+if RUBY_VERSION.to_f>=1.9
 	begin
 		# Класс окна с реализацией всех возможностей, доступных при помощи Cigui.<br>
 		# Реализация выполнена для RGSS3.
@@ -486,10 +486,6 @@ module CIGUI
 			_common? line
 			_cigui? line
 			_window? line
-			#_create? line
-			#_move? line
-			#_rotate? line
-			#_scale? line
 			#_
 			update_by_user
 		end
@@ -701,7 +697,7 @@ module CIGUI
 		if matches
 			begin
 				begin
-					@windows<<Win3.new if RUBY_VERSION.to_f > 1.9
+					@windows<<Win3.new if RUBY_VERSION.to_f >= 1.9
 				rescue
 					@windows<<NilClass
 				end
@@ -829,25 +825,9 @@ end# END OF CIGUI MODULE
 # test zone
 begin
 	$do=[
-		'create window at x=200, y=100 with height=300,width=500',
-		'select window by index=0',
-		'this window move to x=150,y=124',
-		'resize this window width=4321,height=1564'
+		
 	]
 	CIGUI.setup
 	CIGUI.update
 	puts CIGUI.last
-	$do=[
-		'select window by index=0',
-		'set this window x=0,y=0,width=192,height=64,opacity=125,back opacity=128'
-	]
-	CIGUI.update
-	puts CIGUI.last
-	$do=[
-		'dispose window index=0',
-		'dispose window index=1'
-	]
-	CIGUI.update
-	puts CIGUI.last
-	puts CIGUI.windows.inspect
 end
