@@ -234,7 +234,8 @@ module CIGUI
       :main=>'cigui|сигуи',
       :start=>'start|запус(?:ти(?:ть)?|к)',
       :finish=>'finish|завершить',
-      :flush=>'flush|очист(?:к[аойеу]|[ить])'
+      :flush=>'flush|очист(?:к[аойеу]|[ить])',
+	  :restart=>'restart|resetup',
     },
 	#--EVENT branch
 	:event=>{
@@ -417,6 +418,7 @@ module CIGUI
 	:cigui_start=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+",
 	:cigui_finish=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:finish]})+)+",
 	:cigui_flush=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:flush]})+)+",
+	:cigui_restart=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:restart]})+)+",
 	#~WINDOW branch
 	:window_create=>"(((?:#{VOCAB[:window][:create]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
 		"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:create]})+)",
@@ -482,7 +484,7 @@ module CIGUI
 	#
     def update(clear_after_update=true)
 		$do.each do |line|
-			raise CIGUIERR::CantInterpretCommand if @finished
+			_restart? line
 			_common? line
 			_cigui? line
 			_window? line
@@ -609,6 +611,16 @@ module CIGUI
 		:type => nil, # may be window or sprite
 		:index => 0  # index in internal array
 	  }
+	end
+	
+	# RESTART
+	def _restart?(string)
+		matches=string.match(/#{CMB[:cigui_restart]}/)
+		if matches
+			_setup
+		end
+		raise "#{CIGUIERR::CantInterpretCommand}\n\tcurrent line of $do: #{string}" if @finished
+		@last_action = 'CIGUI restarted'
 	end
 	
 	# COMMON UNBRANCH
@@ -825,7 +837,8 @@ end# END OF CIGUI MODULE
 # test zone
 begin
 	$do=[
-		
+		'cigui finish',
+		'cigui restart'
 	]
 	CIGUI.setup
 	CIGUI.update
