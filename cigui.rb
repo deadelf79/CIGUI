@@ -506,7 +506,7 @@ module CIGUI
 			_window? line
 			#_
 			update_internal_objects
-			update_by_user
+			update_by_user(line)
 		end
 		$do.clear if clear_after_update
     end
@@ -518,16 +518,26 @@ module CIGUI
 			win.update if win.is_a? Win3
 		}
 		@sprites.each{ |spr|
-			spr.update if win.is_a? Spr3
+			spr.update if spr.is_a? Spr3
 		}
 	end
 	
 	# Метод обработки текста, созданный для пользовательских модификаций, не влияющих на работу
-	# встроенных обработчиков.
-	# Используйте <i>alias</i> этого метода для добавления обработки собственных команд.
+	# встроенных обработчиков.<br>
+	# Используйте <i>alias</i> этого метода для добавления обработки собственных команд.<br>
+	# Пример:
+	#	alias my_update update_by_user
+	#	def update_by_user
+	#		# add new word
+	#		VOCAB[:window][:close]='close'
+	#		# add 'window close' combination
+	#		CMB[:window_close]="(?:(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:close]})+)"
+	#		# call method
+	#		window_close? line
+	#	end
 	#
-	def update_by_user
-	
+	def update_by_user(string)
+		
 	end
 	
 	# Данный метод возвращает первое попавшееся целое число, найденное в строке source_string.<br>
@@ -582,6 +592,8 @@ module CIGUI
 	end
 	
 	# Данный метод производит поиск подстроки, используемой в качестве параметра.<br>
+	# Строка должна быть заключена в одинарные или двойные кавычки или же в круглые
+	# или квадратные скобки.
 	# 	string('[Hello cruel world!]') # => Hello cruel world!
 	#	string("set window label='SomeSome' and no more else") # => SomeSome
 	#
@@ -638,6 +650,7 @@ module CIGUI
     
     private
 	
+	# SETUP CIGUI / CLEAR FOR RESTART
 	def _setup
 	  @last_action = nil
 	  @finished = false
