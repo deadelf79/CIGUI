@@ -14,6 +14,7 @@
 # Включает в себя:
 # * CIGUIERR::CantStart
 # * CIGUIERR::CantReadNumber
+# * CIGUIERR::CantReadString
 # * CIGUIERR::CantInterpretCommand
 # * CIGUIERR::CannotCreateWindow
 # * CIGUIERR::WrongWindowIndex
@@ -40,6 +41,17 @@ module CIGUIERR
 	end
   end
   
+  # Ошибка, которая появляется, если в строке не было обнаружено строчное значение.<br>
+  # Правила оформления строки и примеры использования указаны в описании
+  # к этому методу: CIGUI.string
+  #
+  class CantReadString < StandardError
+	private
+	def message
+		'Could not find substring'
+	end
+  end
+  
   # Ошибка, которая появляется при попытке работать с Cigui после
   # вызова команды <i>cigui finish</i>.
   #
@@ -50,7 +62,7 @@ module CIGUIERR
 	end
   end
   
-  # Ошибка создания окна
+  # Ошибка создания окна.
   #
   class CannotCreateWindow < StandardError
 	private
@@ -60,7 +72,7 @@ module CIGUIERR
   end
   
   # Ошибка, которая появляется при попытке обращения
-  # к несуществующему индексу в массиве <i>windows</i></br>
+  # к несуществующему индексу в массиве <i>windows</i><br>
   # Вызывается при некорректном вводе пользователя
   #
   class WrongWindowIndex < StandardError
@@ -233,13 +245,20 @@ end
 # Для исполнения команд вызовите метод CIGUI.update.<br>
 #
 module CIGUI
-  # Специальный словарь, содержащий все используемые команды Cigui.<br>
-  # Для удобства поиска разбит по категориям:
+  # Специальный словарь, содержащий все используемые команды Cigui.
+  # Предоставляет возможности не только внесения новых слов, но и добавление
+  # локализации (перевода) имеющихся.<br>
+  # Для удобства поиска разбит по категориям: 
+  # * common - общие команды, не имеющие категории;
   # * cigui - управление интерпретатором; 
-  # * window - окнами;
-  # * sprite - изображениями;
+  # * event - событиями на карте;
+  # * map - параметрами карты;
+  # * picture - изображениями, используемыми через команды событий;
+  # * sprite - самостоятельными изображениями;
   # * text - текстом и шрифтами
-  # 
+  # * window - окнами.
+  #  
+  #
   VOCAB={
 	#--COMMON unbranch
 	:please=>'please|п[оа]жал[у]?[й]?ста',
@@ -408,8 +427,8 @@ module CIGUI
 				:auto=>'auto',
 		:resize=>'resize',
 		:set=>'set',
-		:x=>'(?:x|х|икс)',
-		:y=>'(?:y|у|игрек)',
+		:x=>'x|х|икс',
+		:y=>'y|у|игрек',
 		:width=>'width',
 		:height=>'height',
 		:label=>'label|link',
@@ -422,8 +441,9 @@ module CIGUI
 	}
   }
   
-  # Хэш-таблица всех возможных сочетаний слов из VOCAB.<br>
-  # На данный момент почти не используется, создан для будущих версий.
+  # Хэш-таблица всех возможных сочетаний слов из VOCAB и их положения относительно друг друга в тексте.<br>
+  # Именно по этим сочетаниям производится поиск команд Cigui в тексте. Редактировать без понимания правил
+  # составления регулярных выражений не рекомендуется.
   CMB={
 	#~COMMON unbranch
 	:select_window=>"(?:(?:#{VOCAB[:select]})+[\s]*(?:#{VOCAB[:window][:main]})+)|"+
@@ -598,7 +618,10 @@ module CIGUI
 	#	string("set window label='SomeSome' and no more else") # => SomeSome
 	#
 	def string(source_string)
-		
+		match='(?:[\[\(\"\'])[\s]*([\w\s _\!\#\$\%\^\&\*]*)[\s]*(?:[\]|"\)\'])'
+		return source_string.match(match)[1]
+	rescue
+		raise "#{CIGUIERR::CantReadString}\n\tcurrent line of $do: #{string}"
 	end
 	
 	# Данный метод работает по аналогии с #decimal, но производит поиск в строке
