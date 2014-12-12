@@ -88,7 +88,7 @@ if RUBY_VERSION.to_f>=1.9
 		# Класс окна с реализацией всех возможностей, доступных при помощи Cigui.<br>
 		# Реализация выполнена для RGSS3.
 		#
-		class Win3 < Window
+		class Win3 < Window_Selectable
 			# Скорость перемещения
 			attr_accessor :speed
 			# Прозрачность окна. Может принимать значения от 0 до 255
@@ -97,7 +97,7 @@ if RUBY_VERSION.to_f>=1.9
 			attr_accessor :back_opacity
 			
 			# Создает окно. По умолчанию задается размер 192х64 и
-			# помещается в координаты 0,0
+			# помещается в координаты 0, 0
 			#
 			def initialize(x=0,y=0,w=192,h=64)
 				super 0,0,192,64
@@ -175,6 +175,14 @@ if RUBY_VERSION.to_f>=1.9
 			#
 			def dispose
 				super
+			end
+			
+			# Возврашает полную информацию обо всех параметрах
+			# в формате строки
+			#
+			def inspect
+				"<#{self.class}: @back_opacity=#{self.back_opacity}, @height=#{self.height}, @opacity=#{self.opacity},"+
+				" @speed=#{@speed}, @width=#{self.width}, @x=#{self.x}, @y=#{self.y}>"
 			end
 		end
 	rescue
@@ -908,7 +916,7 @@ end# END OF CIGUI MODULE
 # test zone
 begin
 	$do=[
-		
+		'create window'
 	]
 	CIGUI.setup
 	CIGUI.update
