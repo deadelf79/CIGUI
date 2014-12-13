@@ -181,8 +181,8 @@ if RUBY_VERSION.to_f>=1.9
 			# в формате строки
 			#
 			def inspect
-				"<#{self.class}: @back_opacity=#{self.back_opacity}, @height=#{self.height}, @opacity=#{self.opacity},"+
-				" @speed=#{@speed}, @width=#{self.width}, @x=#{self.x}, @y=#{self.y}>"
+				"<#{self.class}: @back_opacity=#{back_opacity}, @height=#{height}, @opacity=#{opacity},"+
+				" @speed=#{@speed}, @width=#{width}, @x=#{x}, @y=#{y}>"
 			end
 		end
 	rescue
@@ -456,8 +456,8 @@ module CIGUI
 	#~COMMON unbranch
 	:select_window=>"(?:(?:#{VOCAB[:select]})+[\s]*(?:#{VOCAB[:window][:main]})+)|"+
 		"(?:(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:select]})+)",
-	:select_by_index=>"(?:#{VOCAB[:window][:index]}\=)",
-	:select_by_label=>"(?:#{VOCAB[:window][:label]}\=)",
+	:select_by_index=>"(?:#{VOCAB[:window][:index]})\=",
+	:select_by_label=>"(?:#{VOCAB[:window][:label]})\=",
 	#~CIGUI branch
 	:cigui_start=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+",
 	:cigui_finish=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:finish]})+)+",
@@ -722,10 +722,7 @@ module CIGUI
 				elsif string.match(/#{CMB[:select_by_label]}/)
 					p 'no way out'
 				end
-				@last_action = @selection
-			#rescue
-				# do nothing, maybe?
-				#p 'some error'				
+				@last_action = @selection			
 			end
 		end
 	end#--------------------end of '__swindow?'-------------------------
@@ -825,10 +822,10 @@ module CIGUI
 			begin
 				if string.match(/#{CMB[:select_by_index]}/)
 					index=dec(string,CMB[:select_by_index])
-					if (0...@windows.size).include? index
+					if index.between?(0,@windows.size)
 						# Проверка удаления для попавшихся объектов класса Nil
 						# в результате ошибки создания окна
-						@windows[index].dispose if @windows[index].method_defined? :dispose
+						@windows[index].dispose if @windows[index].methods.include? :dispose
 						@windows.delete_at(index)
 					else
 						raise "#{CIGUIERR::WrongWindowIndex}"+
@@ -916,7 +913,8 @@ end# END OF CIGUI MODULE
 # test zone
 begin
 	$do=[
-		'create window'
+		'create window',
+		'dispose window index=0'
 	]
 	CIGUI.setup
 	CIGUI.update
