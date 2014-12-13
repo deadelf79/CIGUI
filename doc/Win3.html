@@ -61,7 +61,7 @@
   <h3>Parent</h3>
 
   
-  <p class="link">Window
+  <p class="link">Window_Selectable
   
 </div>
 
@@ -77,11 +77,19 @@
     
     <li ><a href="#method-i-add_item">#add_item</a>
     
+    <li ><a href="#method-i-close">#close</a>
+    
     <li class="calls-super" ><a href="#method-i-dispose">#dispose</a>
     
     <li ><a href="#method-i-draw_items">#draw_items</a>
     
     <li ><a href="#method-i-enable_item">#enable_item</a>
+    
+    <li ><a href="#method-i-inspect">#inspect</a>
+    
+    <li ><a href="#method-i-open">#open</a>
+    
+    <li ><a href="#method-i-refresh">#refresh</a>
     
     <li ><a href="#method-i-resize">#resize</a>
     
@@ -144,6 +152,19 @@
         <div class="method-description">
         
         <p>Height of Window</p>
+        
+        </div>
+      </div>
+      
+      <div id="attribute-i-label" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">label</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        <p>Label of window</p>
         
         </div>
       </div>
@@ -237,7 +258,7 @@
         <div class="method-description">
           
           <p>Создает окно. По умолчанию задается размер 192х64 и помещается в координаты
-0,0</p>
+0, 0</p>
           
           
             <div class="method-calls-super">
@@ -248,7 +269,7 @@
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 102</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 104</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">x</span>=<span class="ruby-value">0</span>,<span class="ruby-identifier">y</span>=<span class="ruby-value">0</span>,<span class="ruby-identifier">w</span>=<span class="ruby-value">192</span>,<span class="ruby-identifier">h</span>=<span class="ruby-value">64</span>)
         <span class="ruby-keyword">super</span> <span class="ruby-value">0</span>,<span class="ruby-value">0</span>,<span class="ruby-value">192</span>,<span class="ruby-value">64</span>
         <span class="ruby-ivar">@items</span>=[]
@@ -300,7 +321,7 @@
 
           
           <div class="method-source-code" id="add_item-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 115</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 127</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">add_item</span>(<span class="ruby-identifier">command</span>,<span class="ruby-identifier">procname</span>,<span class="ruby-identifier">enabled</span>=<span class="ruby-keyword">true</span>)
         <span class="ruby-ivar">@items</span><span class="ruby-operator">+=</span>[
                 {
@@ -311,6 +332,39 @@
                         <span class="ruby-value">:y=</span><span class="ruby-operator">&gt;</span><span class="ruby-value">:auto</span>
                 }
         ]
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-close" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">close</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Close window</p>
+          
+          
+
+          
+          <div class="method-source-code" id="close-source">
+            <pre><span class="ruby-comment"># File cigui.rb, line 287</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">close</span>
+        <span class="ruby-ivar">@openness</span>=<span class="ruby-value">0</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -346,7 +400,7 @@
 
           
           <div class="method-source-code" id="dispose-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 176</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 189</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">dispose</span>
         <span class="ruby-keyword">super</span>
 <span class="ruby-keyword">end</span></pre>
@@ -383,7 +437,7 @@
 
           
           <div class="method-source-code" id="draw_items-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 149</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 162</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">draw_items</span>(<span class="ruby-identifier">ignore_disabled</span>=<span class="ruby-keyword">false</span>)
         
 <span class="ruby-keyword">end</span></pre>
@@ -411,15 +465,18 @@
         <div class="method-description">
           
           <p>Включает кнопку.<br> В параметр commandORindex помещается либо строковое
-значение, являющееся названием кнопки, либо целое число - индекс кнопки</p>
+значение, являющееся названием кнопки, либо целое число - индекс кнопки    
+во внутреннем массиве <em>items</em>.</p>
 
-<p>во внутреннем массиве <em>items</em>.</p>
+<pre class="ruby"><span class="ruby-identifier">enable_item</span>(<span class="ruby-value">0</span>) <span class="ruby-comment"># =&gt; @items[0].enabled set &#39;true&#39;</span>
+<span class="ruby-identifier">enable_item</span>(<span class="ruby-string">&#39;New game&#39;</span>) <span class="ruby-comment"># =&gt; @items[0].enabled set &#39;true&#39;</span>
+</pre>
           
           
 
           
           <div class="method-source-code" id="enable_item-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 132</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 145</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">enable_item</span>(<span class="ruby-identifier">commandORindex</span>)
         <span class="ruby-keyword">case</span> <span class="ruby-identifier">commandORindex</span>.<span class="ruby-identifier">class</span>
         <span class="ruby-keyword">when</span> <span class="ruby-constant">Integer</span>, <span class="ruby-constant">Float</span>
@@ -429,6 +486,108 @@
         <span class="ruby-keyword">else</span>
                 <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{string}&quot;</span>
         <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-inspect" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">inspect</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Возврашает полную информацию обо всех параметрах в формате строки</p>
+          
+          
+
+          
+          <div class="method-source-code" id="inspect-source">
+            <pre><span class="ruby-comment"># File cigui.rb, line 196</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">inspect</span>
+        <span class="ruby-node">&quot;&lt;#{self.class}: @back_opacity=#{back_opacity}, @height=#{height}, @opacity=#{opacity},&quot;</span><span class="ruby-operator">+</span>
+        <span class="ruby-node">&quot; @speed=#{@speed}, @width=#{width}, @x=#{x}, @y=#{y}&gt;&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-open" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">open</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Open window</p>
+          
+          
+
+          
+          <div class="method-source-code" id="open-source">
+            <pre><span class="ruby-comment"># File cigui.rb, line 292</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">open</span>
+        <span class="ruby-ivar">@openness</span>=<span class="ruby-value">0</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-refresh" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">refresh</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Обновляет окно. В отличие от <a
+href="Win3.html#method-i-update">update</a>, влияет только на содержимое
+окна (производит повторную отрисовку).</p>
+          
+          
+
+          
+          <div class="method-source-code" id="refresh-source">
+            <pre><span class="ruby-comment"># File cigui.rb, line 116</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">refresh</span>
+        <span class="ruby-keyword">self</span>.<span class="ruby-identifier">contents</span>.<span class="ruby-identifier">clear</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -461,7 +620,7 @@
 
           
           <div class="method-source-code" id="resize-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 158</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 171</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">resize</span>(<span class="ruby-identifier">new_width</span>, <span class="ruby-identifier">new_height</span>)
         <span class="ruby-identifier">temp</span>=<span class="ruby-constant">Sprite</span>.<span class="ruby-identifier">new</span>
         <span class="ruby-identifier">temp</span>.<span class="ruby-identifier">bitmap</span>=<span class="ruby-keyword">self</span>.<span class="ruby-identifier">contents</span>
@@ -500,13 +659,14 @@
 
         <div class="method-description">
           
-          
+          <p>Обновляет окно. Влияет только на положение курсора (параметр cursor_rect),
+прозрачность и цветовой тон окна.</p>
           
           
 
           
           <div class="method-source-code" id="update-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 216</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 112</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">update</span>;<span class="ruby-keyword">end</span></pre>
           </div>
           
