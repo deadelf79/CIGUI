@@ -82,8 +82,6 @@
     
     <li ><a href="#method-i-localize_ru">#localize_ru</a>
     
-    <li ><a href="#method-i-original_setup">#original_setup</a>
-    
     <li ><a href="#method-i-rectanglular">#rectanglular</a>
     
     <li ><a href="#method-i-setup">#setup</a>
@@ -123,6 +121,15 @@
 вызовите метод <a href="CIGUI.html#method-i-setup">#setup</a>.<br> Для
 исполнения команд вызовите метод <a
 href="CIGUI.html#method-i-update">#update</a>.<br></p>
+
+<p>Адд-он русификации для <a href="CIGUI.html">CIGUI</a> Требует обязательной
+установки оригинального скрипта. Дополняет текущий словарь <a
+href="CIGUI.html#VOCAB">VOCAB</a> словами на русском языке: можно
+использовать как русские, так и английские версии слов.<br> <strong>Данные
+команды работают аналогично, например:</strong></p>
+
+<pre>create window
+создать окно</pre>
 
   </section>
 
@@ -584,17 +591,32 @@ href="CIGUI.html#method-i-update">update</a>.</p>
 
         <div class="method-description">
           
-          <p>Смотри файл localize.rb<br> Метод, который добавляет русский перевод команд
-Cigui, дополняя текущий массив <a href="CIGUI.html#VOCAB">VOCAB</a></p>
+          <p>Смотри файл <strong>localize.rb</strong><br> Метод, который добавляет
+русский перевод команд Cigui, дополняя текущий массив <a
+href="CIGUI.html#VOCAB">VOCAB</a></p>
           
           
 
           
           <div class="method-source-code" id="localize_ru-source">
-            <pre><span class="ruby-comment"># File localize.rb, line 5</span>
+            <pre><span class="ruby-comment"># File localize.rb, line 14</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">localize_ru</span>
-        <span class="ruby-identifier">original_VOCAB</span><span class="ruby-operator">||=</span><span class="ruby-constant">VOCAB</span>
-        <span class="ruby-identifier">puts</span> <span class="ruby-identifier">original_VOCAB</span>
+        <span class="ruby-ivar">@original_VOCAB</span><span class="ruby-operator">||=</span><span class="ruby-constant">VOCAB</span>
+        <span class="ruby-comment">#--COMMON unbranch</span>
+        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:please</span>]   = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:please</span>]<span class="ruby-operator">+</span><span class="ruby-string">&#39;|п[оа]жал[у]?[й]?ста&#39;</span>
+        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:last</span>]     = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:last</span>]  <span class="ruby-operator">+</span><span class="ruby-string">&#39;|последн(?:ее|юю|яя)|это&#39;</span>
+        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:select</span>]   = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:select</span>]<span class="ruby-operator">+</span><span class="ruby-string">&#39;|выбор&#39;</span>
+        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:true</span>]     = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:true</span>]  <span class="ruby-operator">+</span><span class="ruby-string">&#39;|истин[н]*[аоея]|вкл(?:юч(?:ен[ноаыяе]*|ит[ь]?)?)&#39;</span>
+        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:false</span>]    = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:false</span>] <span class="ruby-operator">+</span><span class="ruby-string">&#39;|ло(?:ж|ш)[ъь]*||выкл(?:юч(?:ен[ноаыяе]*|ит[ь]?)?)&#39;</span>
+        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:equal</span>]    = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:equal</span>] <span class="ruby-operator">+</span><span class="ruby-string">&#39;&#39;</span>
+        <span class="ruby-comment">#--CIGUI branch</span>
+        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:main</span>]    = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:main</span>] <span class="ruby-operator">+</span><span class="ruby-string">&#39;|сигуи&#39;</span>
+        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:start</span>]   = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:start</span>]<span class="ruby-operator">+</span><span class="ruby-string">&#39;|запус(?:ти(?:т[ь]?)?|к)&#39;</span>
+        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:finish</span>]  = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:equal</span>]<span class="ruby-operator">+</span><span class="ruby-string">&#39;|заверш(?:и(?:т[ь]?)?|ен[иемя]*)?&#39;</span>
+        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:flush</span>]   = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:equal</span>]<span class="ruby-operator">+</span><span class="ruby-string">&#39;|очист(?:к[аойеу]|[ить])&#39;</span>
+        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:restart</span>] = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:equal</span>]<span class="ruby-operator">+</span><span class="ruby-string">&#39;|перезапус(?:ти(?:ть)?|к)|ре[\s_-]*старт|ре[\s_-]*сет&#39;</span>
+        <span class="ruby-comment">#--WINDOW branch</span>
+        
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -602,36 +624,6 @@ Cigui, дополняя текущий массив <a href="CIGUI.html#VOCAB">V
 
         
 
-        
-      </div>
-
-    
-      <div id="method-i-original_setup" class="method-detail method-alias">
-        
-        <div class="method-heading">
-          <span class="method-name">original_setup</span><span
-            class="method-args">()</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p>Смотри файл localize.rb<br> Вносит вызов метода <a
-href="CIGUI.html#method-i-localize_ru">#localize_ru</a> в инициализацию
-модуля</p>
-          
-          
-
-          
-        </div>
-
-        
-
-        
-        <div class="aliases">
-          Alias for: <a href="CIGUI.html#method-i-setup">setup</a>
-        </div>
         
       </div>
 
@@ -683,7 +675,12 @@ href="CIGUI.html#method-i-localize_ru">#localize_ru</a> в инициализа�
         <div class="method-description">
           
           <p>Требуется выполнить этот метод перед началом работы с <a
-href="CIGUI.html">CIGUI</a>.<br> Пример:</p>
+href="CIGUI.html">CIGUI</a>.<br> Инициализирует массив $do, если он еще не
+был создан. В этот массив пользователь подает команды для исполнения при
+следующем запуске метода <a
+href="CIGUI.html#method-i-update">update</a>.<br> Если даже массив $do был
+инициализирован ранее, то исполняет команду <em>cigui start</em> прежде
+всего. <strong>Пример:</strong></p>
 
 <pre>begin
         CIGUI.setup
@@ -691,12 +688,6 @@ href="CIGUI.html">CIGUI</a>.<br> Пример:</p>
         CIGUI.update
         #~~~ some other code fragment ~~~
 end</pre>
-
-<p>Инициализирует массив $do, если он еще не был создан. В этот массив
-пользователь подает команды для исполнения при следующем запуске метода <a
-href="CIGUI.html#method-i-update">update</a>.<br> Если даже массив $do был
-инициализирован ранее, то исполняет команду <em>cigui start</em> прежде
-всего.</p>
           
           
 
@@ -712,10 +703,6 @@ href="CIGUI.html#method-i-update">update</a>.<br> Если даже массив
           
         </div>
 
-        
-        <div class="aliases">
-          Also aliased as: <a href="CIGUI.html#method-i-original_setup">original_setup</a>
-        </div>
         
 
         
@@ -882,7 +869,8 @@ href="CIGUI.html#method-i-update_by_user">update_by_user</a>, который м�
           
           <p>Метод обработки текста, созданный для пользовательских модификаций, не
 влияющих на работу встроенных обработчиков.<br> Используйте <em>alias</em>
-этого метода для добавления обработки собственных команд.<br> Пример:</p>
+этого метода для добавления обработки собственных команд.<br>
+<strong>Пример:</strong></p>
 
 <pre class="ruby"><span class="ruby-keyword">alias</span> <span class="ruby-identifier">my_update</span> <span class="ruby-identifier">update_by_user</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">update_by_user</span>

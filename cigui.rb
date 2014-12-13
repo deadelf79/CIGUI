@@ -340,18 +340,18 @@ module CIGUI
   #
   VOCAB={
 	#--COMMON unbranch
-	:please=>'please|п[оа]жал[у]?[й]?ста',
-	:last=>'last|this|последн(?:ее|юю|яя)|это',
+	:please=>'please',
+	:last=>'last|this',
 	:select=>'select', # by index or label
-	:true=>'true|T|1', # for active||visible
-	:false=>'false|nil|0',
+	:true=>'true|1', # for active||visible
+	:false=>'false|0',
 	:equal=>'[\s]*[\=]?[\s]*',
 	#--CIGUI branch
     :cigui=>{
-      :main=>'cigui|сигуи',
-      :start=>'start|запус(?:ти(?:ть)?|к)',
-      :finish=>'finish|завершить',
-      :flush=>'flush|очист(?:к[аойеу]|[ить])',
+      :main=>'cigui',
+      :start=>'start',
+      :finish=>'finish',
+      :flush=>'flush',
 	  :restart=>'restart|resetup',
     },
 	#--EVENT branch
@@ -589,17 +589,17 @@ module CIGUI
 	attr_reader :sprites
 	
     # Требуется выполнить этот метод перед началом работы с CIGUI.<br>
-	# Пример:
+	# Инициализирует массив $do, если он еще не был создан. В этот массив пользователь подает
+	# команды для исполнения при следующем запуске метода #update.<br>
+	# Если даже массив $do был инициализирован ранее,
+	# то исполняет команду <i>cigui start</i> прежде всего.
+	# <b>Пример:</b>
 	#	begin
 	#		CIGUI.setup
 	#		#~~~ some code fragment ~~~
 	#		CIGUI.update
 	#		#~~~ some other code fragment ~~~
 	#	end
-    # Инициализирует массив $do, если он еще не был создан. В этот массив пользователь подает
-	# команды для исполнения при следующем запуске метода #update.<br>
-	# Если даже массив $do был инициализирован ранее,
-	# то исполняет команду <i>cigui start</i> прежде всего.
 	#
 	def setup
 	  $do||=[]
@@ -644,7 +644,7 @@ module CIGUI
 	# Метод обработки текста, созданный для пользовательских модификаций, не влияющих на работу
 	# встроенных обработчиков.<br>
 	# Используйте <i>alias</i> этого метода для добавления обработки собственных команд.<br>
-	# Пример:
+	# <b>Пример:</b>
 	#	alias my_update update_by_user
 	#	def update_by_user
 	#		# add new word
