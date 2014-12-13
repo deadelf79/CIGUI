@@ -199,7 +199,7 @@
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 217</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 222</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">x</span>,<span class="ruby-identifier">y</span>,<span class="ruby-identifier">width</span>,<span class="ruby-identifier">height</span>)
         <span class="ruby-ivar">@x</span>,<span class="ruby-ivar">@y</span>,<span class="ruby-ivar">@width</span>,<span class="ruby-ivar">@height</span> = <span class="ruby-identifier">x</span>,<span class="ruby-identifier">y</span>,<span class="ruby-identifier">width</span>,<span class="ruby-identifier">height</span>
 <span class="ruby-keyword">end</span></pre>
@@ -240,7 +240,7 @@
 
           
           <div class="method-source-code" id="empty-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 239</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 244</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">empty</span>
         <span class="ruby-ivar">@x</span>,<span class="ruby-ivar">@y</span>,<span class="ruby-ivar">@width</span>,<span class="ruby-ivar">@height</span> = <span class="ruby-value">0</span>, <span class="ruby-value">0</span>, <span class="ruby-value">0</span>, <span class="ruby-value">0</span>
 <span class="ruby-keyword">end</span></pre>
@@ -283,12 +283,12 @@ set(0,0,192,64)</pre>
 
           
           <div class="method-source-code" id="set-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 228</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 233</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">set</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
         <span class="ruby-keyword">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">1</span>
-                <span class="ruby-ivar">@x</span>,<span class="ruby-ivar">@y</span>,<span class="ruby-ivar">@width</span>,<span class="ruby-ivar">@height</span> = <span class="ruby-identifier">rect</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">x</span>,<span class="ruby-identifier">rect</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">y</span>,<span class="ruby-identifier">rect</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">width</span>,<span class="ruby-identifier">rect</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">height</span>
+                <span class="ruby-ivar">@x</span>,<span class="ruby-ivar">@y</span>,<span class="ruby-ivar">@width</span>,<span class="ruby-ivar">@height</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">x</span>, <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">y</span>, <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">width</span>, <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">height</span>
         <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">4</span>
-                <span class="ruby-ivar">@x</span>,<span class="ruby-ivar">@y</span>,<span class="ruby-ivar">@width</span>,<span class="ruby-ivar">@height</span> = <span class="ruby-identifier">rect</span>[<span class="ruby-value">0</span>],<span class="ruby-identifier">rect</span>[<span class="ruby-value">1</span>],<span class="ruby-identifier">rect</span>[<span class="ruby-value">2</span>],<span class="ruby-identifier">rect</span>[<span class="ruby-value">3</span>]
+                <span class="ruby-ivar">@x</span>,<span class="ruby-ivar">@y</span>,<span class="ruby-ivar">@width</span>,<span class="ruby-ivar">@height</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>], <span class="ruby-identifier">args</span>[<span class="ruby-value">1</span>], <span class="ruby-identifier">args</span>[<span class="ruby-value">2</span>], <span class="ruby-identifier">args</span>[<span class="ruby-value">3</span>]
         <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span>.<span class="ruby-identifier">between?</span>(<span class="ruby-value">2</span>,<span class="ruby-value">3</span>)
                 <span class="ruby-comment"># throw error, but i don&#39;t remember which error O_o</span>
         <span class="ruby-keyword">end</span>

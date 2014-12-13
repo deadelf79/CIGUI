@@ -117,6 +117,11 @@ if RUBY_VERSION.to_f>=1.9
 				self.contents.clear
 			end
 			
+			# 
+			def add_text
+				
+			end
+			
 			# Этот метод добавляет команду во внутренний массив <i>items</i>.
 			# Команды используются для отображения кнопок.<br>
 			# * command - отображаемый текст кнопки
@@ -227,9 +232,9 @@ if RUBY_VERSION.to_f>=1.9
 			#	set(0,0,192,64)
 			def set(*args)
 				if args.size==1
-					@x,@y,@width,@height = rect[0].x,rect[0].y,rect[0].width,rect[0].height
+					@x,@y,@width,@height = args[0].x, args[0].y, args[0].width, args[0].height
 				elsif args.size==4
-					@x,@y,@width,@height = rect[0],rect[1],rect[2],rect[3]
+					@x,@y,@width,@height = args[0], args[1], args[2], args[3]
 				elsif args.size.between?(2,3)
 					# throw error, but i don't remember which error O_o
 				end
@@ -268,7 +273,7 @@ if RUBY_VERSION.to_f>=1.9
 				@x,@y,@width,@height = 0, 0, 192, 64
 				@speed=0
 				@opacity, @back_opacity, @contents_opacity = 255, 255, 255
-				@z, @tone, @openness = 100, 0, 255
+				@z, @tone, @openness = 100, Rect.new(0,0,0,0), 255
 				@active, @label = true, nil
 				@windowskin='window'
 				@items=[]
@@ -313,6 +318,190 @@ if RUBY_VERSION.to_f>=1.9
 			# Удаляет спрайт
 			def dispose;end
 		end
+		
+		#
+		class Color
+			def initialize(r,g,b,a=255.0)
+				@r,@g,@b,@a = r.to_f,g.to_f,b.to_f,a.to_f
+				_normalize
+			end
+			
+			def red
+				@r
+			end
+			
+			def green
+				@r
+			end
+			
+			def blue
+				@r
+			end
+			
+			def alpha
+				@r
+			end
+			
+			def set(*args)
+				if args.size==1
+					@x,@y,@width,@height = args[0].red,args[0].green,args[0].blue,args[0].alpha
+				elsif args.size==4
+					@x,@y,@width,@height = args[0],args[1],args[2],args[3]
+				elsif args.size==4
+					@x,@y,@width,@height = args[0],args[1],args[2],255.0
+				elsif args.size==2
+					# throw error i like in Rect class
+				end
+			end
+			
+			private
+			
+			def _normalize
+				@r=0 if @r<0
+				@r=255 if @r>255
+				@g=0 if @g<0
+				@g=255 if @g>255
+				@b=0 if @b<0
+				@b=255 if @b>255
+				@a=0 if @a<0
+				@a=255 if @a>255
+			end
+		end
+	end
+end
+
+# 
+class Text
+	# Название файла изображения, из которого загружаются данные для отрисовки окон.<br>
+	# По умолчанию задан путь 'Graphics\System\Window.png'.
+	attr_accessor :windowskin
+	
+	# Массив цветов для отрисовки текста, по умолчанию содержит 32 цвета
+	attr_accessor :colorset
+	
+	# Переменная класса Color, содержит цвет обводки текста.
+	attr_accessor :out_color
+	
+	# Булевая переменная (принимает только значения true или false),
+	# которая отвечает за отрисовку обводки текста. По умолчанию,
+	# обводка включена (outline=true)
+	attr_accessor :outline
+	
+	# Булевая переменная (принимает только значения true или false),
+	# которая отвечает за отрисовку тени от текста. По умолчанию,
+	# тень выключена (shadow=false)
+	attr_accessor :shadow
+	
+	# Устанавливает жирность шрифта для <b>всего</b> текста.<br>
+	# Игнорирует тег < b > в тексте
+	attr_accessor :bold
+	
+	# Устанавливает наклон шрифта (курсив) для <b>всего</b> текста.<br>
+	# Игнорирует тег < i > в тексте
+	attr_accessor :italic
+	
+	# Устанавливает подчеркивание шрифта для <b>всего</b> текста.<br>
+	# Игнорирует тег < u > в тексте
+	attr_accessor :underline
+	
+	# Гарнитура (название) шрифта. По умолчанию - Tahoma
+	attr_accessor :font
+	
+	# Размер шрифта. По умолчанию - 20
+	attr_accessor :size
+	
+	# Строка текста, которая будет отображена при использовании
+	# экземпляра класса.
+	attr_accessor :string
+	
+	# Создает экземпляр класса.<br>
+	# <b>Параметры:</b>
+	# * string - строка текста
+	# * font_family - массив названий (гарнитур) шрифта, по умолчанию
+	# имеет только "Tahoma".
+	# При выборе гарнитуры шрифта, убедитесь в том, что символы, используемые
+	# в тексте, корректно отображаются при использовании данного шрифта.
+	# * font_size - размер шрифта, по умолчанию равен 20 пунктам
+	# * bold - <b>жирный шрифт</b> (по умолчанию - false)
+	# * italic - <i>курсив</i> (по умолчанию - false)
+	# * underline - <u>подчеркнутый шрифт</u> (по умолчанию - false)
+	def initialize(string, font_family=['Tahoma'], font_size=20, bold=false, italic=false, underline=false)
+		@string=string
+		@font=font_family
+		@size=font_size
+		@bold, @italic, @underline = bold, italic, underline
+		@colorset=[]
+		@out_color=Color.new(0,0,0,128)
+		@shadow, @outline = false, true
+		@windowskin='Graphics\\System\\Window.png'
+		default_colorset
+	end
+	
+	# Восстанавливает первоначальные значения цвета. По возможности, эти данные загружаются
+	# из файла 
+	def default_colorset
+		@colorset.clear
+		if FileTest.exist?(@windowskin)
+			bitmap=Bitmap.new(@windowskin)
+			for y in 0..3
+				for x in 0..7
+					@colorset<<bitmap.get_pixel(x*8+64,y*8+96)
+				end
+			end
+			bitmap.dispose
+		else
+			# Colors for this set was taken from <RTP path>/Graphics/Window.png file,
+			# not just from the sky
+			@colorset = [
+				# First row
+				Color.new(255,255,255), # 1
+				Color.new(32, 160,214), # 2
+				Color.new(255,120, 76), # 3
+				Color.new(102,204, 64), # 4
+				Color.new(153,204,255), # 5
+				Color.new(204,192,255), # 6
+				Color.new(255,255,160), # 7
+				Color.new(128,128,128), # 8
+				# Second row
+				Color.new(192,192,192), # 1
+				Color.new(32, 128,204), # 2
+				Color.new(255, 56, 16), # 3
+				Color.new(  0,160, 16), # 4
+				Color.new( 62,154,222), # 5
+				Color.new(160,152,255), # 6
+				Color.new(255,204, 32), # 7
+				Color.new(  0,  0,  0), # 8
+				# Third row
+				Color.new(132,170,255), # 1
+				Color.new(255,255, 64), # 2
+				Color.new(255,120, 76), # 3
+				Color.new( 32, 32, 64), # 4
+				Color.new(224,128, 64), # 5
+				Color.new(240,192, 64), # 6
+				Color.new( 64,128,192), # 7
+				Color.new( 64,192,240), # 8
+				# Fourth row
+				Color.new(128,255,128), # 1
+				Color.new(192,128,128), # 2
+				Color.new(128,128,255), # 3
+				Color.new(255,128,255), # 4
+				Color.new(  0,160, 64), # 5
+				Color.new(  0,224, 96), # 6
+				Color.new(160, 96,224), # 7
+				Color.new(192,128,255)  # 8
+			]
+		end
+	end
+	
+	# Обнуляет все данные, кроме colorset
+	def empty
+		@string=''
+		@font=[]
+		@size=0
+		@bold, @italic, @underline = false, false, false
+		@out_color=Color.new(0,0,0,128)
+		@shadow, @outline = false, false
+		@windowskin=''
 	end
 end
 
@@ -1049,7 +1238,7 @@ module CIGUI
 	# this window set skin=[STR]
 	# this window set openness=DEC
 	# this window set cursor rect=[RECT]
-	# this window set tone=DEC
+	# this window set tone=[RECT]
 	def __wset?(string)
 		matches=string.match(/#{CMB[:window_set]}/)
 		# Only move
@@ -1062,7 +1251,7 @@ module CIGUI
 				new_h = string[/#{CMB[:window_h_equal]}/] ? dec(string,CMB[:window_h_equal]) : @windows[@selection[:index]].height
 				new_a = string[/#{CMB[:window_a_equal]}/] ? dec(string,CMB[:window_a_equal]) : @windows[@selection[:index]].opacity
 				new_ba = string[/#{CMB[:window_ba_equal]}/] ? dec(string,CMB[:window_ba_equal]) : @windows[@selection[:index]].back_opacity
-				new_active = string[/#{CMB[:window_active_equal]}/] ? boolean(string,CMB[:window_active_equal]) : @windows[@selection[:index]].active
+				new_act = string[/#{CMB[:window_active_equal]}/] ? boolean(string,CMB[:window_active_equal]) : @windows[@selection[:index]].active
 				new_skin = string[/#{CMB[:window_skin_equal]}/] ? substr(string,CMB[:window_skin_equal]) : @windows[@selection[:index]].windowskin
 				new_open = string[/#{CMB[:window_openness_equal]}/] ? dec(string,CMB[:window_openness_equal]) : @windows[@selection[:index]].openness
 				# Change it
@@ -1072,7 +1261,7 @@ module CIGUI
 					@windows[@selection[:index]].resize(new_w,new_h)
 					@windows[@selection[:index]].opacity = new_a
 					@windows[@selection[:index]].back_opacity = new_ba
-					@windows[@selection[:index]].active = new_active
+					@windows[@selection[:index]].active = new_act
 					@windows[@selection[:index]].windowskin = new_skin
 					@windows[@selection[:index]].openness = new_open
 					@last_action = @windows[@selection[:index]]
@@ -1091,5 +1280,4 @@ begin
 	]
 	CIGUI.setup
 	CIGUI.update
-	puts CIGUI.rect('array=[1;2;3;4]')
 end
