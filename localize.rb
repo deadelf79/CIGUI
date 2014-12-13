@@ -6,6 +6,7 @@
 #	create window
 #	создать окно
 
+#
 module CIGUI
 	class << self
 		# Смотри файл <b>localize.rb</b><br>
