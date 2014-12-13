@@ -735,19 +735,42 @@ module CIGUI
 		return false
 	end
 	
-	# Данный метод позволяет найти в строке массив из трех чисел и вернуть его
-	# для дальнейшей обработки.<br>
-	# <b>Форматы строк</b>:
-	#	[1,2,3]
-	#	(1:2:3)
-	#	1,2,3;
-	def triangular(source_string)
-	
-	end
-	
+	# Возвращает массив из четырех значений для передачи в качестве параметра
+	# в объекты класса Rect. Массив в строке должен быть помещен в квадратные скобки,
+	# а значения в нем должны разделяться точкой с запятой.<br>
+	# <b>Пример:</b>
+	#	rect('[1;2,0;3.5;4.0_5]') # => [ 1, 2.0, 3.5, 4.05 ]
 	#
-	def rectanglular(source_string)
-	
+	def rect(source_string)
+		read=''
+		start=false
+		arr=[]
+		for index in 0...source_string.size
+			char=source_string[index]
+			if char=='['
+				start=true
+				next
+			end
+			if start
+				if char!=';'
+					if char!=']'
+						read+=char
+					else
+						arr<<read
+				break
+					end
+				else
+					arr<<read
+					read=''
+				end
+			end
+		end
+		arr.size=4
+		for index in 0...arr.size
+			arr[index]=dec(arr[index]) if arr[index].is_a? String
+			arr[index]=0 if arr[index].is_a? NilClass
+		end
+		return arr
 	end
 	
 	# Данный метод работает по аналогии с #decimal, но производит поиск в строке
@@ -1039,7 +1062,7 @@ module CIGUI
 				new_h = string[/#{CMB[:window_h_equal]}/] ? dec(string,CMB[:window_h_equal]) : @windows[@selection[:index]].height
 				new_a = string[/#{CMB[:window_a_equal]}/] ? dec(string,CMB[:window_a_equal]) : @windows[@selection[:index]].opacity
 				new_ba = string[/#{CMB[:window_ba_equal]}/] ? dec(string,CMB[:window_ba_equal]) : @windows[@selection[:index]].back_opacity
-				new_active = string[/#{CMB[:window_active_equal]}/] ? bool(string,CMB[:window_active_equal]) : @windows[@selection[:index]].active
+				new_active = string[/#{CMB[:window_active_equal]}/] ? boolean(string,CMB[:window_active_equal]) : @windows[@selection[:index]].active
 				new_skin = string[/#{CMB[:window_skin_equal]}/] ? substr(string,CMB[:window_skin_equal]) : @windows[@selection[:index]].windowskin
 				new_open = string[/#{CMB[:window_openness_equal]}/] ? dec(string,CMB[:window_openness_equal]) : @windows[@selection[:index]].openness
 				# Change it
@@ -1068,6 +1091,5 @@ begin
 	]
 	CIGUI.setup
 	CIGUI.update
-	puts CIGUI.last
-	puts CIGUI.boolean('make some true')
+	puts CIGUI.rect('array=[1;2;3;4]')
 end
