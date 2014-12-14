@@ -780,7 +780,7 @@ module CIGUI
 	:window_openness_equal=>"(?:#{VOCAB[:window][:openness]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_activate=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:activate]})+)|"+
 		"(?:(?:#{VOCAB[:window][:activate]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+)",
-	:window_activate=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:deactivate]})+)|"+
+	:window_deactivate=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:deactivate]})+)|"+
 		"(?:(?:#{VOCAB[:window][:deactivate]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+)",
   }
   
