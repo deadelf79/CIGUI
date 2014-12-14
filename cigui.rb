@@ -279,6 +279,8 @@ if RUBY_VERSION.to_f>=1.9
 			attr_accessor :back_opacity
 			# Label of window
 			attr_reader :label
+			# If window is active then it updates
+			attr_accessor :active
 			
 			# Create window
 			def initialize
@@ -682,8 +684,8 @@ module CIGUI
 		:move=>'move',
 		:resize=>'resize',
 		:set=>'set',
-		:x=>'(?:x|х|икс)',
-		:y=>'(?:y|у|игрек)',
+		:x=>'x|х|икс',
+		:y=>'y|у|игрек',
 		:width=>'width',
 		:height=>'height',
 	},
@@ -718,10 +720,11 @@ module CIGUI
 		:tone=>'tone',
 		:width=>'width',
 		:height=>'height',
-		:label=>'label|link',
+		:link=>'link',
+		:label=>'label',
 		:index=>'index',
 			:indexed=>'indexed',
-		:labeled=>'labeled|linked',
+		:labeled=>'labeled',
 			:as=>'as',
 		:opacity=>'opacity',
 			:back=>'back', # to use as - set back opacity
@@ -775,6 +778,10 @@ module CIGUI
 	:window_active_equal=>"(?:#{VOCAB[:window][:active]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_skin_equal=>"(?:#{VOCAB[:window][:skin]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_openness_equal=>"(?:#{VOCAB[:window][:openness]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+	:window_activate=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:activate]})+)|"+
+		"(?:(?:#{VOCAB[:window][:activate]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+)",
+	:window_activate=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:deactivate]})+)|"+
+		"(?:(?:#{VOCAB[:window][:deactivate]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+)",
   }
   
   # 
@@ -1073,17 +1080,15 @@ module CIGUI
 		matches=string.match(/#{CMB[:select_window]}/)
 		# Only match
 		if matches
-			begin
-				# Read index or label
-				if string.match(/#{CMB[:select_by_index]}/)
-					index = dec(string,CMB[:select_by_index])
-					@selection[:type]=:window
-					@selection[:index]=index
-				elsif string.match(/#{CMB[:select_by_label]}/)
-					p 'no way out'
-				end
-				@last_action = @selection			
+			# Read index or label
+			if string.match(/#{CMB[:select_by_index]}/)
+				index = dec(string,CMB[:select_by_index])
+				@selection[:type]=:window
+				@selection[:index]=index
+			elsif string.match(/#{CMB[:select_by_label]}/)
+				p 'no way out'
 			end
+			@last_action = @selection
 		end
 	end#--------------------end of '__swindow?'-------------------------
 	
@@ -1132,8 +1137,9 @@ module CIGUI
 		__wmove? string
 		__wresize? string
 		__wset? string
+		__wactivate? string
+		__wdeactivate? string
 		#__wlabel? string
-		#__wopacity? string
 	end
 	
 	# create window (default position and size) 
@@ -1261,6 +1267,7 @@ module CIGUI
 				new_y = string[/#{CMB[:window_y_equal]}/] ? dec(string,CMB[:window_y_equal]) : @windows[@selection[:index]].y
 				new_w = string[/#{CMB[:window_w_equal]}/] ? dec(string,CMB[:window_w_equal]) : @windows[@selection[:index]].width
 				new_h = string[/#{CMB[:window_h_equal]}/] ? dec(string,CMB[:window_h_equal]) : @windows[@selection[:index]].height
+				new_s = string[/#{CMB[:window_s_equal]}/] ? dec(string,CMB[:window_s_equal]) : @windows[@selection[:index]].speed
 				new_a = string[/#{CMB[:window_a_equal]}/] ? dec(string,CMB[:window_a_equal]) : @windows[@selection[:index]].opacity
 				new_ba = string[/#{CMB[:window_ba_equal]}/] ? dec(string,CMB[:window_ba_equal]) : @windows[@selection[:index]].back_opacity
 				new_act = string[/#{CMB[:window_active_equal]}/] ? boolean(string,CMB[:window_active_equal]) : @windows[@selection[:index]].active
@@ -1271,6 +1278,7 @@ module CIGUI
 					@windows[@selection[:index]].x = new_x
 					@windows[@selection[:index]].y = new_y
 					@windows[@selection[:index]].resize(new_w,new_h)
+					@windows[@selection[:index]].speed = new_s
 					@windows[@selection[:index]].opacity = new_a
 					@windows[@selection[:index]].back_opacity = new_ba
 					@windows[@selection[:index]].active = new_act
@@ -1281,6 +1289,26 @@ module CIGUI
 			end
 		end
 	end#--------------------end of '__wset?'-------------------------
+	
+	def __wactivate?(string)
+		matches=string.match(/#{CMB[:window_activate]}/)
+		if matches
+			if @selection[:type]==:window
+				@windows[@selection[:index]].active=true
+				@last_action = @windows[@selection[:index]]
+			end
+		end
+	end#--------------------end of '__wactivate?'-------------------------
+	
+	def __wdeactivate?(string)
+		matches=string.match(/#{CMB[:window_deactivate]}/)
+		if matches
+			if @selection[:type]==:window
+				@windows[@selection[:index]].active=false
+				@last_action = @windows[@selection[:index]]
+			end
+		end
+	end#--------------------end of '__wdeactivate?'-------------------------
   end# END OF CIGUI CLASS
 end# END OF CIGUI MODULE
 
@@ -1288,8 +1316,11 @@ end# END OF CIGUI MODULE
 # delete this when copy to 'Script editor' in RPG Maker
 begin
 	$do=[
-		'create window at x 100'
+		'create window at x 100',
+		'select window by index=0',
+		'deactivate last window'
 	]
 	CIGUI.setup
 	CIGUI.update
+	puts CIGUI.last
 end
