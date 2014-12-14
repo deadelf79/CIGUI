@@ -83,6 +83,8 @@ module CIGUIERR
   end
 end
 
+# Инициирует классы, если версия Ruby выше 1.9.0
+# 
 if RUBY_VERSION.to_f>=1.9
 	begin
 		# Класс окна с реализацией всех возможностей, доступных при помощи Cigui.<br>
@@ -199,10 +201,20 @@ if RUBY_VERSION.to_f>=1.9
 			# в формате строки
 			#
 			def inspect
-				"<#{self.class}: @back_opacity=#{back_opacity}, @height=#{height}, @opacity=#{opacity},"+
-				" @speed=#{@speed}, @width=#{width}, @x=#{x}, @y=#{y}>"
+				"<#{self.class}:"+
+				" @back_opacity=#{back_opacity},"+
+				" @contents_opacity=#{contents_opacity}"+
+				" @height=#{height},"+
+				" @opacity=#{opacity},"+
+				" @speed=#{@speed},"+
+				" @width=#{width},"+
+				" @x=#{x},"+
+				" @y=#{y}>"
 			end
 		end
+	# Если классы инициировать не удалось (ошибка в отсутствии родительских классов),
+	# то в память загружаются исключительно консольные версии (console-only) классов
+	# необходимые для работы с командной строкой.
 	rescue
 		# Класс абстрактного (невизуального) прямоугольника.
 		# Хранит значения о положении и размере прямоугольника
