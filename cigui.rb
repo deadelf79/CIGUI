@@ -122,6 +122,19 @@ if RUBY_VERSION.to_f>=1.9
 				self.contents.clear
 			end
 			
+			# Задает метку окну, проверяя ее на правильность перед этим:
+			# * удаляет круглые и квадратгые скобки
+			# * удаляет кавычки
+			# * заменяет пробелы и табуляцию на символы подчеркивания
+			# * заменяет символы "больше" и "меньше" на символы подчеркивания
+			def label(string)
+				# make right label
+				string.gsub!(/[\[\]\(\)\'\"]/){''}
+				string.gsub!(/[ \t\<\>]/){'_'}
+				# then label it
+				@label = string
+			end
+			
 			# Этот метод позволяет добавить текст в окно.<br>
 			# Принимает в качестве параметра значение класса Text
 			def add_text(text)
@@ -917,7 +930,7 @@ module CIGUI
     def decimal(source_string, std_conversion=true)
 	  fraction(source_string, std_conversion).to_i
 	rescue
-	  raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{string}"
+	  raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{source_string}"
     end
 	
 	# Данный метод работает по аналогии с #decimal, но возвращает рациональное число
@@ -940,7 +953,7 @@ module CIGUI
 	  return source_string.match(match)[1].gsub!(/[\s_]*/){}.to_f if !std_conversion
 	  source_string.match(match)[1].to_f
 	rescue
-	  raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{string}"
+	  raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{source_string}"
 	end
 	
 	# Данный метод производит поиск подстроки, используемой в качестве параметра.<br>
@@ -953,7 +966,7 @@ module CIGUI
 		match='(?:[\[\(\"\'])[\s]*([\w\s _\!\#\$\%\^\&\*]*)[\s]*(?:[\]|"\)\'])'
 		return source_string.match(match)[1]
 	rescue
-		raise "#{CIGUIERR::CantReadString}\n\tcurrent line of $do: #{string}"
+		raise "#{CIGUIERR::CantReadString}\n\tcurrent line of $do: #{source_string}"
 	end
 	
 	# Данный метод производит поиск булевого значения (true или false) в строке и возвращает его.
@@ -1022,7 +1035,7 @@ module CIGUI
 	def dec(source_string, prefix='', postfix='', std_conversion=true)
 	  frac(source_string, prefix, postfix, std_conversion).to_i
 	rescue
-	  raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{string}"
+	  raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{source_string}"
 	end
 	# Данный метод работает по аналогии с #fraction, но производит поиск в строке
 	# с учетом указанных префикса (текста перед числом) и постфикса (после числа).<br>
@@ -1042,7 +1055,7 @@ module CIGUI
 	  return source_string.match(match)[1].gsub!(/[\s_]*/){}.to_f if !std_conversion
 	  source_string.match(match)[1].to_f
 	rescue
-	  raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{string}"
+	  raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{source_string}"
 	end
 	# Данный метод работает по аналогии с #substring, но производит поиск в строке
 	# с учетом указанных префикса (текста перед подстрокой) и постфикса (после подстроки).<br>
@@ -1060,7 +1073,7 @@ module CIGUI
 		match=prefix+'([\w\s _\!\#\$\%\^\&\*]*)'+postfix
 		return source_string.match(match)[1]
 	rescue
-		raise "#{CIGUIERR::CantReadString}\n\tcurrent line of $do: #{string}"
+		raise "#{CIGUIERR::CantReadString}\n\tcurrent line of $do: #{source_string}"
 	end
 	
 	# Возвращает сообщение о последнем произведенном действии
@@ -1093,9 +1106,10 @@ module CIGUI
 		if matches
 			__flush?('cigui flush') if not finished
 			_setup
+			@last_action = 'CIGUI restarted'
+		else
+			raise "#{CIGUIERR::CantInterpretCommand}\n\tcurrent line of $do: #{string}" if @finished
 		end
-		raise "#{CIGUIERR::CantInterpretCommand}\n\tcurrent line of $do: #{string}" if @finished
-		@last_action = 'CIGUI restarted'
 	end
 	
 	# COMMON UNBRANCH
@@ -1175,7 +1189,7 @@ module CIGUI
 	# create window with width=DEC,height=DEC
 	# create window at x=DEC, y=DEC with w=DEC, h=DEC
 	def __wcreate?(string)
-		matches=string.match(/#{CMB[:window_create]}/)
+		matches=string.match(/#{CMB[:window_create]}/i)
 		# Only create
 		if matches
 			begin
@@ -1191,13 +1205,16 @@ module CIGUI
 		end
 		# Read params
 		begin
-			if string.match(/#{CMB[:window_create_atORwith]}/)
+			if string.match(/#{CMB[:window_create_atORwith]}/i)
 				# at OR with: check x and y
-				new_x = string[/#{CMB[:window_x_equal]}/] ? dec(string,CMB[:window_x_equal]) : @windows.last.x
-				new_y = string[/#{CMB[:window_y_equal]}/] ? dec(string,CMB[:window_y_equal]) : @windows.last.y
+				puts string[/#{CMB[:window_x_equal]}/i]
+				puts dec(string,CMB[:window_x_equal])
+				puts '---'
+				new_x = string[/#{CMB[:window_x_equal]}/i] ? dec(string,CMB[:window_x_equal]) : @windows.last.x
+				new_y = string[/#{CMB[:window_y_equal]}/i] ? dec(string,CMB[:window_y_equal]) : @windows.last.y
 				# at OR with: check w and h
-				new_w = string[/#{CMB[:window_w_equal]}/] ? dec(string,CMB[:window_w_equal]) : @windows.last.width
-				new_h = string[/#{CMB[:window_h_equal]}/] ? dec(string,CMB[:window_h_equal]) : @windows.last.height
+				new_w = string[/#{CMB[:window_w_equal]}/i] ? dec(string,CMB[:window_w_equal]) : @windows.last.width
+				new_h = string[/#{CMB[:window_h_equal]}/i] ? dec(string,CMB[:window_h_equal]) : @windows.last.height
 				@windows.last.x = new_x
 				@windows.last.y = new_y
 				@windows.last.width = new_w
@@ -1346,8 +1363,7 @@ end# END OF CIGUI MODULE
 # delete this when copy to 'Script editor' in RPG Maker
 begin
 	$do=[
-		'create window at x 100',
-		'deactivate last window'
+		'CreAte WinDow At X=2_4, Y=3_2'
 	]
 	CIGUI.setup
 	CIGUI.update
