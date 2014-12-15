@@ -97,7 +97,8 @@ if RUBY_VERSION.to_f>=1.9
 			attr_accessor :opacity
 			# Прозрачность фона окна. Может принимать значения от 0 до 255
 			attr_accessor :back_opacity
-			# 
+			# Метка окна. Строка, по которой происходит поиск экземпляра
+			# в массиве CIGUI.windows при выборе окна по метке (select by label)
 			attr_reader :label
 			
 			# Создает окно. По умолчанию задается размер 192х64 и
@@ -105,7 +106,9 @@ if RUBY_VERSION.to_f>=1.9
 			#
 			def initialize(x=0,y=0,w=192,h=64)
 				super 0,0,192,64
+				@label=nil
 				@items=[]
+				@texts=[]
 				@speed=1
 			end
 			
@@ -119,8 +122,9 @@ if RUBY_VERSION.to_f>=1.9
 				self.contents.clear
 			end
 			
-			# 
-			def add_text
+			# Этот метод позволяет добавить текст в окно.<br>
+			# Принимает в качестве параметра значение класса Text
+			def add_text(text)
 				
 			end
 			
