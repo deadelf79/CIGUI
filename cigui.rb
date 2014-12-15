@@ -1056,7 +1056,8 @@ module CIGUI
 	  @sprites = []
 	  @selection = {
 		:type => nil, # may be window or sprite
-		:index => 0  # index in internal array
+		:index => 0,   # index in internal array
+		:label => nil # string in class to find index
 	  }
 	end
 	
@@ -1175,6 +1176,8 @@ module CIGUI
 				@windows.last.width = new_w
 				@windows.last.height = new_h
 				@last_action = @windows.last
+				@selection[:type]=:window
+				@selection[:index]=@windows.size-1
 			end
 		#rescue
 			# dunnolol
@@ -1317,7 +1320,6 @@ end# END OF CIGUI MODULE
 begin
 	$do=[
 		'create window at x 100',
-		'select window by index=0',
 		'deactivate last window'
 	]
 	CIGUI.setup
