@@ -98,6 +98,11 @@
 
   <section class="description">
     
+<p>Класс, хранящий данные о цвете в формате RGBA (красный, зеленый, синий и
+прозрачность). Каждое значение является рациональным числом (число с
+плавающей точкой) и имеет значение от 0.0 до 255.0. Все значения, выходящие
+за указанный интервал, корректируются автоматически.</p>
+
   </section>
 
   
@@ -132,13 +137,19 @@
 
         <div class="method-description">
           
-          
+          <p>Создает экземпляр класса.</p>
+<ul><li>
+<p>r, g, b - задает изначальные значения красного, зеленого и синего цветов</p>
+</li><li>
+<p>a - задает прозрачность, по умолчанию имеет значение 255.0 (полностью
+непрозрачный цвет)</p>
+</li></ul>
           
           
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 324</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 346</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">r</span>,<span class="ruby-identifier">g</span>,<span class="ruby-identifier">b</span>,<span class="ruby-identifier">a</span>=<span class="ruby-value">255.0</span>)
         <span class="ruby-ivar">@r</span>,<span class="ruby-ivar">@g</span>,<span class="ruby-ivar">@b</span>,<span class="ruby-ivar">@a</span> = <span class="ruby-identifier">r</span>.<span class="ruby-identifier">to_f</span>,<span class="ruby-identifier">g</span>.<span class="ruby-identifier">to_f</span>,<span class="ruby-identifier">b</span>.<span class="ruby-identifier">to_f</span>,<span class="ruby-identifier">a</span>.<span class="ruby-identifier">to_f</span>
         <span class="ruby-identifier">_normalize</span>
@@ -174,13 +185,13 @@
 
         <div class="method-description">
           
-          
+          <p>Возвращает значение прозрачности</p>
           
           
 
           
           <div class="method-source-code" id="alpha-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 341</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 367</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">alpha</span>
         <span class="ruby-ivar">@r</span>
 <span class="ruby-keyword">end</span></pre>
@@ -207,13 +218,13 @@
 
         <div class="method-description">
           
-          
+          <p>Возвращает значение синего цвета</p>
           
           
 
           
           <div class="method-source-code" id="blue-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 337</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 362</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">blue</span>
         <span class="ruby-ivar">@r</span>
 <span class="ruby-keyword">end</span></pre>
@@ -240,13 +251,13 @@
 
         <div class="method-description">
           
-          
+          <p>Возвращает значение зеленого цвета</p>
           
           
 
           
           <div class="method-source-code" id="green-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 333</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 357</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">green</span>
         <span class="ruby-ivar">@r</span>
 <span class="ruby-keyword">end</span></pre>
@@ -273,13 +284,13 @@
 
         <div class="method-description">
           
-          
+          <p>Возвращает значение красного цвета</p>
           
           
 
           
           <div class="method-source-code" id="red-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 329</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 352</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">red</span>
         <span class="ruby-ivar">@r</span>
 <span class="ruby-keyword">end</span></pre>
@@ -306,23 +317,39 @@
 
         <div class="method-description">
           
-          
+          <p>Задает новые значения цвета и прозрачности.<br> <strong>Варианты
+параметров:</strong></p>
+<ul><li>
+<p>set(Color) - в качестве параметра задан другой экземпляр класса <a
+href="Color.html">Color</a></p>
+</li></ul>
+
+<p>Все значения цвета и прозрачности будут скопированы из него.</p>
+<ul><li>
+<p>set(red, green, blue) - задает новые значения цвета.</p>
+</li></ul>
+
+<p>Прозрачность по умолчанию становится равна 255.0</p>
+<ul><li>
+<p>set(red, green, blue, alpha) - задает новые значения цвета и прозрачности.</p>
+</li></ul>
           
           
 
           
           <div class="method-source-code" id="set-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 345</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 378</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">set</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
         <span class="ruby-keyword">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">1</span>
-                <span class="ruby-ivar">@x</span>,<span class="ruby-ivar">@y</span>,<span class="ruby-ivar">@width</span>,<span class="ruby-ivar">@height</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">red</span>,<span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">green</span>,<span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">blue</span>,<span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">alpha</span>
+                <span class="ruby-ivar">@r</span>,<span class="ruby-ivar">@g</span>,<span class="ruby-ivar">@b</span>,<span class="ruby-ivar">@a</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">red</span>,<span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">green</span>,<span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">blue</span>,<span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">alpha</span>
         <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">4</span>
-                <span class="ruby-ivar">@x</span>,<span class="ruby-ivar">@y</span>,<span class="ruby-ivar">@width</span>,<span class="ruby-ivar">@height</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">1</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">2</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">3</span>]
-        <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">4</span>
-                <span class="ruby-ivar">@x</span>,<span class="ruby-ivar">@y</span>,<span class="ruby-ivar">@width</span>,<span class="ruby-ivar">@height</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">1</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">2</span>],<span class="ruby-value">255.0</span>
+                <span class="ruby-ivar">@r</span>,<span class="ruby-ivar">@g</span>,<span class="ruby-ivar">@b</span>,<span class="ruby-ivar">@a</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">1</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">2</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">3</span>]
+        <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">3</span>
+                <span class="ruby-ivar">@r</span>,<span class="ruby-ivar">@g</span>,<span class="ruby-ivar">@b</span>,<span class="ruby-ivar">@a</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">1</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">2</span>],<span class="ruby-value">255.0</span>
         <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">2</span>
-                <span class="ruby-comment"># throw error i like in Rect class</span>
+                <span class="ruby-comment"># throw error like in Rect class</span>
         <span class="ruby-keyword">end</span>
+        <span class="ruby-identifier">_normalize</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           

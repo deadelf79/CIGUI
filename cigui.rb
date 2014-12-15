@@ -333,39 +333,59 @@ if RUBY_VERSION.to_f>=1.9
 			def dispose;end
 		end
 		
+		# Класс, хранящий данные о цвете в формате RGBA
+		# (красный, зеленый, синий и прозрачность). Каждое значение
+		# является рациональным числом (число с плавающей точкой) и
+		# имеет значение от 0.0 до 255.0. Все значения, выходящие
+		# за указанный интервал, корректируются автоматически.
 		#
 		class Color
+			# Создает экземпляр класса.
+			# * r, g, b - задает изначальные значения красного, зеленого и синего цветов
+			# * a - задает прозрачность, по умолчанию имеет значение 255.0 (полностью непрозрачный цвет)
 			def initialize(r,g,b,a=255.0)
 				@r,@g,@b,@a = r.to_f,g.to_f,b.to_f,a.to_f
 				_normalize
 			end
 			
+			# Возвращает значение красного цвета
 			def red
 				@r
 			end
 			
+			# Возвращает значение зеленого цвета
 			def green
 				@r
 			end
 			
+			# Возвращает значение синего цвета
 			def blue
 				@r
 			end
 			
+			# Возвращает значение прозрачности
 			def alpha
 				@r
 			end
 			
+			# Задает новые значения цвета и прозрачности.<br>
+			# <b>Варианты параметров:</b>
+			# * set(Color) - в качестве параметра задан другой экземпляр класса Color
+			# Все значения цвета и прозрачности будут скопированы из него.
+			# * set(red, green, blue) - задает новые значения цвета.
+			# Прозрачность по умолчанию становится равна 255.0
+			# * set(red, green, blue, alpha) - задает новые значения цвета и прозрачности.
 			def set(*args)
 				if args.size==1
-					@x,@y,@width,@height = args[0].red,args[0].green,args[0].blue,args[0].alpha
+					@r,@g,@b,@a = args[0].red,args[0].green,args[0].blue,args[0].alpha
 				elsif args.size==4
-					@x,@y,@width,@height = args[0],args[1],args[2],args[3]
-				elsif args.size==4
-					@x,@y,@width,@height = args[0],args[1],args[2],255.0
+					@r,@g,@b,@a = args[0],args[1],args[2],args[3]
+				elsif args.size==3
+					@r,@g,@b,@a = args[0],args[1],args[2],255.0
 				elsif args.size==2
-					# throw error i like in Rect class
+					# throw error like in Rect class
 				end
+				_normalize
 			end
 			
 			private
