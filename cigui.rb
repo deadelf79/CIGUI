@@ -404,7 +404,8 @@ if RUBY_VERSION.to_f>=1.9
 	end
 end
 
-# 
+# Класс, хранящий данные о тексте в окне. Создается для каждого окна отдельно,
+# имеет индивидуальные настройки.
 class Text
 	# Название файла изображения, из которого загружаются данные для отрисовки окон.<br>
 	# По умолчанию задан путь 'Graphics\System\Window.png'.
@@ -527,15 +528,15 @@ class Text
 		end
 	end
 	
-	# Обнуляет все данные, кроме colorset
+	# Сбрасывает все данные, кроме colorset, на значения по умолчанию
 	def empty
 		@string=''
-		@font=[]
-		@size=0
+		@font=['Tahoma']
+		@size=20
 		@bold, @italic, @underline = false, false, false
 		@out_color=Color.new(0,0,0,128)
 		@shadow, @outline = false, false
-		@windowskin=''
+		@windowskin='Graphics\\System\\Window.png'
 	end
 end
 
@@ -1079,12 +1080,14 @@ module CIGUI
 		:index => 0,   # index in internal array
 		:label => nil # string in class to find index
 	  }
+	  @global_text.is_a?(NilClass) ? @global_text=Text.new('') : @global_text.empty
 	end
 	
 	# RESTART
 	def _restart?(string)
 		matches=string.match(/#{CMB[:cigui_restart]}/)
 		if matches
+			__flush?('cigui flush') if not finished
 			_setup
 		end
 		raise "#{CIGUIERR::CantInterpretCommand}\n\tcurrent line of $do: #{string}" if @finished

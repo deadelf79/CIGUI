@@ -92,6 +92,9 @@
 
   <section class="description">
     
+<p>Класс, хранящий данные о тексте в окне. Создается для каждого окна
+отдельно, имеет индивидуальные настройки.</p>
+
   </section>
 
   
@@ -311,7 +314,7 @@
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 462</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 463</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">string</span>, <span class="ruby-identifier">font_family</span>=[<span class="ruby-string">&#39;Tahoma&#39;</span>], <span class="ruby-identifier">font_size</span>=<span class="ruby-value">20</span>, <span class="ruby-identifier">bold</span>=<span class="ruby-keyword">false</span>, <span class="ruby-identifier">italic</span>=<span class="ruby-keyword">false</span>, <span class="ruby-identifier">underline</span>=<span class="ruby-keyword">false</span>)
         <span class="ruby-ivar">@string</span>=<span class="ruby-identifier">string</span>
         <span class="ruby-ivar">@font</span>=<span class="ruby-identifier">font_family</span>
@@ -361,7 +364,7 @@
 
           
           <div class="method-source-code" id="default_colorset-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 476</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 477</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">default_colorset</span>
         <span class="ruby-ivar">@colorset</span>.<span class="ruby-identifier">clear</span>
         <span class="ruby-keyword">if</span> <span class="ruby-constant">FileTest</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-ivar">@windowskin</span>)
@@ -438,21 +441,21 @@
 
         <div class="method-description">
           
-          <p>Обнуляет все данные, кроме colorset</p>
+          <p>Сбрасывает все данные, кроме colorset, на значения по умолчанию</p>
           
           
 
           
           <div class="method-source-code" id="empty-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 531</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 532</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">empty</span>
         <span class="ruby-ivar">@string</span>=<span class="ruby-string">&#39;&#39;</span>
-        <span class="ruby-ivar">@font</span>=[]
-        <span class="ruby-ivar">@size</span>=<span class="ruby-value">0</span>
+        <span class="ruby-ivar">@font</span>=[<span class="ruby-string">&#39;Tahoma&#39;</span>]
+        <span class="ruby-ivar">@size</span>=<span class="ruby-value">20</span>
         <span class="ruby-ivar">@bold</span>, <span class="ruby-ivar">@italic</span>, <span class="ruby-ivar">@underline</span> = <span class="ruby-keyword">false</span>, <span class="ruby-keyword">false</span>, <span class="ruby-keyword">false</span>
         <span class="ruby-ivar">@out_color</span>=<span class="ruby-constant">Color</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">0</span>,<span class="ruby-value">0</span>,<span class="ruby-value">0</span>,<span class="ruby-value">128</span>)
         <span class="ruby-ivar">@shadow</span>, <span class="ruby-ivar">@outline</span> = <span class="ruby-keyword">false</span>, <span class="ruby-keyword">false</span>
-        <span class="ruby-ivar">@windowskin</span>=<span class="ruby-string">&#39;&#39;</span>
+        <span class="ruby-ivar">@windowskin</span>=<span class="ruby-string">&#39;Graphics\System\Window.png&#39;</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
