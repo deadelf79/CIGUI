@@ -750,8 +750,8 @@ module CIGUI
 				:auto=>'auto',
 		:resize=>'resize',
 		:set=>'set',
-		:x=>'x|х|икс',
-		:y=>'y|у|игрек',
+		:x=>'x',
+		:y=>'y',
 		:z=>'z|зет',
 		:ox=>'ox',
 		:oy=>'oy',
@@ -950,8 +950,8 @@ module CIGUI
 	#
 	def fraction(source_string, std_conversion=true)
 	  match='(?:[\[|"\(\'])[\s]*([\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)(?:[\]|"\)\'])'
-	  return source_string.match(match)[1].gsub!(/[\s_]*/){}.to_f if !std_conversion
-	  source_string.match(match)[1].to_f
+	  return source_string.match(/#{match}/i)[1].gsub!(/[\s_]*/){}.to_f if !std_conversion
+	  source_string.match(/#{match}/i)[1].to_f
 	rescue
 	  raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{source_string}"
 	end
@@ -974,9 +974,9 @@ module CIGUI
 	def boolean(source_string)
 		match="((?:#{VOCAB[:true]}|#{VOCAB[:false]}))"
 		if source_string.match(match).size>1
-			return false if source_string.match(match)[1]==nil
+			return false if source_string.match(/#{match}/i)[1]==nil
 			match2="(#{VOCAB[:true]})"
-			return true if source_string.match(match2)[1]
+			return true if source_string.match(/#{match2}/i)[1]
 		end
 		return false
 	end
@@ -1052,8 +1052,8 @@ module CIGUI
 	# 
 	def frac(source_string, prefix='', postfix='', std_conversion=true)
 	  match=prefix+'([\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)'+postfix
-	  return source_string.match(match)[1].gsub!(/[\s_]*/){}.to_f if !std_conversion
-	  source_string.match(match)[1].to_f
+	  return source_string.match(/#{match}/i)[1].gsub!(/[\s_]*/){}.to_f if !std_conversion
+	  source_string.match(/#{match}/i)[1].to_f
 	rescue
 	  raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{source_string}"
 	end
@@ -1207,9 +1207,6 @@ module CIGUI
 		begin
 			if string.match(/#{CMB[:window_create_atORwith]}/i)
 				# at OR with: check x and y
-				puts string[/#{CMB[:window_x_equal]}/i]
-				puts dec(string,CMB[:window_x_equal])
-				puts '---'
 				new_x = string[/#{CMB[:window_x_equal]}/i] ? dec(string,CMB[:window_x_equal]) : @windows.last.x
 				new_y = string[/#{CMB[:window_y_equal]}/i] ? dec(string,CMB[:window_y_equal]) : @windows.last.y
 				# at OR with: check w and h
@@ -1229,11 +1226,11 @@ module CIGUI
 	end #--------------------end of '__wcreate?'-------------------------
 	
 	def __wdispose?(string)
-		matches=string.match(/#{CMB[:window_dispose]}/)
+		matches=string.match(/#{CMB[:window_dispose]}/i)
 		# Only create
 		if matches
 			begin
-				if string.match(/#{CMB[:select_by_index]}/)
+				if string.match(/#{CMB[:select_by_index]}/i)
 					index=dec(string,CMB[:select_by_index])
 					if index.between?(0,@windows.size)
 						# Проверка удаления для попавшихся объектов класса Nil
@@ -1256,14 +1253,14 @@ module CIGUI
 	# this move to x=DEC,y=DEC with speed=1
 	# this move to x=DEC,y=DEC with speed=auto
 	def __wmove?(string)
-		matches=string.match(/#{CMB[:window_move]}/)
+		matches=string.match(/#{CMB[:window_move]}/i)
 		# Only move
 		if matches
 			begin
 				# Read params
-				new_x = string[/#{CMB[:window_x_equal]}/] ? dec(string,CMB[:window_x_equal]) : @windows[@selection[:index]].x
-				new_y = string[/#{CMB[:window_y_equal]}/] ? dec(string,CMB[:window_y_equal]) : @windows[@selection[:index]].y
-				new_s = string[/#{CMB[:window_s_equal]}/] ? dec(string,CMB[:window_s_equal]) : @windows[@selection[:index]].speed
+				new_x = string[/#{CMB[:window_x_equal]}/i] ? dec(string,CMB[:window_x_equal]) : @windows[@selection[:index]].x
+				new_y = string[/#{CMB[:window_y_equal]}/i] ? dec(string,CMB[:window_y_equal]) : @windows[@selection[:index]].y
+				new_s = string[/#{CMB[:window_s_equal]}/i] ? dec(string,CMB[:window_s_equal]) : @windows[@selection[:index]].speed
 				# CHANGED TO SELECTED
 				if @selection[:type]==:window
 					@windows[@selection[:index]].x = new_x
@@ -1283,8 +1280,8 @@ module CIGUI
 		if matches
 			begin
 				# Read params
-				new_w = string[/#{CMB[:window_w_equal]}/] ? dec(string,CMB[:window_w_equal]) : @windows[@selection[:index]].width
-				new_h = string[/#{CMB[:window_h_equal]}/] ? dec(string,CMB[:window_h_equal]) : @windows[@selection[:index]].height
+				new_w = string[/#{CMB[:window_w_equal]}/i] ? dec(string,CMB[:window_w_equal]) : @windows[@selection[:index]].width
+				new_h = string[/#{CMB[:window_h_equal]}/i] ? dec(string,CMB[:window_h_equal]) : @windows[@selection[:index]].height
 				# CHANGED TO SELECTED
 				if @selection[:type]==:window
 					@windows[@selection[:index]].resize(new_w,new_h)
@@ -1310,16 +1307,16 @@ module CIGUI
 		if matches
 			begin
 				# Read params
-				new_x = string[/#{CMB[:window_x_equal]}/] ? dec(string,CMB[:window_x_equal]) : @windows[@selection[:index]].x
-				new_y = string[/#{CMB[:window_y_equal]}/] ? dec(string,CMB[:window_y_equal]) : @windows[@selection[:index]].y
-				new_w = string[/#{CMB[:window_w_equal]}/] ? dec(string,CMB[:window_w_equal]) : @windows[@selection[:index]].width
-				new_h = string[/#{CMB[:window_h_equal]}/] ? dec(string,CMB[:window_h_equal]) : @windows[@selection[:index]].height
-				new_s = string[/#{CMB[:window_s_equal]}/] ? dec(string,CMB[:window_s_equal]) : @windows[@selection[:index]].speed
-				new_a = string[/#{CMB[:window_a_equal]}/] ? dec(string,CMB[:window_a_equal]) : @windows[@selection[:index]].opacity
-				new_ba = string[/#{CMB[:window_ba_equal]}/] ? dec(string,CMB[:window_ba_equal]) : @windows[@selection[:index]].back_opacity
-				new_act = string[/#{CMB[:window_active_equal]}/] ? boolean(string,CMB[:window_active_equal]) : @windows[@selection[:index]].active
-				new_skin = string[/#{CMB[:window_skin_equal]}/] ? substr(string,CMB[:window_skin_equal]) : @windows[@selection[:index]].windowskin
-				new_open = string[/#{CMB[:window_openness_equal]}/] ? dec(string,CMB[:window_openness_equal]) : @windows[@selection[:index]].openness
+				new_x = string[/#{CMB[:window_x_equal]}/i] ? dec(string,CMB[:window_x_equal]) : @windows[@selection[:index]].x
+				new_y = string[/#{CMB[:window_y_equal]}/i] ? dec(string,CMB[:window_y_equal]) : @windows[@selection[:index]].y
+				new_w = string[/#{CMB[:window_w_equal]}/i] ? dec(string,CMB[:window_w_equal]) : @windows[@selection[:index]].width
+				new_h = string[/#{CMB[:window_h_equal]}/i] ? dec(string,CMB[:window_h_equal]) : @windows[@selection[:index]].height
+				new_s = string[/#{CMB[:window_s_equal]}/i] ? dec(string,CMB[:window_s_equal]) : @windows[@selection[:index]].speed
+				new_a = string[/#{CMB[:window_a_equal]}/i] ? dec(string,CMB[:window_a_equal]) : @windows[@selection[:index]].opacity
+				new_ba = string[/#{CMB[:window_ba_equal]}/i] ? dec(string,CMB[:window_ba_equal]) : @windows[@selection[:index]].back_opacity
+				new_act = string[/#{CMB[:window_active_equal]}/i] ? boolean(string,CMB[:window_active_equal]) : @windows[@selection[:index]].active
+				new_skin = string[/#{CMB[:window_skin_equal]}/i] ? substr(string,CMB[:window_skin_equal]) : @windows[@selection[:index]].windowskin
+				new_open = string[/#{CMB[:window_openness_equal]}/i] ? dec(string,CMB[:window_openness_equal]) : @windows[@selection[:index]].openness
 				# Change it
 				if @selection[:type]==:window
 					@windows[@selection[:index]].x = new_x
