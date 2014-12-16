@@ -751,8 +751,8 @@ module CIGUI
 	},
 	#--WINDOW branch
 	:window=>{
-		:main=>'window|окно',
-		:create=>'create|созда(?:[йть]|ва[йть])',
+		:main=>'window',
+		:create=>'create',
 			:at=>'at',
 			:with=>'with',
 		:dispose=>'dispose|delete',
@@ -764,13 +764,13 @@ module CIGUI
 		:set=>'set',
 		:x=>'x',
 		:y=>'y',
-		:z=>'z|зет',
+		:z=>'z',
 		:ox=>'ox',
 		:oy=>'oy',
 		:tone=>'tone',
 		:width=>'width',
 		:height=>'height',
-		:link=>'link',
+		:link=>'link', # to use as - set button[DEC] link to switch[DEC] #dunnolol
 		:label=>'label',
 		:index=>'index',
 			:indexed=>'indexed',
