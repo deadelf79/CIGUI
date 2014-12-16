@@ -127,7 +127,7 @@ if RUBY_VERSION.to_f>=1.9
 			# * удаляет кавычки
 			# * заменяет пробелы и табуляцию на символы подчеркивания
 			# * заменяет символы "больше" и "меньше" на символы подчеркивания
-			def label(string)
+			def label=(string)
 				# make right label
 				string.gsub!(/[\[\]\(\)\'\"]/){''}
 				string.gsub!(/[ \t\<\>]/){'_'}
@@ -298,6 +298,10 @@ if RUBY_VERSION.to_f>=1.9
 			attr_reader :label
 			# If window is active then it updates
 			attr_accessor :active
+			# Openness of window
+			attr_accessor :openness
+			# Window skin - what window looks like
+			attr_accessor :windowskin
 			
 			# Create window
 			def initialize
@@ -326,11 +330,19 @@ if RUBY_VERSION.to_f>=1.9
 			
 			# Open window
 			def open
-				@openness=0
+				@openness=255
 			end
 			
 			# Dispose window
 			def dispose;end
+			
+			def label=(string)
+				# make right label
+				string.gsub!(/[\[\]\(\)\'\"]/){''}
+				string.gsub!(/[ \t\<\>]/){'_'}
+				# then label it
+				@label = string
+			end
 		end
 		
 		# Класс спрайта со всеми параметрами, доступными в RGSS3. Пока пустой, ожидается обновление во время работы над спрайтами
@@ -786,8 +798,8 @@ module CIGUI
 	#~COMMON unbranch
 	:select_window=>"(?:(?:#{VOCAB[:select]})+[\s]*(?:#{VOCAB[:window][:main]})+)|"+
 		"(?:(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:select]})+)",
-	:select_by_index=>"(?:#{VOCAB[:window][:index]})\=",
-	:select_by_label=>"(?:#{VOCAB[:window][:label]})\=",
+	:select_by_index=>"(?:#{VOCAB[:window][:index]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+	:select_by_label=>"(?:#{VOCAB[:window][:label]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	#~CIGUI branch
 	:cigui_start=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+",
 	:cigui_finish=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:finish]})+)+",
@@ -814,7 +826,7 @@ module CIGUI
 	:window_set=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:set]})+)|"+
 		"(?:(?:#{VOCAB[:window][:set]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+)",
 	:window_active_equal=>"(?:#{VOCAB[:window][:active]})+(?:#{VOCAB[:equal]}|[\s]*)+",
-	:window_skin_equal=>"(?:#{VOCAB[:window][:skin]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+	:window_skin_equal=>"(?:#{VOCAB[:window][:windowskin]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_openness_equal=>"(?:#{VOCAB[:window][:openness]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_activate=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:activate]})+)|"+
 		"(?:(?:#{VOCAB[:window][:activate]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+)",
@@ -1125,10 +1137,27 @@ module CIGUI
 			# Read index or label
 			if string.match(/#{CMB[:select_by_index]}/)
 				index = dec(string,CMB[:select_by_index])
-				@selection[:type]=:window
-				@selection[:index]=index
+				if index>-1
+					@selection[:type]=:window
+					@selection[:index]=index
+					if index.between?(0...@windows.size)
+						@selection[:label]=@windows[index].label if @windows[index]!=nil && @windows[index].is_a?(Win3)
+					end
+				end
 			elsif string.match(/#{CMB[:select_by_label]}/)
-				p 'no way out'
+				label = substr(string,CMB[:select_by_label])
+				if label!=nil
+					@selection[:type]=:window
+					@selection[:label]=label
+					for index in 0...@windows.size
+						if @windows[index]!=nil && @windows[index].is_a?(Win3)
+							if @windows[index].label==label
+								@selection[:index]=index
+								break
+							end
+						end
+					end
+				end
 			end
 			@last_action = @selection
 		end
@@ -1317,6 +1346,7 @@ module CIGUI
 				new_act = string[/#{CMB[:window_active_equal]}/i] ? boolean(string,CMB[:window_active_equal]) : @windows[@selection[:index]].active
 				new_skin = string[/#{CMB[:window_skin_equal]}/i] ? substr(string,CMB[:window_skin_equal]) : @windows[@selection[:index]].windowskin
 				new_open = string[/#{CMB[:window_openness_equal]}/i] ? dec(string,CMB[:window_openness_equal]) : @windows[@selection[:index]].openness
+				new_label = string[/#{CMB[:select_by_label]}/i] ? substr(string,CMB[:select_by_label]) : @windows[@selection[:index]].label
 				# Change it
 				if @selection[:type]==:window
 					@windows[@selection[:index]].x = new_x
@@ -1328,6 +1358,8 @@ module CIGUI
 					@windows[@selection[:index]].active = new_act
 					@windows[@selection[:index]].windowskin = new_skin
 					@windows[@selection[:index]].openness = new_open
+					@windows[@selection[:index]].label = new_label
+					@selection[:label] = new_label
 					@last_action = @windows[@selection[:index]]
 				end
 			end
@@ -1360,7 +1392,8 @@ end# END OF CIGUI MODULE
 # delete this when copy to 'Script editor' in RPG Maker
 begin
 	$do=[
-		'CreAte WinDow At X=2_4, Y=3_2'
+		'CreAte WinDow At X=2_4, Y=3_2',
+		'this window set label=something'
 	]
 	CIGUI.setup
 	CIGUI.update

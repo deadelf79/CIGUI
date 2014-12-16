@@ -89,6 +89,8 @@
     
     <li ><a href="#method-i-inspect">#inspect</a>
     
+    <li ><a href="#method-i-label-3D">#label=</a>
+    
     <li ><a href="#method-i-open">#open</a>
     
     <li ><a href="#method-i-refresh">#refresh</a>
@@ -199,6 +201,19 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
         </div>
       </div>
       
+      <div id="attribute-i-openness" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">openness</span><span
+            class="attribute-access-type">[RW]</span>
+        </div>
+
+        <div class="method-description">
+        
+        <p>Openness of window</p>
+        
+        </div>
+      </div>
+      
       <div id="attribute-i-speed" class="method-detail">
         <div class="method-heading attribute-method-heading">
           <span class="method-name">speed</span><span
@@ -221,6 +236,19 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
         <div class="method-description">
         
         <p>Width of Window</p>
+        
+        </div>
+      </div>
+      
+      <div id="attribute-i-windowskin" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">windowskin</span><span
+            class="attribute-access-type">[RW]</span>
+        </div>
+
+        <div class="method-description">
+        
+        <p>Window skin - what window looks like</p>
         
         </div>
       </div>
@@ -340,7 +368,7 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
 
           
           <div class="method-source-code" id="add_item-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 138</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 151</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">add_item</span>(<span class="ruby-identifier">command</span>,<span class="ruby-identifier">procname</span>,<span class="ruby-identifier">enabled</span>=<span class="ruby-keyword">true</span>)
         <span class="ruby-ivar">@items</span><span class="ruby-operator">+=</span>[
                 {
@@ -382,7 +410,7 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
 
           
           <div class="method-source-code" id="add_text-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 127</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 140</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">add_text</span>(<span class="ruby-identifier">text</span>)
         
 <span class="ruby-keyword">end</span></pre>
@@ -415,7 +443,7 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
 
           
           <div class="method-source-code" id="close-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 310</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 327</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">close</span>
         <span class="ruby-ivar">@openness</span>=<span class="ruby-value">0</span>
 <span class="ruby-keyword">end</span></pre>
@@ -453,7 +481,7 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
 
           
           <div class="method-source-code" id="dispose-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 200</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 213</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">dispose</span>
         <span class="ruby-keyword">super</span>
 <span class="ruby-keyword">end</span></pre>
@@ -490,7 +518,7 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
 
           
           <div class="method-source-code" id="draw_items-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 173</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 186</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">draw_items</span>(<span class="ruby-identifier">ignore_disabled</span>=<span class="ruby-keyword">false</span>)
         
 <span class="ruby-keyword">end</span></pre>
@@ -529,7 +557,7 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
 
           
           <div class="method-source-code" id="enable_item-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 156</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 169</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">enable_item</span>(<span class="ruby-identifier">commandORindex</span>)
         <span class="ruby-keyword">case</span> <span class="ruby-identifier">commandORindex</span>.<span class="ruby-identifier">class</span>
         <span class="ruby-keyword">when</span> <span class="ruby-constant">Integer</span>, <span class="ruby-constant">Float</span>
@@ -569,7 +597,7 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
 
           
           <div class="method-source-code" id="inspect-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 207</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 220</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">inspect</span>
         <span class="ruby-node">&quot;&lt;#{self.class}:&quot;</span><span class="ruby-operator">+</span>
         <span class="ruby-node">&quot; @back_opacity=#{back_opacity},&quot;</span><span class="ruby-operator">+</span>
@@ -580,6 +608,52 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
         <span class="ruby-node">&quot; @width=#{width},&quot;</span><span class="ruby-operator">+</span>
         <span class="ruby-node">&quot; @x=#{x},&quot;</span><span class="ruby-operator">+</span>
         <span class="ruby-node">&quot; @y=#{y}&gt;&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-label-3D" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">label=</span><span
+            class="method-args">(string)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Задает метку окну, проверяя ее на правильность перед этим:</p>
+<ul><li>
+<p>удаляет круглые и квадратгые скобки</p>
+</li><li>
+<p>удаляет кавычки</p>
+</li><li>
+<p>заменяет пробелы и табуляцию на символы подчеркивания</p>
+</li><li>
+<p>заменяет символы “больше” и “меньше” на символы подчеркивания</p>
+</li></ul>
+          
+          
+
+          
+          <div class="method-source-code" id="label-3D-source">
+            <pre><span class="ruby-comment"># File cigui.rb, line 130</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">label=</span>(<span class="ruby-identifier">string</span>)
+        <span class="ruby-comment"># make right label</span>
+        <span class="ruby-identifier">string</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">/[\[\]\(\)\\&quot;]/</span>){<span class="ruby-string">&#39;&#39;</span>}
+        <span class="ruby-identifier">string</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">/[ \t\&lt;\&gt;]/</span>){<span class="ruby-string">&#39;_&#39;</span>}
+        <span class="ruby-comment"># then label it</span>
+        <span class="ruby-ivar">@label</span> = <span class="ruby-identifier">string</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -610,9 +684,9 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
 
           
           <div class="method-source-code" id="open-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 315</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 332</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">open</span>
-        <span class="ruby-ivar">@openness</span>=<span class="ruby-value">0</span>
+        <span class="ruby-ivar">@openness</span>=<span class="ruby-value">255</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -680,7 +754,7 @@ href="Win3.html#method-i-update">update</a>, влияет только на со
 
           
           <div class="method-source-code" id="resize-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 182</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 195</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">resize</span>(<span class="ruby-identifier">new_width</span>, <span class="ruby-identifier">new_height</span>)
         <span class="ruby-identifier">temp</span>=<span class="ruby-constant">Sprite</span>.<span class="ruby-identifier">new</span>
         <span class="ruby-identifier">temp</span>.<span class="ruby-identifier">bitmap</span>=<span class="ruby-keyword">self</span>.<span class="ruby-identifier">contents</span>
