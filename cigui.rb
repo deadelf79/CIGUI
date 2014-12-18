@@ -835,8 +835,10 @@ module CIGUI
 		"(?:(?:#{VOCAB[:window][:activate]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+)",
 	:window_deactivate=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:deactivate]})+)|"+
 		"(?:(?:#{VOCAB[:window][:deactivate]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+)",
-	:window_open=>"",
-	:window_close=>"",
+	:window_open=>"(?:(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:open]}))|"+
+		"(?:(?:#{VOCAB[:window][:open]})+[\s]*(?:#{VOCAB[:window][:main]}))|",
+	:window_close=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:close]}))|"+
+		"(?:(?:#{VOCAB[:window][:close]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]}))|",
   }
   
   # 
@@ -1215,9 +1217,11 @@ module CIGUI
 		__wset? string
 		__wactivate? string
 		__wdeactivate? string
-		#__wlabel? string
+		__wopen? string
+		__wclose? string
 	end
 	
+	# Examples:
 	# create window (default position and size) 
 	# create window at x=DEC, y=DEC
 	# create window with width=DEC,height=DEC
@@ -1238,51 +1242,55 @@ module CIGUI
 			end
 		end
 		# Read params
-		begin
-			if string.match(/#{CMB[:window_create_atORwith]}/i)
-				# at OR with: check x and y
-				new_x = string[/#{CMB[:window_x_equal]}/i] ? dec(string,CMB[:window_x_equal]) : @windows.last.x
-				new_y = string[/#{CMB[:window_y_equal]}/i] ? dec(string,CMB[:window_y_equal]) : @windows.last.y
-				# at OR with: check w and h
-				new_w = string[/#{CMB[:window_w_equal]}/i] ? dec(string,CMB[:window_w_equal]) : @windows.last.width
-				new_h = string[/#{CMB[:window_h_equal]}/i] ? dec(string,CMB[:window_h_equal]) : @windows.last.height
-				@windows.last.x = new_x
-				@windows.last.y = new_y
-				@windows.last.width = new_w
-				@windows.last.height = new_h
-				@last_action = @windows.last
-				@selection[:type]=:window
-				@selection[:index]=@windows.size-1
-			end
-		#rescue
-			# dunnolol
+		if string.match(/#{CMB[:window_create_atORwith]}/i)
+			# at OR with: check x and y
+			new_x = string[/#{CMB[:window_x_equal]}/i] ? dec(string,CMB[:window_x_equal]) : @windows.last.x
+			new_y = string[/#{CMB[:window_y_equal]}/i] ? dec(string,CMB[:window_y_equal]) : @windows.last.y
+			# at OR with: check w and h
+			new_w = string[/#{CMB[:window_w_equal]}/i] ? dec(string,CMB[:window_w_equal]) : @windows.last.width
+			new_h = string[/#{CMB[:window_h_equal]}/i] ? dec(string,CMB[:window_h_equal]) : @windows.last.height
+			# Set parameters for created window
+			@windows.last.x = new_x
+			@windows.last.y = new_y
+			@windows.last.width = new_w
+			@windows.last.height = new_h
+			# Set last action to inspect this window
+			@last_action = @windows.last
+			# Select this window
+			@selection[:type]=:window
+			@selection[:index]=@windows.size-1
 		end
 	end #--------------------end of '__wcreate?'-------------------------
 	
+	# Examples:
+	# dispose window index=DEC
+	# dispose window label=STR
 	def __wdispose?(string)
 		matches=string.match(/#{CMB[:window_dispose]}/i)
-		# Only create
+		# Здесь был какой-то собственный select window
+		# и я решил от него избавиться.
 		if matches
-			begin
-				if string.match(/#{CMB[:select_by_index]}/i)
-					index=dec(string,CMB[:select_by_index])
-					if index.between?(0,@windows.size)
-						# Проверка удаления для попавшихся объектов класса Nil
-						# в результате ошибки создания окна
-						@windows[index].dispose if @windows[index].methods.include? :dispose
-						@windows.delete_at(index)
-					else
-						raise "#{CIGUIERR::WrongWindowIndex}"+
-						"\n\tinternal windows size: #{@windows.size} (#{index} is not in range of 0..#{@windows.size})"+
-						"\n\tcurrent line of $do: #{string}"
-					end
+			if string.match(/#{CMB[:select_by_index]}/i)
+				index=dec(string,CMB[:select_by_index])
+				if index.between?(0,@windows.size)
+					# Проверка удаления для попавшихся объектов класса Nil
+					# в результате ошибки создания окна
+					@windows[index].dispose if @windows[index].methods.include? :dispose
+					@windows.delete_at(index)
+				else
+					raise "#{CIGUIERR::WrongWindowIndex}"+
+					"\n\tinternal windows size: #{@windows.size} (#{index} is not in range of 0..#{@windows.size})"+
+					"\n\tcurrent line of $do: #{string}"
 				end
-				@last_action = 'CIGUI disposed window'
+			elsif string.match(/#{CMB[:select_by_label]}/i)
+				
 			end
+			@last_action = 'CIGUI disposed window'
+			
 		end
 	end#--------------------end of '__wdispose?'-------------------------
 	
-	# examples:
+	# Examples:
 	# this move to x=DEC,y=DEC
 	# this move to x=DEC,y=DEC with speed=1
 	# this move to x=DEC,y=DEC with speed=auto
@@ -1390,6 +1398,26 @@ module CIGUI
 			end
 		end
 	end#--------------------end of '__wdeactivate?'-------------------------
+	
+	def __wopen?(string)
+		matches=string.match(/#{CMB[:window_open]}/)
+		if matches
+			if @selection[:type]==:window
+				@windows[@selection[:index]].open
+				@last_action = @windows[@selection[:index]]
+			end
+		end
+	end#--------------------end of '__wopen?'-------------------------
+	
+	def __wclose?(string)
+		matches=string.match(/#{CMB[:window_close]}/)
+		if matches
+			if @selection[:type]==:window
+				@windows[@selection[:index]].close
+				@last_action = @windows[@selection[:index]]
+			end
+		end
+	end#--------------------end of '__wopen?'-------------------------
   end# END OF CIGUI CLASS
 end# END OF CIGUI MODULE
 
@@ -1397,8 +1425,8 @@ end# END OF CIGUI MODULE
 # delete this when copy to 'Script editor' in RPG Maker
 begin
 	$do=[
-		'CreAte WinDow At X=2_4, Y=3_2',
-		'this window set label=something'
+		'create window',
+		'close this window'
 	]
 	CIGUI.setup
 	CIGUI.update
