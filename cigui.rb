@@ -668,6 +668,9 @@ module CIGUI
   # * sprite - самостоятельными изображениями;
   # * text - текстом и шрифтами
   # * window - окнами.
+  # Русификацию этого словаря Вы можете найти в файле localize.rb
+  # по адресу: <https://github.com/deadelf79/CIGUI/>, если этот файл
+  # не приложен к демонстрационной версии проекта, который у Вас есть.
   #
   VOCAB={
 	#--COMMON unbranch
@@ -866,7 +869,6 @@ module CIGUI
 		:windowskin=>'skin|window[\s_]*skin',
 		:cursor=>'cursor',
 			:rect=>'rect',
-		:fill=>'fill',
 	}
   }
   
