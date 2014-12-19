@@ -406,14 +406,14 @@ if RUBY_VERSION.to_f>=1.9
 			private
 			
 			def _normalize
-				@r=-255 if @r<-255
-				@r=255 if @r>255
-				@g=-255 if @g<-255
-				@g=255 if @g>255
-				@b=-255 if @b<-255
-				@b=255 if @b>255
-				@gs=0 if @gs<0
-				@gs=255 if @gs>255
+				@r=-255.0 if @r<-255.0
+				@r=255.0 if @r>255.0
+				@g=-255.0 if @g<-255.0
+				@g=255.0 if @g>255.0
+				@b=-255.0 if @b<-255.0
+				@b=255.0 if @b>255.0
+				@gs=0.0 if @gs<0.0
+				@gs=255.0 if @gs>255.0
 			end
 		end
 		
@@ -903,7 +903,7 @@ module CIGUI
 	:window_ba_equal=>"(?:(?:#{VOCAB[:window][:back]})+[\s_]*(?:#{VOCAB[:window][:opacity]}))+(?:#{VOCAB[:equal]}|[\s])+",
 	:window_ca_equal=>"(?:(?:#{VOCAB[:window][:contents]})+[\s_]*(?:#{VOCAB[:window][:opacity]}))+(?:#{VOCAB[:equal]}|[\s])+",
 	:window_active_equal=>"(?:#{VOCAB[:window][:active]})+(?:#{VOCAB[:equal]}|[\s]*)+",
-	:window_skin_equal=>"(?:#{VOCAB[:window][:windowskin]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+	:window_skin_equal=>"(?:(?:#{VOCAB[:window][:windowskin]})+(?:#{VOCAB[:equal]}|[\s]*)+)",
 	:window_openness_equal=>"(?:#{VOCAB[:window][:openness]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_tone_equal=>"(?:#{VOCAB[:window][:tone]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 		# commands
@@ -1185,10 +1185,25 @@ module CIGUI
 	# запускать для вычисления #setup и #update.
 	#
 	def substr(source_string, prefix='', postfix='')
-		match=prefix+'([\w\s _\!\#\$\%\^\&\*]*)'+postfix
-		return source_string.match(match)[1]
+		match=prefix+"([\w\s _\!\#\$\%\^\&\*]*)"+postfix
+		p source_string.match(/#{match}/i)
+		return source_string.match(/#{match}/i)[1]
 	rescue
 		raise "#{CIGUIERR::CantReadString}\n\tcurrent line of $do: #{source_string}"
+	end
+	
+	# Данный метод работает аналогично с #boolean, но производит поиск в строке
+	# с учетом указанных префикса (текста перед подстрокой) и постфикса (после подстроки).<br>
+	# prefix и postfix могут содержать символы, используемые в регулярных выражениях
+	# Если булевое значение в строке не обнаружено, по умолчанию возвращает false.
+	def bool(source_string, prefix='', postfix='')
+		match=prefix+"((?:#{VOCAB[:true]}|#{VOCAB[:false]}))"+postfix
+		if source_string.match(match).size>1
+			return false if source_string.match(/#{match}/i)[1]==nil
+			match2="(#{VOCAB[:true]})"
+			return true if source_string.match(/#{match2}/i)[1]
+		end
+		return false
 	end
 	
 	# Возвращает сообщение о последнем произведенном действии
@@ -1477,10 +1492,10 @@ module CIGUI
 				new_s = string[/#{CMB[:window_s_equal]}/i] ? dec(string,CMB[:window_s_equal]) : @windows[@selection[:index]].speed
 				new_a = string[/#{CMB[:window_a_equal]}/i] ? dec(string,CMB[:window_a_equal]) : @windows[@selection[:index]].opacity
 				new_ba = string[/#{CMB[:window_ba_equal]}/i] ? dec(string,CMB[:window_ba_equal]) : @windows[@selection[:index]].back_opacity
-				new_act = string[/#{CMB[:window_active_equal]}/i] ? boolean(string,CMB[:window_active_equal]) : @windows[@selection[:index]].active
+				new_act = string[/#{CMB[:window_active_equal]}/i] ? bool(string,CMB[:window_active_equal]) : @windows[@selection[:index]].active
 				new_skin = string[/#{CMB[:window_skin_equal]}/i] ? substr(string,CMB[:window_skin_equal]) : @windows[@selection[:index]].windowskin
 				new_open = string[/#{CMB[:window_openness_equal]}/i] ? dec(string,CMB[:window_openness_equal]) : @windows[@selection[:index]].openness
-				new_label = string[/#{CMB[:select_by_label]}/i] ? substr(string,CMB[:select_by_label]) : @windows[@selection[:index]].label
+				new_label = string[/#{CMB[:select_by_label]}/i] ? substring(string) : @windows[@selection[:index]].label
 				new_tone = string[/#{CMB[:window_tone_index]}/i] ? rect(string) : @windows[@selection[:index]].tone
 				# Change it
 				if @selection[:type]==:window
@@ -1489,7 +1504,7 @@ module CIGUI
 					@windows[@selection[:index]].ox = new_ox
 					@windows[@selection[:index]].oy = new_oy
 					@windows[@selection[:index]].resize(new_w,new_h)
-					@windows[@selection[:index]].speed = new_s
+					@windows[@selection[:index]].speed = new_s==0 ? :auto : new_s
 					@windows[@selection[:index]].opacity = new_a
 					@windows[@selection[:index]].back_opacity = new_ba
 					@windows[@selection[:index]].active = new_act
@@ -1554,8 +1569,11 @@ end# END OF CIGUI MODULE
 # delete this when copy to 'Script editor' in RPG Maker
 begin
 	$do=[
-		'create window',
-		'this window set tone=[1;20;3]'
+		'create window at x=1540,y=9000 with width=900,height=560',
+		'this window set ox=22,oy=33,tone=[255;123;40;20],label=[Current],speed=0,windowskin="Something other"',
+		'close this window',
+		'deactivate this window',
+		'this window set active=true'
 	]
 	CIGUI.setup
 	CIGUI.update
