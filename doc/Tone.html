@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 
-<title>class Color - RDoc Documentation</title>
+<title>class Tone - RDoc Documentation</title>
 
 <link href="./fonts.css" rel="stylesheet">
 <link href="./rdoc.css" rel="stylesheet">
@@ -75,9 +75,9 @@
     
     <li ><a href="#method-c-new">::new</a>
     
-    <li ><a href="#method-i-alpha">#alpha</a>
-    
     <li ><a href="#method-i-blue">#blue</a>
+    
+    <li ><a href="#method-i-gray">#gray</a>
     
     <li ><a href="#method-i-green">#green</a>
     
@@ -91,17 +91,20 @@
   </div>
 </nav>
 
-<main role="main" aria-labelledby="class-Color">
-  <h1 id="class-Color" class="class">
-    class Color
+<main role="main" aria-labelledby="class-Tone">
+  <h1 id="class-Tone" class="class">
+    class Tone
   </h1>
 
   <section class="description">
     
-<p>Класс, хранящий данные о цвете в формате RGBA (красный, зеленый, синий и
-прозрачность). Каждое значение является рациональным числом (число с
-плавающей точкой) и имеет значение от 0.0 до 255.0. Все значения, выходящие
-за указанный интервал, корректируются автоматически.</p>
+<p>Класс, хранящий данные о тонировании в ввиде четырех значений: красный,
+зеленый, синий и насыщенность. Последнее значение влияет на цветовую
+насыщенность, чем ниже его значение, тем сильнее цветовые оттенки
+заменяются на оттенки серого. Каждое значение, кроме последнего, является
+рациональным числом (число с плавающей точкой) и имеет значение от -255.0
+до 255.0. Значение насыщенности лежит в пределах от 0 до 255. Все значения,
+выходящие за указанные интервалы, корректируются автоматически.</p>
 
   </section>
 
@@ -128,7 +131,7 @@
         
         <div class="method-heading">
           <span class="method-name">new</span><span
-            class="method-args">(r,g,b,a=255.0)</span>
+            class="method-args">(r,g,b,gs=0.0)</span>
           
           <span class="method-click-advice">click to toggle source</span>
           
@@ -141,17 +144,16 @@
 <ul><li>
 <p>r, g, b - задает изначальные значения красного, зеленого и синего цветов</p>
 </li><li>
-<p>a - задает прозрачность, по умолчанию имеет значение 255.0 (полностью
-непрозрачный цвет)</p>
+<p>gs - задает насыщенность, по умолчанию имеет значение 0</p>
 </li></ul>
           
           
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 288</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">r</span>,<span class="ruby-identifier">g</span>,<span class="ruby-identifier">b</span>,<span class="ruby-identifier">a</span>=<span class="ruby-value">255.0</span>)
-        <span class="ruby-ivar">@r</span>,<span class="ruby-ivar">@g</span>,<span class="ruby-ivar">@b</span>,<span class="ruby-ivar">@a</span> = <span class="ruby-identifier">r</span>.<span class="ruby-identifier">to_f</span>,<span class="ruby-identifier">g</span>.<span class="ruby-identifier">to_f</span>,<span class="ruby-identifier">b</span>.<span class="ruby-identifier">to_f</span>,<span class="ruby-identifier">a</span>.<span class="ruby-identifier">to_f</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 361</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">r</span>,<span class="ruby-identifier">g</span>,<span class="ruby-identifier">b</span>,<span class="ruby-identifier">gs</span>=<span class="ruby-value">0.0</span>)
+        <span class="ruby-ivar">@r</span>,<span class="ruby-ivar">@g</span>,<span class="ruby-ivar">@b</span>,<span class="ruby-ivar">@gs</span> = <span class="ruby-identifier">r</span>.<span class="ruby-identifier">to_f</span>,<span class="ruby-identifier">g</span>.<span class="ruby-identifier">to_f</span>,<span class="ruby-identifier">b</span>.<span class="ruby-identifier">to_f</span>,<span class="ruby-identifier">gs</span>.<span class="ruby-identifier">to_f</span>
         <span class="ruby-identifier">_normalize</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
@@ -170,39 +172,6 @@
        <header>
          <h3>Public Instance Methods</h3>
        </header>
-
-    
-      <div id="method-i-alpha" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">alpha</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p>Возвращает значение прозрачности</p>
-          
-          
-
-          
-          <div class="method-source-code" id="alpha-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 309</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">alpha</span>
-        <span class="ruby-ivar">@r</span>
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
 
     
       <div id="method-i-blue" class="method-detail ">
@@ -224,9 +193,42 @@
 
           
           <div class="method-source-code" id="blue-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 304</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 377</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">blue</span>
         <span class="ruby-ivar">@r</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-gray" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">gray</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Возвращает значение насыщенности</p>
+          
+          
+
+          
+          <div class="method-source-code" id="gray-source">
+            <pre><span class="ruby-comment"># File cigui.rb, line 382</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">gray</span>
+        <span class="ruby-ivar">@gs</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -257,7 +259,7 @@
 
           
           <div class="method-source-code" id="green-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 299</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 372</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">green</span>
         <span class="ruby-ivar">@r</span>
 <span class="ruby-keyword">end</span></pre>
@@ -290,7 +292,7 @@
 
           
           <div class="method-source-code" id="red-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 294</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 367</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">red</span>
         <span class="ruby-ivar">@r</span>
 <span class="ruby-keyword">end</span></pre>
@@ -317,11 +319,11 @@
 
         <div class="method-description">
           
-          <p>Задает новые значения цвета и прозрачности.<br> <strong>Варианты
+          <p>Задает новые значения цвета и насыщенности.<br> <strong>Варианты
 параметров:</strong></p>
 <ul><li>
-<p>set(Color) - в качестве параметра задан другой экземпляр класса <a
-href="Color.html">Color</a></p>
+<p>set(Tone) - в качестве параметра задан другой экземпляр класса <a
+href="Tone.html">Tone</a></p>
 </li></ul>
 
 <p>Все значения цвета и прозрачности будут скопированы из него.</p>
@@ -331,21 +333,22 @@ href="Color.html">Color</a></p>
 
 <p>Прозрачность по умолчанию становится равна 255.0</p>
 <ul><li>
-<p>set(red, green, blue, alpha) - задает новые значения цвета и прозрачности.</p>
+<p>set(red, green, blue, greyscale) - задает новые значения цвета и
+насыщенности.</p>
 </li></ul>
           
           
 
           
           <div class="method-source-code" id="set-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 320</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 393</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">set</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
         <span class="ruby-keyword">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">1</span>
-                <span class="ruby-ivar">@r</span>,<span class="ruby-ivar">@g</span>,<span class="ruby-ivar">@b</span>,<span class="ruby-ivar">@a</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">red</span>,<span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">green</span>,<span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">blue</span>,<span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">alpha</span>
+                <span class="ruby-ivar">@r</span>,<span class="ruby-ivar">@g</span>,<span class="ruby-ivar">@b</span>,<span class="ruby-ivar">@gs</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">red</span>,<span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">green</span>,<span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">blue</span>,<span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">gray</span>
         <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">4</span>
-                <span class="ruby-ivar">@r</span>,<span class="ruby-ivar">@g</span>,<span class="ruby-ivar">@b</span>,<span class="ruby-ivar">@a</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">1</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">2</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">3</span>]
+                <span class="ruby-ivar">@r</span>,<span class="ruby-ivar">@g</span>,<span class="ruby-ivar">@b</span>,<span class="ruby-ivar">@gs</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">1</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">2</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">3</span>]
         <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">3</span>
-                <span class="ruby-ivar">@r</span>,<span class="ruby-ivar">@g</span>,<span class="ruby-ivar">@b</span>,<span class="ruby-ivar">@a</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">1</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">2</span>],<span class="ruby-value">255.0</span>
+                <span class="ruby-ivar">@r</span>,<span class="ruby-ivar">@g</span>,<span class="ruby-ivar">@b</span>,<span class="ruby-ivar">@gs</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">1</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">2</span>],<span class="ruby-value">0.0</span>
         <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">2</span>
                 <span class="ruby-comment"># throw error like in Rect class</span>
         <span class="ruby-keyword">end</span>

@@ -274,93 +274,6 @@ if RUBY_VERSION.to_f>=1.9
 				@x,@y,@width,@height = 0, 0, 0, 0
 			end
 		end
-	
-
-		# Класс окна с реализацией всех возможностей, доступных при помощи Cigui.<br>
-		# Реализация выполнена для RGSS3.
-		#
-		class Win3
-			# X Coordinate of Window
-			attr_accessor :x
-			# Y Coordinate of Window
-			attr_accessor :y
-			# Width of Window
-			attr_accessor :width
-			# Height of Window
-			attr_accessor :height
-			# Speed movement
-			attr_accessor :speed
-			# Opacity of window. May be in range of 0 to 255
-			attr_accessor :opacity
-			# Back opacity of window. May be in range of 0 to 255
-			attr_accessor :back_opacity
-			# Label of window
-			attr_reader :label
-			# If window is active then it updates
-			attr_accessor :active
-			# Openness of window
-			attr_accessor :openness
-			# Window skin - what window looks like
-			attr_accessor :windowskin
-			
-			# Create window
-			def initialize
-				@x,@y,@width,@height = 0, 0, 192, 64
-				@speed=0
-				@opacity, @back_opacity, @contents_opacity = 255, 255, 255
-				@z, @tone, @openness = 100, Rect.new(0,0,0,0), 255
-				@active, @label = true, nil
-				@windowskin='window'
-				@items=[]
-			end
-			
-			# Resize (simple)
-			def resize(new_width, new_height)
-				@width=new_width
-				@height=new_height
-			end
-			
-			# Update window (do nothing now)
-			def update;end
-			
-			# Close window
-			def close
-				@openness=0
-			end
-			
-			# Open window
-			def open
-				@openness=255
-			end
-			
-			# Dispose window
-			def dispose;end
-			
-			def label=(string)
-				# make right label
-				string.gsub!(/[\[\]\(\)\'\"]/){''}
-				string.gsub!(/[ \t\<\>]/){'_'}
-				# then label it
-				@label = string
-			end
-		end
-		
-		# Класс спрайта со всеми параметрами, доступными в RGSS3. Пока пустой, ожидается обновление во время работы над спрайтами
-		# (ветка work-with-sprites в github).
-		#
-		class Spr3
-			# Создает новый спрайт
-			def initialize;end
-			
-			# Производит обновление спрайта
-			def update;end
-			
-			# Производит повторную отрисовку содержимого спрайта
-			def refresh;end
-			
-			# Удаляет спрайт
-			def dispose;end
-		end
 		
 		# Класс, хранящий данные о цвете в формате RGBA
 		# (красный, зеленый, синий и прозрачность). Каждое значение
@@ -429,6 +342,168 @@ if RUBY_VERSION.to_f>=1.9
 				@a=0 if @a<0
 				@a=255 if @a>255
 			end
+		end
+		
+		# Класс, хранящий данные о тонировании в ввиде четырех значений:
+		# красный, зеленый, синий и насыщенность. Последнее значение влияет
+		# на цветовую насыщенность, чем ниже его значение, тем сильнее
+		# цветовые оттенки заменяются на оттенки серого.
+		# Каждое значение, кроме последнего, является рациональным числом
+		# (число с плавающей точкой) и имеет значение от -255.0 до 255.0.
+		# Значение насыщенности лежит в пределах от 0 до 255.
+		# Все значения, выходящие за указанные интервалы,
+		# корректируются автоматически.
+		#
+		class Tone
+			# Создает экземпляр класса.
+			# * r, g, b - задает изначальные значения красного, зеленого и синего цветов
+			# * gs - задает насыщенность, по умолчанию имеет значение 0
+			def initialize(r,g,b,gs=0.0)
+				@r,@g,@b,@gs = r.to_f,g.to_f,b.to_f,gs.to_f
+				_normalize
+			end
+			
+			# Возвращает значение красного цвета
+			def red
+				@r
+			end
+			
+			# Возвращает значение зеленого цвета
+			def green
+				@r
+			end
+			
+			# Возвращает значение синего цвета
+			def blue
+				@r
+			end
+			
+			# Возвращает значение насыщенности
+			def gray
+				@gs
+			end
+			
+			# Задает новые значения цвета и насыщенности.<br>
+			# <b>Варианты параметров:</b>
+			# * set(Tone) - в качестве параметра задан другой экземпляр класса Tone
+			# Все значения цвета и прозрачности будут скопированы из него.
+			# * set(red, green, blue) - задает новые значения цвета.
+			# Прозрачность по умолчанию становится равна 255.0
+			# * set(red, green, blue, greyscale) - задает новые значения цвета и насыщенности.
+			def set(*args)
+				if args.size==1
+					@r,@g,@b,@gs = args[0].red,args[0].green,args[0].blue,args[0].gray
+				elsif args.size==4
+					@r,@g,@b,@gs = args[0],args[1],args[2],args[3]
+				elsif args.size==3
+					@r,@g,@b,@gs = args[0],args[1],args[2],0.0
+				elsif args.size==2
+					# throw error like in Rect class
+				end
+				_normalize
+			end
+			
+			private
+			
+			def _normalize
+				@r=-255 if @r<-255
+				@r=255 if @r>255
+				@g=-255 if @g<-255
+				@g=255 if @g>255
+				@b=-255 if @b<-255
+				@b=255 if @b>255
+				@gs=0 if @gs<0
+				@gs=255 if @gs>255
+			end
+		end
+		
+		# Console-only version of this class
+		
+		class Win3#:nodoc:
+			# X Coordinate of Window
+			attr_accessor :x
+			# Y Coordinate of Window
+			attr_accessor :y
+			# Width of Window
+			attr_accessor :width
+			# Height of Window
+			attr_accessor :height
+			# Speed movement
+			attr_accessor :speed
+			# Opacity of window. May be in range of 0 to 255
+			attr_accessor :opacity
+			# Back opacity of window. May be in range of 0 to 255
+			attr_accessor :back_opacity
+			# Label of window
+			attr_reader :label
+			# If window is active then it updates
+			attr_accessor :active
+			# Openness of window
+			attr_accessor :openness
+			# Window skin - what window looks like
+			attr_accessor :windowskin
+			# Tone of the window
+			attr_accessor :tone
+			#
+			
+			# Create window
+			def initialize
+				@x,@y,@width,@height = 0, 0, 192, 64
+				@speed=0
+				@opacity, @back_opacity, @contents_opacity = 255, 255, 255
+				@z, @tone, @openness = 100, Tone.new(0,0,0,0), 255
+				@active, @label = true, nil
+				@windowskin='window'
+				@items=[]
+			end
+			
+			# Resize (simple)
+			def resize(new_width, new_height)
+				@width=new_width
+				@height=new_height
+			end
+			
+			# Update window (do nothing now)
+			def update;end
+			
+			# Close window
+			def close
+				@openness=0
+			end
+			
+			# Open window
+			def open
+				@openness=255
+			end
+			
+			# Dispose window
+			def dispose;end
+			
+			def label=(string)
+				return if string.nil?
+				# make right label
+				string.gsub!(/[\[\]\(\)\'\"]/){''}
+				string.gsub!(/[ \t\<\>]/){'_'}
+				# then label it
+				@label = string
+			end
+		end
+		
+		# Класс спрайта со всеми параметрами, доступными в RGSS3. Пока пустой, ожидается обновление во время работы над спрайтами
+		# (ветка work-with-sprites в github).
+		#
+		class Spr3
+			# Создает новый спрайт
+			def initialize;end
+			
+			# Производит обновление спрайта
+			def update;end
+			
+			# Производит повторную отрисовку содержимого спрайта
+			def refresh;end
+			
+			# Удаляет спрайт
+			def dispose;end
 		end
 	end
 end
@@ -1040,7 +1115,13 @@ module CIGUI
 				end
 			end
 		end
-		arr.size=4
+		if arr.size<4
+			for index in 1..4-arr.size
+				arr<<0
+			end
+		elsif arr.size>4
+			arr.slice!(4,arr.size)
+		end
 		for index in 0...arr.size
 			arr[index]=dec(arr[index]) if arr[index].is_a? String
 			arr[index]=0 if arr[index].is_a? NilClass
@@ -1390,6 +1471,7 @@ module CIGUI
 				new_skin = string[/#{CMB[:window_skin_equal]}/i] ? substr(string,CMB[:window_skin_equal]) : @windows[@selection[:index]].windowskin
 				new_open = string[/#{CMB[:window_openness_equal]}/i] ? dec(string,CMB[:window_openness_equal]) : @windows[@selection[:index]].openness
 				new_label = string[/#{CMB[:select_by_label]}/i] ? substr(string,CMB[:select_by_label]) : @windows[@selection[:index]].label
+				new_tone = string[/#{CMB[:window_tone_index]}/i] ? rect(string) : @windows[@selection[:index]].tone
 				# Change it
 				if @selection[:type]==:window
 					@windows[@selection[:index]].x = new_x
@@ -1402,6 +1484,11 @@ module CIGUI
 					@windows[@selection[:index]].windowskin = new_skin
 					@windows[@selection[:index]].openness = new_open
 					@windows[@selection[:index]].label = new_label
+					if new_tone.is_a? Tone
+						@windows[@selection[:index]].tone.set(new_tone)
+					elsif new_tone.is_a? Array
+						@windows[@selection[:index]].tone.set(new_tone[0],new_tone[1],new_tone[2],new_tone[3])
+					end
 					@selection[:label] = new_label
 					@last_action = @windows[@selection[:index]]
 				end
@@ -1456,7 +1543,7 @@ end# END OF CIGUI MODULE
 begin
 	$do=[
 		'create window',
-		'dispose this window'
+		'this window set tone=[1;20;3]'
 	]
 	CIGUI.setup
 	CIGUI.update
