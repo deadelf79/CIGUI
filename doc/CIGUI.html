@@ -78,8 +78,6 @@
     
     <li ><a href="#method-i-last">#last</a>
     
-    <li ><a href="#method-i-localize_ru">#localize_ru</a>
-    
     <li ><a href="#method-i-rect">#rect</a>
     
     <li ><a href="#method-i-setup">#setup</a>
@@ -242,7 +240,7 @@ href="CIGUI.html#method-i-update_by_user">update_by_user</a>).<br> Для
 
           
           <div class="method-source-code" id="boolean-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 986</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 993</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">boolean</span>(<span class="ruby-identifier">source_string</span>)
         <span class="ruby-identifier">match</span>=<span class="ruby-node">&quot;((?:#{VOCAB[:true]}|#{VOCAB[:false]}))&quot;</span>
         <span class="ruby-keyword">if</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">match</span>).<span class="ruby-identifier">size</span><span class="ruby-operator">&gt;</span><span class="ruby-value">1</span>
@@ -297,7 +295,7 @@ href="CIGUI.html#method-i-update">update</a>.</p>
 
           
           <div class="method-source-code" id="dec-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 1047</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 1054</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">dec</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">prefix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">postfix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
   <span class="ruby-identifier">frac</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">prefix</span>, <span class="ruby-identifier">postfix</span>, <span class="ruby-identifier">std_conversion</span>).<span class="ruby-identifier">to_i</span>
 <span class="ruby-keyword">rescue</span>
@@ -370,7 +368,7 @@ href="CIGUI.html#method-i-update">update</a>.</p>
 
           
           <div class="method-source-code" id="decimal-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 942</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 949</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">decimal</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
       <span class="ruby-identifier">fraction</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">std_conversion</span>).<span class="ruby-identifier">to_i</span>
     <span class="ruby-keyword">rescue</span>
@@ -421,7 +419,7 @@ href="CIGUI.html#method-i-update">update</a>.</p>
 
           
           <div class="method-source-code" id="frac-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 1065</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 1072</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">frac</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">prefix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">postfix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
   <span class="ruby-identifier">match</span>=<span class="ruby-identifier">prefix</span><span class="ruby-operator">+</span><span class="ruby-string">&#39;([\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)&#39;</span><span class="ruby-operator">+</span><span class="ruby-identifier">postfix</span>
   <span class="ruby-keyword">return</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-node">/#{match}/i</span>)[<span class="ruby-value">1</span>].<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">/[\s_]*/</span>){}.<span class="ruby-identifier">to_f</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">std_conversion</span>
@@ -482,7 +480,7 @@ href="CIGUI.html#method-i-update">update</a>.</p>
 
           
           <div class="method-source-code" id="fraction-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 963</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 970</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">fraction</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
   <span class="ruby-identifier">match</span>=<span class="ruby-string">&#39;(?:[\[|&quot;\(\])[\s]*([\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)(?:[\]|&quot;\)\])&#39;</span>
   <span class="ruby-keyword">return</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-node">/#{match}/i</span>)[<span class="ruby-value">1</span>].<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">/[\s_]*/</span>){}.<span class="ruby-identifier">to_f</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">std_conversion</span>
@@ -520,59 +518,9 @@ href="CIGUI.html#method-i-update">update</a>.</p>
 
           
           <div class="method-source-code" id="last-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 1095</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 1102</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">last</span>
         <span class="ruby-ivar">@last_action</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">?</span> <span class="ruby-ivar">@last_action</span> <span class="ruby-operator">:</span> <span class="ruby-ivar">@last_action</span>.<span class="ruby-identifier">inspect</span>
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-localize_ru" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">localize_ru</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p>Смотри файл <strong>localize.rb</strong><br> Метод, который добавляет
-русский перевод команд Cigui, дополняя текущий массив <a
-href="CIGUI.html#VOCAB">VOCAB</a></p>
-          
-          
-
-          
-          <div class="method-source-code" id="localize_ru-source">
-            <pre><span class="ruby-comment"># File localize.rb, line 15</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">localize_ru</span>
-        <span class="ruby-ivar">@original_VOCAB</span><span class="ruby-operator">||=</span><span class="ruby-constant">VOCAB</span>
-        <span class="ruby-comment">#--COMMON unbranch</span>
-        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:please</span>]   = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:please</span>]<span class="ruby-operator">+</span><span class="ruby-string">&#39;|п[оа]жал[у]?[й]?ста&#39;</span>
-        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:last</span>]     = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:last</span>]  <span class="ruby-operator">+</span><span class="ruby-string">&#39;|последн(?:ее|юю|яя)|это&#39;</span>
-        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:select</span>]   = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:select</span>]<span class="ruby-operator">+</span><span class="ruby-string">&#39;|выбор&#39;</span>
-        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:true</span>]     = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:true</span>]  <span class="ruby-operator">+</span><span class="ruby-string">&#39;|истин[н]*[аоея]|вкл(?:юч(?:ен[ноаыяе]*|ит[ь]?)?)&#39;</span>
-        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:false</span>]    = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:false</span>] <span class="ruby-operator">+</span><span class="ruby-string">&#39;|ло(?:ж|ш)[ъь]*||выкл(?:юч(?:ен[ноаыяе]*|ит[ь]?)?)&#39;</span>
-        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:equal</span>]    = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:equal</span>] <span class="ruby-operator">+</span><span class="ruby-string">&#39;&#39;</span>
-        <span class="ruby-comment">#--CIGUI branch</span>
-        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:main</span>]    = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:main</span>] <span class="ruby-operator">+</span><span class="ruby-string">&#39;|сигуи&#39;</span>
-        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:start</span>]   = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:start</span>]<span class="ruby-operator">+</span><span class="ruby-string">&#39;|запус(?:ти(?:т[ь]?)?|к)&#39;</span>
-        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:finish</span>]  = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:equal</span>]<span class="ruby-operator">+</span><span class="ruby-string">&#39;|заверш(?:и(?:т[ь]?)?|ен[иемя]*)?&#39;</span>
-        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:flush</span>]   = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:equal</span>]<span class="ruby-operator">+</span><span class="ruby-string">&#39;|очист(?:к[аойеу]|[ить])&#39;</span>
-        <span class="ruby-constant">VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:restart</span>] = <span class="ruby-ivar">@original_VOCAB</span>[<span class="ruby-value">:cigui</span>][<span class="ruby-value">:equal</span>]<span class="ruby-operator">+</span><span class="ruby-string">&#39;|перезапус(?:ти(?:ть)?|к)|ре[\s_-]*старт|ре[\s_-]*сет&#39;</span>
-        <span class="ruby-comment">#--WINDOW branch</span>
-        
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -609,7 +557,7 @@ href="CIGUI.html#VOCAB">VOCAB</a></p>
 
           
           <div class="method-source-code" id="rect-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 1002</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 1009</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">rect</span>(<span class="ruby-identifier">source_string</span>)
         <span class="ruby-identifier">read</span>=<span class="ruby-string">&#39;&#39;</span>
         <span class="ruby-identifier">start</span>=<span class="ruby-keyword">false</span>
@@ -683,7 +631,7 @@ end</pre>
 
           
           <div class="method-source-code" id="setup-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 862</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 869</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">setup</span>
   <span class="ruby-identifier">$do</span><span class="ruby-operator">||=</span>[]
   <span class="ruby-identifier">$do</span>.<span class="ruby-identifier">insert</span> <span class="ruby-value">0</span>,<span class="ruby-string">&#39;cigui start&#39;</span>
@@ -733,7 +681,7 @@ href="CIGUI.html#method-i-update">update</a>.</p>
 
           
           <div class="method-source-code" id="substr-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 1084</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 1091</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">substr</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">prefix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">postfix</span>=<span class="ruby-string">&#39;&#39;</span>)
         <span class="ruby-identifier">match</span>=<span class="ruby-identifier">prefix</span><span class="ruby-operator">+</span><span class="ruby-string">&#39;([\w\s _\!\#\$\%\^\&amp;\*]*)&#39;</span><span class="ruby-operator">+</span><span class="ruby-identifier">postfix</span>
         <span class="ruby-keyword">return</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">match</span>)[<span class="ruby-value">1</span>]
@@ -775,7 +723,7 @@ href="CIGUI.html#method-i-update">update</a>.</p>
 
           
           <div class="method-source-code" id="substring-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 977</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 984</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">substring</span>(<span class="ruby-identifier">source_string</span>)
         <span class="ruby-identifier">match</span>=<span class="ruby-string">&#39;(?:[\[\(\&quot;\])[\s]*([\w\s _\!\#\$\%\^\&amp;\*]*)[\s]*(?:[\]|&quot;\)\])&#39;</span>
         <span class="ruby-keyword">return</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">match</span>)[<span class="ruby-value">1</span>]
@@ -821,7 +769,7 @@ href="CIGUI.html#method-i-update_by_user">update_by_user</a>, который м�
 
           
           <div class="method-source-code" id="update-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 878</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 885</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">update</span>(<span class="ruby-identifier">clear_after_update</span>=<span class="ruby-keyword">true</span>)
             <span class="ruby-identifier">$do</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
                     <span class="ruby-identifier">_restart?</span> <span class="ruby-identifier">line</span>
@@ -877,7 +825,7 @@ href="CIGUI.html#method-i-update_by_user">update_by_user</a>, который м�
 
           
           <div class="method-source-code" id="update_by_user-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 916</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 923</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">update_by_user</span>(<span class="ruby-identifier">string</span>)
         
 <span class="ruby-keyword">end</span></pre>
@@ -910,7 +858,7 @@ href="CIGUI.html#method-i-update_by_user">update_by_user</a>, который м�
 
           
           <div class="method-source-code" id="update_internal_objects-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 893</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 900</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">update_internal_objects</span>
         <span class="ruby-ivar">@windows</span>.<span class="ruby-identifier">each</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">win</span><span class="ruby-operator">|</span>
                 <span class="ruby-identifier">win</span>.<span class="ruby-identifier">update</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">win</span>.<span class="ruby-identifier">is_a?</span> <span class="ruby-constant">Win3</span>

@@ -9,7 +9,7 @@
 #
 module CIGUI
 	class << self
-		# Смотри файл <b>localize.rb</b><br>
+		#:nodoc:
 		# Метод, который добавляет русский перевод команд
 		# Cigui, дополняя текущий массив VOCAB
 		def localize_ru
@@ -59,7 +59,7 @@ module CIGUI
 			VOCAB[:window][:height]    = @original_VOCAB[:window][:height]  +'|выс[оа]т[аойеуы]'
 		end
 		
-		# Смотри файл <b>localize.rb</b><br>
+		#:nodoc:
 		# Вносит вызов метода localize_ru в инициализацию модуля
 		alias original_setup setup
 		def setup

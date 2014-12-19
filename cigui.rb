@@ -788,6 +788,7 @@ module CIGUI
 		:windowskin=>'skin|window[\s_]*skin',
 		:cursor=>'cursor',
 			:rect=>'rect',
+		:fill=>'fill',
 	}
   }
   
@@ -796,11 +797,15 @@ module CIGUI
   # составления регулярных выражений не рекомендуется.
   CMB={
 	#~COMMON unbranch
+		# selection window
 	:select_window=>"(?:(?:#{VOCAB[:select]})+[\s]*(?:#{VOCAB[:window][:main]})+)|"+
 		"(?:(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:select]})+)",
-	:select_by_index=>"(?:#{VOCAB[:window][:index]})+(?:#{VOCAB[:equal]}|[\s]*)+",
-	:select_by_label=>"(?:#{VOCAB[:window][:label]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+	:select_by_index=>"(?:(?:#{VOCAB[:window][:index]})+(?:#{VOCAB[:equal]}|[\s]*)+)|"+
+		"(?:(?:#{VOCAB[:window][:indexed]})+[\s]*(?:#{VOCAB[:window][:as]})?(?:#{VOCAB[:equal]}|[\s]*)?)",
+	:select_by_label=>"(?:(?:#{VOCAB[:window][:label]})+(?:#{VOCAB[:equal]}|[\s]*)+)|"+
+		"(?:(?:#{VOCAB[:window][:labeled]})+[\s]*(?:#{VOCAB[:window][:as]})?(?:#{VOCAB[:equal]}|[\s]*)?)",
 	#~CIGUI branch
+		# commands only
 	:cigui_start=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+",
 	:cigui_finish=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:finish]})+)+",
 	:cigui_flush=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:flush]})+)+",
@@ -809,6 +814,8 @@ module CIGUI
 		# expressions
 	:window_x_equal=>"(?:#{VOCAB[:window][:x]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_y_equal=>"(?:#{VOCAB[:window][:y]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+	:window_ox_equal=>"(?:#{VOCAB[:window][:ox]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+	:window_oy_equal=>"(?:#{VOCAB[:window][:oy]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_w_equal=>"(?:#{VOCAB[:window][:width]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_h_equal=>"(?:#{VOCAB[:window][:height]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_s_equal=>"(?:#{VOCAB[:window][:speed]})+(?:#{VOCAB[:equal]}|[\s]*)+",
@@ -818,6 +825,7 @@ module CIGUI
 	:window_active_equal=>"(?:#{VOCAB[:window][:active]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_skin_equal=>"(?:#{VOCAB[:window][:windowskin]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_openness_equal=>"(?:#{VOCAB[:window][:openness]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+	:window_tone_equal=>"(?:#{VOCAB[:window][:tone]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 		# commands
 	:window_create=>"(((?:#{VOCAB[:window][:create]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
 		"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:create]})+)",
@@ -825,6 +833,8 @@ module CIGUI
 		"((?:#{VOCAB[:window][:with]})+[\s]*(?:#{VOCAB[:window][:width]}|#{VOCAB[:window][:height]}))",
 	:window_dispose=>"(((?:#{VOCAB[:window][:dispose]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
 		"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:dispose]})+)",
+	:window_dispose_this=>"(((?:#{VOCAB[:window][:dispose]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
+		"((?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:dispose]})+)",
 	:window_move=>"(?:(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:move]}))|"+
 		"(?:(?:#{VOCAB[:window][:move]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})))",
 	:window_resize=>"(?:(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:resize]}))|"+
@@ -835,10 +845,10 @@ module CIGUI
 		"(?:(?:#{VOCAB[:window][:activate]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+)",
 	:window_deactivate=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:deactivate]})+)|"+
 		"(?:(?:#{VOCAB[:window][:deactivate]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+)",
-	:window_open=>"(?:(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:open]}))|"+
-		"(?:(?:#{VOCAB[:window][:open]})+[\s]*(?:#{VOCAB[:window][:main]}))|",
+	:window_open=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:open]}))|"+
+		"(?:(?:#{VOCAB[:window][:open]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]}))",
 	:window_close=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:close]}))|"+
-		"(?:(?:#{VOCAB[:window][:close]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]}))|",
+		"(?:(?:#{VOCAB[:window][:close]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]}))",
   }
   
   # 
@@ -1254,21 +1264,31 @@ module CIGUI
 			@windows.last.y = new_y
 			@windows.last.width = new_w
 			@windows.last.height = new_h
-			# Set last action to inspect this window
-			@last_action = @windows.last
-			# Select this window
-			@selection[:type]=:window
-			@selection[:index]=@windows.size-1
 		end
+		# Set last action to inspect this window
+		@last_action = @windows.last
+		# Select this window
+		@selection[:type]=:window
+		@selection[:index]=@windows.size-1
 	end #--------------------end of '__wcreate?'-------------------------
 	
 	# Examples:
 	# dispose window index=DEC
 	# dispose window label=STR
 	def __wdispose?(string)
+		# Если какое-то окно уже выбрано, то...
+		matches=string.match(/#{CMB[:window_dispose_this]}/i)
+		if matches
+			if @selection[:type]==:window #(0...@windows.size).include?(@selection[:index])
+				# ...удалим его как полагается...
+				@windows[@selection[:index]].dispose if @windows[@selection[:index]].methods.include? :dispose
+				@windows.delete_at(@selection[:index])
+				@last_action = 'CIGUI disposed window'
+				return
+			end
+		end
+		# ... а если же нет, то посмотрим, указаны ли его индекс или метка.
 		matches=string.match(/#{CMB[:window_dispose]}/i)
-		# Здесь был какой-то собственный select window
-		# и я решил от него избавиться.
 		if matches
 			if string.match(/#{CMB[:select_by_index]}/i)
 				index=dec(string,CMB[:select_by_index])
@@ -1283,10 +1303,20 @@ module CIGUI
 					"\n\tcurrent line of $do: #{string}"
 				end
 			elsif string.match(/#{CMB[:select_by_label]}/i)
-				
+				label = substr(string,CMB[:select_by_label])
+				if label!=nil
+					for index in 0...@windows.size
+						if @windows[index]!=nil && @windows[index].is_a?(Win3)
+							if @windows[index].label==label
+								break
+							end
+						end
+					end
+				end
+				@windows[index].dispose if @windows[index].methods.include? :dispose
+				@windows.delete_at(index)
 			end
 			@last_action = 'CIGUI disposed window'
-			
 		end
 	end#--------------------end of '__wdispose?'-------------------------
 	
@@ -1426,7 +1456,7 @@ end# END OF CIGUI MODULE
 begin
 	$do=[
 		'create window',
-		'close this window'
+		'dispose this window'
 	]
 	CIGUI.setup
 	CIGUI.update
