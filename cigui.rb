@@ -418,12 +418,15 @@ if RUBY_VERSION.to_f>=1.9
 		end
 		
 		# Console-only version of this class
-		
 		class Win3#:nodoc:
 			# X Coordinate of Window
 			attr_accessor :x
 			# Y Coordinate of Window
 			attr_accessor :y
+			# X Coordinate of contens
+			attr_accessor :ox
+			# Y Coordinate of contents
+			attr_accessor :oy
 			# Width of Window
 			attr_accessor :width
 			# Height of Window
@@ -449,7 +452,7 @@ if RUBY_VERSION.to_f>=1.9
 			# Create window
 			def initialize
 				@x,@y,@width,@height = 0, 0, 192, 64
-				@speed=0
+				@ox,@oy,@speed=0,0,:auto
 				@opacity, @back_opacity, @contents_opacity = 255, 255, 255
 				@z, @tone, @openness = 100, Tone.new(0,0,0,0), 255
 				@active, @label = true, nil
@@ -648,7 +651,7 @@ end
 # Для передачи команд используйте массив $do, например:
 # * $do<<"команда"
 # * $do.push("команда")
-# Оба варианта имеют одно и то же действие.<br>
+# Оба варианта имеют один и тот же результат.<br>
 # Перед запуском модуля вызовите метод CIGUI.setup.<br>
 # Для исполнения команд вызовите метод CIGUI.update.<br>
 #
@@ -942,7 +945,7 @@ module CIGUI
 	# Инициализирует массив $do, если он еще не был создан. В этот массив пользователь подает
 	# команды для исполнения при следующем запуске метода #update.<br>
 	# Если даже массив $do был инициализирован ранее,
-	# то исполняет команду <i>cigui start</i> прежде всего.
+	# то исполняет команду <i>cigui start</i> прежде всего.<br>
 	# <b>Пример:</b>
 	#	begin
 	#		CIGUI.setup
@@ -980,8 +983,8 @@ module CIGUI
 		$do.clear if clear_after_update
     end
 	
-	# Вызывает обновление всех объектов из внутренних массивов windows и sprite.
-	#
+	# Вызывает обновление всех объектов из внутренних массивов ::windows и ::sprites.<br>
+	# Вызывается автоматически по окончании обработки команд из массива $do в методе #update.
 	def update_internal_objects
 		@windows.each{ |win|
 			win.update if win.is_a? Win3
@@ -993,16 +996,16 @@ module CIGUI
 	
 	# Метод обработки текста, созданный для пользовательских модификаций, не влияющих на работу
 	# встроенных обработчиков.<br>
-	# Используйте <i>alias</i> этого метода для добавления обработки собственных команд.<br>
+	# Используйте <i>alias</i> этого метода при добавлении обработки собственных команд.<br>
 	# <b>Пример:</b>
 	#	alias my_update update_by_user
 	#	def update_by_user
 	#		# add new word
-	#		VOCAB[:window][:close]='close'
-	#		# add 'window close' combination
-	#		CMB[:window_close]="(?:(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:close]})+)"
+	#		VOCAB[:window][:throw]='throw'
+	#		# add 'window throw' combination
+	#		CMB[:window_throw]="(?:(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:throw]})+)"
 	#		# call method
-	#		window_close? line
+	#		window_throw? line
 	#	end
 	#
 	def update_by_user(string)
@@ -1087,7 +1090,7 @@ module CIGUI
 	
 	# Возвращает массив из четырех значений для передачи в качестве параметра
 	# в объекты класса Rect. Массив в строке должен быть помещен в квадратные скобки,
-	# а значения в нем должны разделяться точкой с запятой.<br>
+	# а значения в нем должны разделяться <b>точкой с запятой.</b><br>
 	# <b>Пример:</b>
 	#	rect('[1;2,0;3.5;4.0_5]') # => [ 1, 2.0, 3.5, 4.05 ]
 	#
@@ -1188,7 +1191,10 @@ module CIGUI
 	
 	# Возвращает сообщение о последнем произведенном действии
 	# или классе последнего использованного объекта, используя метод
-	# Kernel.inspect.
+	# Kernel.inspect.<br>
+	# <b>Пример:</b>
+	#	CIGUI.setup
+	#	puts CIGUI.last # => 'CIGUI started'
 	#
 	def last
 		@last_action.is_a?(String) ? @last_action : @last_action.inspect
@@ -1462,6 +1468,8 @@ module CIGUI
 				# Read params
 				new_x = string[/#{CMB[:window_x_equal]}/i] ? dec(string,CMB[:window_x_equal]) : @windows[@selection[:index]].x
 				new_y = string[/#{CMB[:window_y_equal]}/i] ? dec(string,CMB[:window_y_equal]) : @windows[@selection[:index]].y
+				new_ox = string[/#{CMB[:window_ox_equal]}/i] ? dec(string,CMB[:window_ox_equal]) : @windows[@selection[:index]].ox
+				new_oy = string[/#{CMB[:window_oy_equal]}/i] ? dec(string,CMB[:window_oy_equal]) : @windows[@selection[:index]].oy
 				new_w = string[/#{CMB[:window_w_equal]}/i] ? dec(string,CMB[:window_w_equal]) : @windows[@selection[:index]].width
 				new_h = string[/#{CMB[:window_h_equal]}/i] ? dec(string,CMB[:window_h_equal]) : @windows[@selection[:index]].height
 				new_s = string[/#{CMB[:window_s_equal]}/i] ? dec(string,CMB[:window_s_equal]) : @windows[@selection[:index]].speed
@@ -1476,6 +1484,8 @@ module CIGUI
 				if @selection[:type]==:window
 					@windows[@selection[:index]].x = new_x
 					@windows[@selection[:index]].y = new_y
+					@windows[@selection[:index]].ox = new_ox
+					@windows[@selection[:index]].oy = new_oy
 					@windows[@selection[:index]].resize(new_w,new_h)
 					@windows[@selection[:index]].speed = new_s
 					@windows[@selection[:index]].opacity = new_a
