@@ -297,17 +297,17 @@ if RUBY_VERSION.to_f>=1.9
 			
 			# Возвращает значение зеленого цвета
 			def green
-				@r
+				@g
 			end
 			
 			# Возвращает значение синего цвета
 			def blue
-				@r
+				@b
 			end
 			
 			# Возвращает значение прозрачности
 			def alpha
-				@r
+				@a
 			end
 			
 			# Задает новые значения цвета и прозрачности.<br>
@@ -370,12 +370,12 @@ if RUBY_VERSION.to_f>=1.9
 			
 			# Возвращает значение зеленого цвета
 			def green
-				@r
+				@g
 			end
 			
 			# Возвращает значение синего цвета
 			def blue
-				@r
+				@b
 			end
 			
 			# Возвращает значение насыщенности
@@ -880,10 +880,10 @@ module CIGUI
 		# selection window
 	:select_window=>"(?:(?:#{VOCAB[:select]})+[\s]*(?:#{VOCAB[:window][:main]})+)|"+
 		"(?:(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:select]})+)",
-	:select_by_index=>"(?:(?:#{VOCAB[:window][:index]})+(?:#{VOCAB[:equal]}|[\s]*)+)|"+
-		"(?:(?:#{VOCAB[:window][:indexed]})+[\s]*(?:#{VOCAB[:window][:as]})?(?:#{VOCAB[:equal]}|[\s]*)?)",
-	:select_by_label=>"(?:(?:#{VOCAB[:window][:label]})+(?:#{VOCAB[:equal]}|[\s]*)+)|"+
-		"(?:(?:#{VOCAB[:window][:labeled]})+[\s]*(?:#{VOCAB[:window][:as]})?(?:#{VOCAB[:equal]}|[\s]*)?)",
+	:select_by_index=>"(?:(?:(?:#{VOCAB[:window][:index]})+(?:#{VOCAB[:equal]}|[\s]*)+)|"+
+		"(?:(?:#{VOCAB[:window][:indexed]})+[\s]*(?:#{VOCAB[:window][:as]})?(?:#{VOCAB[:equal]}|[\s]*)?))",
+	:select_by_label=>"(?:(?:(?:#{VOCAB[:window][:label]})+(?:#{VOCAB[:equal]}|[\s]*)+)|"+
+		"(?:(?:#{VOCAB[:window][:labeled]})+[\s]*(?:#{VOCAB[:window][:as]})?(?:#{VOCAB[:equal]}|[\s]*)?))",
 	#~CIGUI branch
 		# commands only
 	:cigui_start=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+",
@@ -942,6 +942,12 @@ module CIGUI
 	# Открыт только для чтения.
 	# 
 	attr_reader :sprites
+	
+	# 
+	attr_reader :last_log
+	
+	#
+	attr_accessor :logging
 	
     # Требуется выполнить этот метод перед началом работы с CIGUI.<br>
 	# Инициализирует массив $do, если он еще не был создан. В этот массив пользователь подает
@@ -1068,6 +1074,7 @@ module CIGUI
 	# Данный метод производит поиск подстроки, используемой в качестве параметра.<br>
 	# Строка должна быть заключена в одинарные или двойные кавычки или же в круглые
 	# или квадратные скобки.
+	# <b>Пример:</b>
 	# 	substring('[Hello cruel world!]') # => Hello cruel world!
 	#	substring("set window label='SomeSome' and no more else") # => SomeSome
 	#
@@ -1174,19 +1181,19 @@ module CIGUI
 	end
 	# Данный метод работает по аналогии с #substring, но производит поиск в строке
 	# с учетом указанных префикса (текста перед подстрокой) и постфикса (после подстроки).<br>
-	# Метод не требует обязательного указания символов квадратных и круглых скобок,
-	# а также одинарных и двойных кавычек вокруг подстроки.<br>
+	# Указание квадратных или круглый скобок, а также экранированных одинарных или двойных кавычек
+	# в строке после префикса обязательно.
 	# prefix и postfix могут содержать символы, используемые в регулярных выражениях
-	# для более точного поиска.
+	# для более точного поиска.<br>
+	# <b>Пример:</b>
 	#	puts 'Who can make me strong?'
-	#	someone = substring("Make me invincible",'Make','invincible')
+	#	someone = substring("Make[ me ]invincible",'Make','invincible')
 	#	puts 'Only'+someone # => 'Only me'
 	# Метод работает вне зависимости от работы модуля - нет необходимости
 	# запускать для вычисления #setup и #update.
 	#
 	def substr(source_string, prefix='', postfix='')
-		match=prefix+"([\w\s _\!\#\$\%\^\&\*]*)"+postfix
-		p source_string.match(/#{match}/i)
+		match=prefix+'(?:[\[\(\"\'])[\s]*([\w\s _\!\#\$\%\^\&\*]*)[\s]*(?:[\]|"\)\'])'+postfix
 		return source_string.match(/#{match}/i)[1]
 	rescue
 		raise "#{CIGUIERR::CantReadString}\n\tcurrent line of $do: #{source_string}"
@@ -1221,7 +1228,9 @@ module CIGUI
 	
 	# SETUP CIGUI / CLEAR FOR RESTART
 	def _setup
-	  @last_action = nil
+	  @last_action ||= nil
+	  @logging ||= true
+	  @last_log ||= []
 	  @finished = false
 	  @windows = []
 	  @sprites = []
@@ -1237,9 +1246,10 @@ module CIGUI
 	def _restart?(string)
 		matches=string.match(/#{CMB[:cigui_restart]}/)
 		if matches
-			__flush?('cigui flush') if not finished
+			__flush?('cigui flush') if not @finished
 			_setup
 			@last_action = 'CIGUI restarted'
+			@last_log << @last_action if @logging
 		else
 			raise "#{CIGUIERR::CantInterpretCommand}\n\tcurrent line of $do: #{string}" if @finished
 		end
@@ -1281,6 +1291,7 @@ module CIGUI
 				end
 			end
 			@last_action = @selection
+			@last_log << @last_action if @logging
 		end
 	end#--------------------end of '__swindow?'-------------------------
 	
@@ -1297,6 +1308,7 @@ module CIGUI
 			begin
 				@finished = false
 				@last_action = 'CIGUI started'
+				@last_log << @last_action if @logging
 			rescue
 				raise "#{CIGUIERR::CantStart}\n\tcurrent line of $do: #{string}"
 			end
@@ -1308,6 +1320,7 @@ module CIGUI
 		if matches
 			@finished = true
 			@last_action = 'CIGUI finished'
+			@last_log << @last_action if @logging
 		end
 	end
 	
@@ -1319,6 +1332,7 @@ module CIGUI
 			@sprites.each{|item|item.dispose}
 			@sprites.clear
 			@last_action = 'CIGUI cleared'
+			@last_log << @last_action if @logging
 		end
 	end
 	
@@ -1350,30 +1364,30 @@ module CIGUI
 				rescue
 					@windows<<NilClass
 				end
-				@last_action = @windows.last
 			rescue
 				raise "#{CIGUIERR::CannotCreateWindow}\n\tcurrent line of $do: #{string}"
 			end
+			# Read params
+			if string.match(/#{CMB[:window_create_atORwith]}/i)
+				# at OR with: check x and y
+				new_x = string[/#{CMB[:window_x_equal]}/i] ? dec(string,CMB[:window_x_equal]) : @windows.last.x
+				new_y = string[/#{CMB[:window_y_equal]}/i] ? dec(string,CMB[:window_y_equal]) : @windows.last.y
+				# at OR with: check w and h
+				new_w = string[/#{CMB[:window_w_equal]}/i] ? dec(string,CMB[:window_w_equal]) : @windows.last.width
+				new_h = string[/#{CMB[:window_h_equal]}/i] ? dec(string,CMB[:window_h_equal]) : @windows.last.height
+				# Set parameters for created window
+				@windows.last.x = new_x
+				@windows.last.y = new_y
+				@windows.last.width = new_w
+				@windows.last.height = new_h
+			end
+			# Set last action to inspect this window
+			@last_action = @windows.last
+			@last_log << @last_action if @logging
+			# Select this window
+			@selection[:type]=:window
+			@selection[:index]=@windows.size-1
 		end
-		# Read params
-		if string.match(/#{CMB[:window_create_atORwith]}/i)
-			# at OR with: check x and y
-			new_x = string[/#{CMB[:window_x_equal]}/i] ? dec(string,CMB[:window_x_equal]) : @windows.last.x
-			new_y = string[/#{CMB[:window_y_equal]}/i] ? dec(string,CMB[:window_y_equal]) : @windows.last.y
-			# at OR with: check w and h
-			new_w = string[/#{CMB[:window_w_equal]}/i] ? dec(string,CMB[:window_w_equal]) : @windows.last.width
-			new_h = string[/#{CMB[:window_h_equal]}/i] ? dec(string,CMB[:window_h_equal]) : @windows.last.height
-			# Set parameters for created window
-			@windows.last.x = new_x
-			@windows.last.y = new_y
-			@windows.last.width = new_w
-			@windows.last.height = new_h
-		end
-		# Set last action to inspect this window
-		@last_action = @windows.last
-		# Select this window
-		@selection[:type]=:window
-		@selection[:index]=@windows.size-1
 	end #--------------------end of '__wcreate?'-------------------------
 	
 	# Examples:
@@ -1388,6 +1402,7 @@ module CIGUI
 				@windows[@selection[:index]].dispose if @windows[@selection[:index]].methods.include? :dispose
 				@windows.delete_at(@selection[:index])
 				@last_action = 'CIGUI disposed window'
+				@last_log << @last_action if @logging
 				return
 			end
 		end
@@ -1420,7 +1435,8 @@ module CIGUI
 				@windows[index].dispose if @windows[index].methods.include? :dispose
 				@windows.delete_at(index)
 			end
-			@last_action = 'CIGUI disposed window'
+			@last_action = 'CIGUI disposed window by index or label'
+			@last_log << @last_action if @logging
 		end
 	end#--------------------end of '__wdispose?'-------------------------
 	
@@ -1443,6 +1459,7 @@ module CIGUI
 					@windows[@selection[:index]].y = new_y
 					@windows[@selection[:index]].speed = new_s
 					@last_action = @windows[@selection[:index]]
+					@last_log << @last_action if @logging
 				end
 			end
 		end
@@ -1462,6 +1479,7 @@ module CIGUI
 				if @selection[:type]==:window
 					@windows[@selection[:index]].resize(new_w,new_h)
 					@last_action = @windows[@selection[:index]]
+					@last_log << @last_action if @logging
 				end
 			end
 		end
@@ -1495,8 +1513,8 @@ module CIGUI
 				new_act = string[/#{CMB[:window_active_equal]}/i] ? bool(string,CMB[:window_active_equal]) : @windows[@selection[:index]].active
 				new_skin = string[/#{CMB[:window_skin_equal]}/i] ? substr(string,CMB[:window_skin_equal]) : @windows[@selection[:index]].windowskin
 				new_open = string[/#{CMB[:window_openness_equal]}/i] ? dec(string,CMB[:window_openness_equal]) : @windows[@selection[:index]].openness
-				new_label = string[/#{CMB[:select_by_label]}/i] ? substring(string) : @windows[@selection[:index]].label
-				new_tone = string[/#{CMB[:window_tone_index]}/i] ? rect(string) : @windows[@selection[:index]].tone
+				new_label = string[/#{CMB[:select_by_label]}/i] ? substr(string,CMB[:select_by_label]) : @windows[@selection[:index]].label
+				new_tone = string[/#{CMB[:window_tone_equal]}/i] ? rect(string) : @windows[@selection[:index]].tone
 				# Change it
 				if @selection[:type]==:window
 					@windows[@selection[:index]].x = new_x
@@ -1518,6 +1536,7 @@ module CIGUI
 					end
 					@selection[:label] = new_label
 					@last_action = @windows[@selection[:index]]
+					@last_log << @last_action if @logging
 				end
 			end
 		end
@@ -1529,6 +1548,7 @@ module CIGUI
 			if @selection[:type]==:window
 				@windows[@selection[:index]].active=true
 				@last_action = @windows[@selection[:index]]
+				@last_log << @last_action if @logging
 			end
 		end
 	end#--------------------end of '__wactivate?'-------------------------
@@ -1539,6 +1559,7 @@ module CIGUI
 			if @selection[:type]==:window
 				@windows[@selection[:index]].active=false
 				@last_action = @windows[@selection[:index]]
+				@last_log << @last_action if @logging
 			end
 		end
 	end#--------------------end of '__wdeactivate?'-------------------------
@@ -1549,6 +1570,7 @@ module CIGUI
 			if @selection[:type]==:window
 				@windows[@selection[:index]].open
 				@last_action = @windows[@selection[:index]]
+				@last_log << @last_action if @logging
 			end
 		end
 	end#--------------------end of '__wopen?'-------------------------
@@ -1559,6 +1581,7 @@ module CIGUI
 			if @selection[:type]==:window
 				@windows[@selection[:index]].close
 				@last_action = @windows[@selection[:index]]
+				@last_log << @last_action if @logging
 			end
 		end
 	end#--------------------end of '__wopen?'-------------------------
@@ -1573,7 +1596,8 @@ begin
 		'this window set ox=22,oy=33,tone=[255;123;40;20],label=[Current],speed=0,windowskin="Something other"',
 		'close this window',
 		'deactivate this window',
-		'this window set active=true'
+		'this window set active=true',
+		'cigui restart'
 	]
 	CIGUI.setup
 	CIGUI.update
