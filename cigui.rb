@@ -1072,7 +1072,7 @@ module CIGUI
 	# запускать для вычисления #setup и #update.
 	#
 	def fraction(source_string, std_conversion=true)
-	  match='(?:[\[|"\(\'])[\s]*([\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)(?:[\]|"\)\'])'
+	  match='(?:[\[|"\(\'])[\s]*([\-\+]?[\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)(?:[\]|"\)\'])'
 	  return source_string.match(/#{match}/i)[1].gsub!(/[\s_]*/){}.to_f if !std_conversion
 	  source_string.match(/#{match}/i)[1].to_f
 	rescue
@@ -1183,7 +1183,7 @@ module CIGUI
 	# запускать для вычисления #setup и #update.
 	# 
 	def frac(source_string, prefix='', postfix='', std_conversion=true)
-	  match=prefix+'([\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)'+postfix
+	  match=prefix+'([\-\+]?[\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)'+postfix
 	  return source_string.match(/#{match}/i)[1].gsub!(/[\s_]*/){}.to_f if !std_conversion
 	  source_string.match(/#{match}/i)[1].to_f
 	rescue
@@ -1612,4 +1612,5 @@ begin
 	CIGUI.setup
 	CIGUI.update
 	puts CIGUI.last
+	puts CIGUI.decimal('[-100]')
 end
