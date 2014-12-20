@@ -680,6 +680,10 @@ module CIGUI
 	:true=>'true|1', # for active||visible
 	:false=>'false|0',
 	:equal=>'[\s]*[\=]?[\s]*',
+	:global=>'global',
+		:switch=>'s[wv]it[ch]',
+		:variable=>'var(?:iable)?',
+	:local=>'local',
 	#--CIGUI branch
     :cigui=>{
       :main=>'cigui',
@@ -711,8 +715,6 @@ module CIGUI
 		#~FLOW CONTROL group
 		:condition=>'condition|if|case',
 			:branch=>'bran[ch]|when',
-			:switch=>'swit[ch]',
-			:variable=>'var(?:iable)?',
 			:self=>'self', # to use as - self switch
 			:timer=>'timer',
 				:min=>'min(?:ute[s]?)?',
@@ -790,7 +792,7 @@ module CIGUI
 			:touch=>'touch|enter',
 				:by_event=>'by[\s]*event',
 			:autorun=>'auto[\s]*run',
-			:parallel=>'para[ll]*el',
+			:parallel=>'para[l]*e[l]*',
 		
 		:wait=>'wait',
 			:frames=>'frame[s]?',
@@ -798,10 +800,41 @@ module CIGUI
 	#--MAP branch
 	:map=>{
 		:main=>'map',
-		:name=>'name',
+		:set=>'set',
+		:display=>'display', # to use as - set display map name (имя карты для отображения в игре)
+		:editor=>'editor', # to use as - set editor map name (имя картя только для редактора)
+			:name=>'name',
 		:width=>'width',
 		:height=>'height',
-		
+		:visible=>'visible',
+		:ox=>'ox',
+		:oy=>'oy',
+		:tileset=>'tileset',
+		# for RPG Maker VX Ace only
+			:_A=>'A',
+			:_B=>'B',
+			:_C=>'C',
+			:_D=>'D',
+			:_E=>'E',
+		:tile=>'tile',
+			:index=>'index', # to use as - set tile index
+			:terrain=>'terrain',
+				:tag=>'tag',
+			:bush=>'bush',
+			:flag=>'flag', # как я понял, это для ID тайла, привязка случайных битв и все такое
+		:battle=>'battle',
+			:background=>'background|bg',
+		:music=>'music',
+		:sound=>'sound',
+			:effect=>'effect|fx',
+		:scroll=>'scroll',
+			:type=>'type',
+				:loop=>'loop',
+				:no=>'no',
+				:vertical=>'vertical',
+				:horizontal=>'horizontal',
+				:both=>'both',
+		:note=>'note',
 	},
 	#--PICTURE branch
 	:picture=>{
@@ -809,14 +842,14 @@ module CIGUI
 	},
 	#--SPRITE branch
 	:sprite=>{
-		:main=>'sprite|спрайт',
-		:create=>'create|созда(?:[йть]|ва[йть])',
+		:main=>'sprite',
+		:create=>'create',
 		:dispose=>'dispose|delete',
 		:move=>'move',
 		:resize=>'resize',
 		:set=>'set',
-		:x=>'x|х|икс',
-		:y=>'y|у|игрек',
+		:x=>'x',
+		:y=>'y',
 		:width=>'width',
 		:height=>'height',
 	},
@@ -824,11 +857,19 @@ module CIGUI
 	:text=>{
 		:main=>'text',
 		:make=>'make',
-		:bigger=>'bigger',
-		:smaller=>'smaller',
+			:bigger=>'bigger',
+			:smaller=>'smaller',
 		:set=>'set',
 		:font=>'font',
-		:size=>'size',
+			:size=>'size',
+		:bold=>'bold',
+		:italic=>'italic',
+		:underline=>'under[\s]*line',
+		:fit=>'fit',
+		:color=>'color',
+			:out=>'out', # to use as - set out color
+		:line=>'line', # to use as - set outline=BOOL
+		:shadow=>'shadow',
 	},
 	#--WINDOW branch
 	:window=>{
@@ -869,6 +910,7 @@ module CIGUI
 		:windowskin=>'skin|window[\s_]*skin',
 		:cursor=>'cursor',
 			:rect=>'rect',
+		:visible=>'visible',
 	}
   }
   
