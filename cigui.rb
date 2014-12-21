@@ -447,7 +447,8 @@ if RUBY_VERSION.to_f>=1.9
 			attr_accessor :windowskin
 			# Tone of the window
 			attr_accessor :tone
-			#
+			# Visibility
+			attr_accessor :visible
 			
 			# Create window
 			def initialize
@@ -455,8 +456,8 @@ if RUBY_VERSION.to_f>=1.9
 				@ox,@oy,@speed=0,0,:auto
 				@opacity, @back_opacity, @contents_opacity = 255, 255, 255
 				@z, @tone, @openness = 100, Tone.new(0,0,0,0), 255
-				@active, @label = true, nil
-				@windowskin='window'
+				@active, @label, @visible = true, nil, true
+				@windowskin = 'window'
 				@items=[]
 			end
 			
@@ -677,8 +678,8 @@ module CIGUI
 	:please=>'please',
 	:last=>'last|this',
 	:select=>'select', # by index or label
-	:true=>'true|1', # for active||visible
-	:false=>'false|0',
+	:true=>'true', # for active||visible
+	:false=>'false',
 	:equal=>'[\s]*[\=]?[\s]*',
 	:global=>'global',
 		:switch=>'s[wv]it[ch]',
@@ -862,8 +863,16 @@ module CIGUI
 		:set=>'set',
 		:x=>'x',
 		:y=>'y',
+		:z=>'z',
 		:width=>'width',
 		:height=>'height',
+		:flash=>'flash',
+			:color=>'color',
+			:duration=>'duration',
+		:angle=>'angle',
+		:visibility=>'visibility',
+			:visible=>'visible',
+			:invisible=>'invisible',
 	},
 	#--TEXT branch
 	:text=>{
@@ -1590,6 +1599,7 @@ module CIGUI
 				new_open = string[/#{CMB[:window_openness_equal]}/i] ? dec(string,CMB[:window_openness_equal]) : @windows[@selection[:index]].openness
 				new_label = string[/#{CMB[:select_by_label]}/i] ? substr(string,CMB[:select_by_label]) : @windows[@selection[:index]].label
 				new_tone = string[/#{CMB[:window_tone_equal]}/i] ? rect(string) : @windows[@selection[:index]].tone
+				new_vis = string[/#{CMB[:window_visibility_equal]}/i] ? bool(string,CMB[:window_visibility_equal]) : @windows[@selection[:index]].visible
 				# Change it
 				if @selection[:type]==:window
 					@windows[@selection[:index]].x = new_x
@@ -1604,6 +1614,7 @@ module CIGUI
 					@windows[@selection[:index]].windowskin = new_skin
 					@windows[@selection[:index]].openness = new_open
 					@windows[@selection[:index]].label = new_label
+					@windows[@selection[:index]].visible = new_vis
 					if new_tone.is_a? Tone
 						@windows[@selection[:index]].tone.set(new_tone)
 					elsif new_tone.is_a? Array
