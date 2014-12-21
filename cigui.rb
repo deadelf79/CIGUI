@@ -806,6 +806,10 @@ module CIGUI
 			:name=>'name',
 		:width=>'width',
 		:height=>'height',
+		:mode=>'mode',
+			:field=>'field',
+			:area=>'area',
+			:vx_compatible=>'vx',
 		:visible=>'visible',
 		:ox=>'ox',
 		:oy=>'oy',
@@ -835,6 +839,14 @@ module CIGUI
 				:horizontal=>'horizontal',
 				:both=>'both',
 		:note=>'note',
+		:dash=>'dash',
+			:dashing=>'dashing',
+			:enable=>'enable',
+			:disable=>'disable',
+		:parallax=>'para[l]*a[xks]',
+			:show=>'show',
+				:in=>'in',# to use as - set map parallax show in the editor
+				:the=>'the',
 	},
 	#--PICTURE branch
 	:picture=>{
@@ -910,7 +922,9 @@ module CIGUI
 		:windowskin=>'skin|window[\s_]*skin',
 		:cursor=>'cursor',
 			:rect=>'rect',
-		:visible=>'visible',
+		:visibility=>'visibility',
+			:visible=>'visible',
+			:invisible=>'invisible',
 	}
   }
   
@@ -928,10 +942,16 @@ module CIGUI
 		"(?:(?:#{VOCAB[:window][:labeled]})+[\s]*(?:#{VOCAB[:window][:as]})?(?:#{VOCAB[:equal]}|[\s]*)?))",
 	#~CIGUI branch
 		# commands only
-	:cigui_start=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+",
-	:cigui_finish=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:finish]})+)+",
-	:cigui_flush=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:flush]})+)+",
-	:cigui_restart=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:restart]})+)+",
+	:cigui_start=>"(?:(?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+",
+	:cigui_finish=>"(?:(?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:finish]})+)+",
+	:cigui_flush=>"(?:(?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:flush]})+)+",
+	:cigui_restart=>"(?:(?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:restart]})+)+",
+	#~TEXT branch
+		# expressions
+	:text_font_size=>"(?:#{VOCAB[:text][:font]})+[\s]*(?:#{VOCAB[:text][:size]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+		# commands
+	:text_set=>"(?:(?:#{VOCAB[:text][:main]})+[\s]*(?:#{VOCAB[:text][:set]})+)|"+
+		"(?:(?:#{VOCAB[:text][:set]})+[\s]*(?:#{VOCAB[:text][:main]})+)",
 	#~WINDOW branch
 		# expressions
 	:window_x_equal=>"(?:#{VOCAB[:window][:x]})+(?:#{VOCAB[:equal]}|[\s]*)+",
@@ -948,6 +968,7 @@ module CIGUI
 	:window_skin_equal=>"(?:(?:#{VOCAB[:window][:windowskin]})+(?:#{VOCAB[:equal]}|[\s]*)+)",
 	:window_openness_equal=>"(?:#{VOCAB[:window][:openness]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_tone_equal=>"(?:#{VOCAB[:window][:tone]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+	:window_visibility_equal=>"(?:#{VOCAB[:window][:visibility]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 		# commands
 	:window_create=>"(((?:#{VOCAB[:window][:create]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
 		"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:create]})+)",
@@ -971,6 +992,8 @@ module CIGUI
 		"(?:(?:#{VOCAB[:window][:open]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]}))",
 	:window_close=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:close]}))|"+
 		"(?:(?:#{VOCAB[:window][:close]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]}))",
+	:window_visible=>"(?:(?:#{VOCAB[:window][:set]})*[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:visible]})+)",
+	:window_invisible=>"(?:(?:#{VOCAB[:window][:set]})*[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:invisible]})+)",
   }
   
   # 
