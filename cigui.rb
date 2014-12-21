@@ -1431,6 +1431,8 @@ module CIGUI
 		__wdeactivate? string
 		__wopen? string
 		__wclose? string
+		__wvisible? string
+		__winvisible? string
 	end
 	
 	# Examples:
@@ -1670,7 +1672,29 @@ module CIGUI
 				@last_log << @last_action if @logging
 			end
 		end
-	end#--------------------end of '__wopen?'-------------------------
+	end#--------------------end of '__wclose?'-------------------------
+	
+	def __wvisible?(string)
+		matches=string.match(/#{CMB[:window_set_visible]}/)
+		if matches
+			if @selection[:type]==:window
+				@windows[@selection[:index]].visible = true
+				@last_action = @windows[@selection[:index]]
+				@last_log << @last_action if @logging
+			end
+		end
+	end#--------------------end of '__wvisible?'-------------------------
+	
+	def __winvisible?(string)
+		matches=string.match(/#{CMB[:window_set_invisible]}/)
+		if matches
+			if @selection[:type]==:window
+				@windows[@selection[:index]].visible = false
+				@last_action = @windows[@selection[:index]]
+				@last_log << @last_action if @logging
+			end
+		end
+	end#--------------------end of '__winvisible?'-------------------------
   end# END OF CIGUI CLASS
 end# END OF CIGUI MODULE
 
