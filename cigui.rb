@@ -138,7 +138,7 @@ if RUBY_VERSION.to_f>=1.9
 			# Этот метод позволяет добавить текст в окно.<br>
 			# Принимает в качестве параметра значение класса Text
 			def add_text(text)
-				
+				add_item(text, "text_#{@index.last}".to_sym, false, true)
 			end
 			
 			# Этот метод добавляет команду во внутренний массив <i>items</i>.
@@ -148,14 +148,15 @@ if RUBY_VERSION.to_f>=1.9
 			# По умолчанию значение enable равно true, что значит,
 			# что кнопка включена и может быть нажата.
 			# 
-			def add_item(command,procname,enabled=true)
+			def add_item(command,procname,enabled=true, text_only=false)
 				@items+=[
 					{
 						:command=>command,
 						:procname=>procname,
 						:enabled=>enabled,
 						:x=>:auto,
-						:y=>:auto
+						:y=>:auto,
+						:text_only=text_only
 					}
 				]
 			end
@@ -165,13 +166,40 @@ if RUBY_VERSION.to_f>=1.9
 			# являющееся названием кнопки, либо целое число - индекс кнопки	во внутреннем массиве <i>items</i>.
 			#	enable_item(0) # => @items[0].enabled set 'true'
 			#	enable_item('New game') # => @items[0].enabled set 'true'
+			# Включение происходит только если кнопка не имеет тип text_only (устанавливается
+			# при добавлении с помощью метода #add_text).
 			#
 			def enable_item(commandORindex)
 				case commandORindex.class
 				when Integer, Float
 					@items[commandORindex.to_i][:enabled]=true if (0...@items.size).include? commandORindex.to_i
+					@items[commandORindex.to_i][:enabled]=false if @items[commandORindex.to_i][:text_only]
 				when String
+					index=0
 					@items.times{|index|@items[index][:enabled]=true if @items[index][:command]==commandORindex}
+					@items[index][:enabled]=false if @items[index][:text_only]
+				else
+					raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{string}"
+				end
+			end
+			
+			# Выключает кнопку.<br>
+			# В параметр commandORindex помещается либо строковое значение,
+			# являющееся названием кнопки, либо целое число - индекс кнопки	во внутреннем массиве <i>items</i>.
+			#	disable_item(0) # => @items[0].enabled set 'false'
+			#	disable_item('New game') # => @items[0].enabled set 'false'
+			# Выключение происходит только если кнопка не имеет тип text_only (устанавливается
+			# при добавлении с помощью метода #add_text).
+			#
+			def disable_item(commandORindex)
+				case commandORindex.class
+				when Integer, Float
+					@items[commandORindex.to_i][:enabled]=false if (0...@items.size).include? commandORindex.to_i
+					@items[commandORindex.to_i][:enabled]=false if @items[commandORindex.to_i][:text_only]
+				when String
+					index=0
+					@items.times{|index|@items[index][:enabled]=false if @items[index][:command]==commandORindex}
+					@items[index][:enabled]=false if @items[index][:text_only]
 				else
 					raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{string}"
 				end
@@ -490,6 +518,23 @@ if RUBY_VERSION.to_f>=1.9
 				string.gsub!(/[ \t\<\>]/){'_'}
 				# then label it
 				@label = string
+			end
+			
+			def add_item(command,procname,enabled=true, text_only=false)
+				@items+=[
+					{
+						:command=>command,
+						:procname=>procname,
+						:enabled=>enabled,
+						:x=>:auto,
+						:y=>:auto,
+						:text_only=text_only
+					}
+				]
+			end
+			
+			def add_text(text)
+				add_item(text, "text_#{@index.last}".to_sym, false, true)
 			end
 		end
 		
@@ -873,6 +918,11 @@ module CIGUI
 		:visibility=>'visibility',
 			:visible=>'visible',
 			:invisible=>'invisible',
+		:opacity=>'opacity',
+		:blend=>'blend',
+			:type=>'type',
+		:mirror=>'mirror',
+		:tone=>'tone',
 	},
 	#--TEXT branch
 	:text=>{
@@ -959,8 +1009,7 @@ module CIGUI
 		# expressions
 	:text_font_size=>"(?:#{VOCAB[:text][:font]})+[\s]*(?:#{VOCAB[:text][:size]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 		# commands
-	:text_set=>"(?:(?:#{VOCAB[:text][:main]})+[\s]*(?:#{VOCAB[:text][:set]})+)|"+
-		"(?:(?:#{VOCAB[:text][:set]})+[\s]*(?:#{VOCAB[:text][:main]})+)",
+	:text_set=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:text][:main]})+[\s]*(?:#{VOCAB[:text][:set]})+)",
 	#~WINDOW branch
 		# expressions
 	:window_x_equal=>"(?:#{VOCAB[:window][:x]})+(?:#{VOCAB[:equal]}|[\s]*)+",
@@ -978,6 +1027,8 @@ module CIGUI
 	:window_openness_equal=>"(?:#{VOCAB[:window][:openness]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_tone_equal=>"(?:#{VOCAB[:window][:tone]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_visibility_equal=>"(?:#{VOCAB[:window][:visibility]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+	:window_set_text=>"(?:(?:#{VOCAB[:window][:set]})*[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})"+
+		"+[\s]*(?:#{VOCAB[:window][:text]})+(?:#{VOCAB[:equal]}|[\s]*)+)",
 		# commands
 	:window_create=>"(((?:#{VOCAB[:window][:create]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
 		"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:create]})+)",
@@ -1631,7 +1682,7 @@ module CIGUI
 	end#--------------------end of '__wset?'-------------------------
 	
 	def __wactivate?(string)
-		matches=string.match(/#{CMB[:window_activate]}/)
+		matches=string.match(/#{CMB[:window_activate]}/i)
 		if matches
 			if @selection[:type]==:window
 				@windows[@selection[:index]].active=true
@@ -1642,7 +1693,7 @@ module CIGUI
 	end#--------------------end of '__wactivate?'-------------------------
 	
 	def __wdeactivate?(string)
-		matches=string.match(/#{CMB[:window_deactivate]}/)
+		matches=string.match(/#{CMB[:window_deactivate]}/i)
 		if matches
 			if @selection[:type]==:window
 				@windows[@selection[:index]].active=false
@@ -1653,7 +1704,7 @@ module CIGUI
 	end#--------------------end of '__wdeactivate?'-------------------------
 	
 	def __wopen?(string)
-		matches=string.match(/#{CMB[:window_open]}/)
+		matches=string.match(/#{CMB[:window_open]}/i)
 		if matches
 			if @selection[:type]==:window
 				@windows[@selection[:index]].open
@@ -1664,7 +1715,7 @@ module CIGUI
 	end#--------------------end of '__wopen?'-------------------------
 	
 	def __wclose?(string)
-		matches=string.match(/#{CMB[:window_close]}/)
+		matches=string.match(/#{CMB[:window_close]}/i)
 		if matches
 			if @selection[:type]==:window
 				@windows[@selection[:index]].close
@@ -1675,7 +1726,7 @@ module CIGUI
 	end#--------------------end of '__wclose?'-------------------------
 	
 	def __wvisible?(string)
-		matches=string.match(/#{CMB[:window_set_visible]}/)
+		matches=string.match(/#{CMB[:window_set_visible]}/i)
 		if matches
 			if @selection[:type]==:window
 				@windows[@selection[:index]].visible = true
@@ -1686,7 +1737,7 @@ module CIGUI
 	end#--------------------end of '__wvisible?'-------------------------
 	
 	def __winvisible?(string)
-		matches=string.match(/#{CMB[:window_set_invisible]}/)
+		matches=string.match(/#{CMB[:window_set_invisible]}/i)
 		if matches
 			if @selection[:type]==:window
 				@windows[@selection[:index]].visible = false
@@ -1695,6 +1746,18 @@ module CIGUI
 			end
 		end
 	end#--------------------end of '__winvisible?'-------------------------
+	
+	def __wset_text?(string)
+		matches=string.match(/#{CMB[:window_set_text]}/i)
+		if matches
+			new_text = substr(string,CMB[:window_set_text])
+			if @selection[:type]==:window
+				@windows[@selection[:index]].add_text = new_text
+				@last_action = @windows[@selection[:index]]
+				@last_log << @last_action if @logging
+			end
+		end
+	end#--------------------end of '__wset_text?'-------------------------
   end# END OF CIGUI CLASS
 end# END OF CIGUI MODULE
 
