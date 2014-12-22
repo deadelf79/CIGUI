@@ -161,6 +161,19 @@ if RUBY_VERSION.to_f>=1.9
 				]
 			end
 			
+			#
+			def delete_item(indexORcomORproc)
+				i=indexORcomORproc
+				case i.class
+				when Fixnum
+				
+				when String
+					# try to find by commands
+					
+					# try to find by procnames
+				end
+			end
+			
 			# Включает кнопку.<br>
 			# В параметр commandORindex помещается либо строковое значение,
 			# являющееся названием кнопки, либо целое число - индекс кнопки	во внутреннем массиве <i>items</i>.
@@ -171,7 +184,7 @@ if RUBY_VERSION.to_f>=1.9
 			#
 			def enable_item(commandORindex)
 				case commandORindex.class
-				when Integer, Float
+				when Fixnum
 					@items[commandORindex.to_i][:enabled]=true if (0...@items.size).include? commandORindex.to_i
 					@items[commandORindex.to_i][:enabled]=false if @items[commandORindex.to_i][:text_only]
 				when String
