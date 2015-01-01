@@ -1,0 +1,78 @@
+<HTML>
+ <HEAD>
+  <META name="GENERATOR" content="htm2chm 3.0.9.3">
+  <!-- Sitemap 1.0 -->
+ </HEAD>
+<BODY>
+ <OBJECT type="text/site properties">
+  <PARAM name="Window Styles" value="0x800027">
+ </OBJECT>
+<UL>
+ <LI><OBJECT type="text/sitemap">
+  <PARAM name="Name" value="RDoc Documentation">
+  <PARAM name="Local" value="index.html">
+  <PARAM name="ImageNumber" value="17">
+ </OBJECT>
+ <LI><OBJECT type="text/sitemap">
+  <PARAM name="Name" value="module CIGUI - RDoc Documentation">
+  <PARAM name="Local" value="CIGUI.html">
+ </OBJECT>
+ <LI><OBJECT type="text/sitemap">
+  <PARAM name="Name" value="module CIGUIERR - RDoc Documentation">
+  <PARAM name="Local" value="CIGUIERR.html">
+ </OBJECT>
+ <LI><OBJECT type="text/sitemap">
+  <PARAM name="Name" value="CIGUIERR">
+ </OBJECT>
+<UL>
+ <LI><OBJECT type="text/sitemap">
+  <PARAM name="Name" value="class CIGUIERR::CannotCreateWindow - RDoc Documentation">
+  <PARAM name="Local" value="CIGUIERR/CannotCreateWindow.html">
+ </OBJECT>
+ <LI><OBJECT type="text/sitemap">
+  <PARAM name="Name" value="class CIGUIERR::CantInterpretCommand - RDoc Documentation">
+  <PARAM name="Local" value="CIGUIERR/CantInterpretCommand.html">
+ </OBJECT>
+ <LI><OBJECT type="text/sitemap">
+  <PARAM name="Name" value="class CIGUIERR::CantReadNumber - RDoc Documentation">
+  <PARAM name="Local" value="CIGUIERR/CantReadNumber.html">
+ </OBJECT>
+ <LI><OBJECT type="text/sitemap">
+  <PARAM name="Name" value="class CIGUIERR::CantReadString - RDoc Documentation">
+  <PARAM name="Local" value="CIGUIERR/CantReadString.html">
+ </OBJECT>
+ <LI><OBJECT type="text/sitemap">
+  <PARAM name="Name" value="class CIGUIERR::CantStart - RDoc Documentation">
+  <PARAM name="Local" value="CIGUIERR/CantStart.html">
+ </OBJECT>
+ <LI><OBJECT type="text/sitemap">
+  <PARAM name="Name" value="class CIGUIERR::WrongWindowIndex - RDoc Documentation">
+  <PARAM name="Local" value="CIGUIERR/WrongWindowIndex.html">
+ </OBJECT>
+</UL>
+ <LI><OBJECT type="text/sitemap">
+  <PARAM name="Name" value="class Color - RDoc Documentation">
+  <PARAM name="Local" value="Color.html">
+ </OBJECT>
+ <LI><OBJECT type="text/sitemap">
+  <PARAM name="Name" value="class Rect - RDoc Documentation">
+  <PARAM name="Local" value="Rect.html">
+ </OBJECT>
+ <LI><OBJECT type="text/sitemap">
+  <PARAM name="Name" value="class Spr3 - RDoc Documentation">
+  <PARAM name="Local" value="Spr3.html">
+ </OBJECT>
+ <LI><OBJECT type="text/sitemap">
+  <PARAM name="Name" value="class Text - RDoc Documentation">
+  <PARAM name="Local" value="Text.html">
+ </OBJECT>
+ <LI><OBJECT type="text/sitemap">
+  <PARAM name="Name" value="class Tone - RDoc Documentation">
+  <PARAM name="Local" value="Tone.html">
+ </OBJECT>
+ <LI><OBJECT type="text/sitemap">
+  <PARAM name="Name" value="class Win3 - RDoc Documentation">
+  <PARAM name="Local" value="Win3.html">
+ </OBJECT>
+</BODY>
+</HTML>
