@@ -161,7 +161,12 @@ if RUBY_VERSION.to_f>=1.9
 				]
 			end
 			
-			#
+			# Метод удаляет команду из внутреннего массива <i>items</i>.<br>
+			# В качестве аргумента принимаются:
+			# * индекс команды
+			# * имя команды
+			# * имя вызываемой процедуры
+			# 
 			def delete_item(indexORcomORproc)
 				i=indexORcomORproc
 				case i.class
