@@ -79,8 +79,6 @@
     
     <li ><a href="#method-i-add_text">#add_text</a>
     
-    <li ><a href="#method-i-close">#close</a>
-    
     <li class="calls-super" ><a href="#method-i-dispose">#dispose</a>
     
     <li ><a href="#method-i-draw_items">#draw_items</a>
@@ -90,8 +88,6 @@
     <li ><a href="#method-i-inspect">#inspect</a>
     
     <li ><a href="#method-i-label-3D">#label=</a>
-    
-    <li ><a href="#method-i-open">#open</a>
     
     <li ><a href="#method-i-refresh">#refresh</a>
     
@@ -134,19 +130,6 @@
       </header>
 
       
-      <div id="attribute-i-active" class="method-detail">
-        <div class="method-heading attribute-method-heading">
-          <span class="method-name">active</span><span
-            class="attribute-access-type">[RW]</span>
-        </div>
-
-        <div class="method-description">
-        
-        <p>If window is active then it updates</p>
-        
-        </div>
-      </div>
-      
       <div id="attribute-i-back_opacity" class="method-detail">
         <div class="method-heading attribute-method-heading">
           <span class="method-name">back_opacity</span><span
@@ -156,19 +139,6 @@
         <div class="method-description">
         
         <p>Прозрачность фона окна. Может принимать значения от 0 до 255</p>
-        
-        </div>
-      </div>
-      
-      <div id="attribute-i-height" class="method-detail">
-        <div class="method-heading attribute-method-heading">
-          <span class="method-name">height</span><span
-            class="attribute-access-type">[RW]</span>
-        </div>
-
-        <div class="method-description">
-        
-        <p>Height of Window</p>
         
         </div>
       </div>
@@ -201,19 +171,6 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
         </div>
       </div>
       
-      <div id="attribute-i-openness" class="method-detail">
-        <div class="method-heading attribute-method-heading">
-          <span class="method-name">openness</span><span
-            class="attribute-access-type">[RW]</span>
-        </div>
-
-        <div class="method-description">
-        
-        <p>Openness of window</p>
-        
-        </div>
-      </div>
-      
       <div id="attribute-i-speed" class="method-detail">
         <div class="method-heading attribute-method-heading">
           <span class="method-name">speed</span><span
@@ -223,58 +180,6 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
         <div class="method-description">
         
         <p>Скорость перемещения</p>
-        
-        </div>
-      </div>
-      
-      <div id="attribute-i-width" class="method-detail">
-        <div class="method-heading attribute-method-heading">
-          <span class="method-name">width</span><span
-            class="attribute-access-type">[RW]</span>
-        </div>
-
-        <div class="method-description">
-        
-        <p>Width of Window</p>
-        
-        </div>
-      </div>
-      
-      <div id="attribute-i-windowskin" class="method-detail">
-        <div class="method-heading attribute-method-heading">
-          <span class="method-name">windowskin</span><span
-            class="attribute-access-type">[RW]</span>
-        </div>
-
-        <div class="method-description">
-        
-        <p>Window skin - what window looks like</p>
-        
-        </div>
-      </div>
-      
-      <div id="attribute-i-x" class="method-detail">
-        <div class="method-heading attribute-method-heading">
-          <span class="method-name">x</span><span
-            class="attribute-access-type">[RW]</span>
-        </div>
-
-        <div class="method-description">
-        
-        <p>X Coordinate of Window</p>
-        
-        </div>
-      </div>
-      
-      <div id="attribute-i-y" class="method-detail">
-        <div class="method-heading attribute-method-heading">
-          <span class="method-name">y</span><span
-            class="attribute-access-type">[RW]</span>
-        </div>
-
-        <div class="method-description">
-        
-        <p>Y Coordinate of Window</p>
         
         </div>
       </div>
@@ -413,39 +318,6 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
             <pre><span class="ruby-comment"># File cigui.rb, line 140</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">add_text</span>(<span class="ruby-identifier">text</span>)
         
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-close" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">close</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p>Close window</p>
-          
-          
-
-          
-          <div class="method-source-code" id="close-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 327</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">close</span>
-        <span class="ruby-ivar">@openness</span>=<span class="ruby-value">0</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -654,39 +526,6 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
         <span class="ruby-identifier">string</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">/[ \t\&lt;\&gt;]/</span>){<span class="ruby-string">&#39;_&#39;</span>}
         <span class="ruby-comment"># then label it</span>
         <span class="ruby-ivar">@label</span> = <span class="ruby-identifier">string</span>
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-open" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">open</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p>Open window</p>
-          
-          
-
-          
-          <div class="method-source-code" id="open-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 332</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">open</span>
-        <span class="ruby-ivar">@openness</span>=<span class="ruby-value">255</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           

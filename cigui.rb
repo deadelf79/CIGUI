@@ -274,93 +274,6 @@ if RUBY_VERSION.to_f>=1.9
 				@x,@y,@width,@height = 0, 0, 0, 0
 			end
 		end
-	
-
-		# Класс окна с реализацией всех возможностей, доступных при помощи Cigui.<br>
-		# Реализация выполнена для RGSS3.
-		#
-		class Win3
-			# X Coordinate of Window
-			attr_accessor :x
-			# Y Coordinate of Window
-			attr_accessor :y
-			# Width of Window
-			attr_accessor :width
-			# Height of Window
-			attr_accessor :height
-			# Speed movement
-			attr_accessor :speed
-			# Opacity of window. May be in range of 0 to 255
-			attr_accessor :opacity
-			# Back opacity of window. May be in range of 0 to 255
-			attr_accessor :back_opacity
-			# Label of window
-			attr_reader :label
-			# If window is active then it updates
-			attr_accessor :active
-			# Openness of window
-			attr_accessor :openness
-			# Window skin - what window looks like
-			attr_accessor :windowskin
-			
-			# Create window
-			def initialize
-				@x,@y,@width,@height = 0, 0, 192, 64
-				@speed=0
-				@opacity, @back_opacity, @contents_opacity = 255, 255, 255
-				@z, @tone, @openness = 100, Rect.new(0,0,0,0), 255
-				@active, @label = true, nil
-				@windowskin='window'
-				@items=[]
-			end
-			
-			# Resize (simple)
-			def resize(new_width, new_height)
-				@width=new_width
-				@height=new_height
-			end
-			
-			# Update window (do nothing now)
-			def update;end
-			
-			# Close window
-			def close
-				@openness=0
-			end
-			
-			# Open window
-			def open
-				@openness=255
-			end
-			
-			# Dispose window
-			def dispose;end
-			
-			def label=(string)
-				# make right label
-				string.gsub!(/[\[\]\(\)\'\"]/){''}
-				string.gsub!(/[ \t\<\>]/){'_'}
-				# then label it
-				@label = string
-			end
-		end
-		
-		# Класс спрайта со всеми параметрами, доступными в RGSS3. Пока пустой, ожидается обновление во время работы над спрайтами
-		# (ветка work-with-sprites в github).
-		#
-		class Spr3
-			# Создает новый спрайт
-			def initialize;end
-			
-			# Производит обновление спрайта
-			def update;end
-			
-			# Производит повторную отрисовку содержимого спрайта
-			def refresh;end
-			
-			# Удаляет спрайт
-			def dispose;end
-		end
 		
 		# Класс, хранящий данные о цвете в формате RGBA
 		# (красный, зеленый, синий и прозрачность). Каждое значение
@@ -384,17 +297,17 @@ if RUBY_VERSION.to_f>=1.9
 			
 			# Возвращает значение зеленого цвета
 			def green
-				@r
+				@g
 			end
 			
 			# Возвращает значение синего цвета
 			def blue
-				@r
+				@b
 			end
 			
 			# Возвращает значение прозрачности
 			def alpha
-				@r
+				@a
 			end
 			
 			# Задает новые значения цвета и прозрачности.<br>
@@ -429,6 +342,171 @@ if RUBY_VERSION.to_f>=1.9
 				@a=0 if @a<0
 				@a=255 if @a>255
 			end
+		end
+		
+		# Класс, хранящий данные о тонировании в ввиде четырех значений:
+		# красный, зеленый, синий и насыщенность. Последнее значение влияет
+		# на цветовую насыщенность, чем ниже его значение, тем сильнее
+		# цветовые оттенки заменяются на оттенки серого.
+		# Каждое значение, кроме последнего, является рациональным числом
+		# (число с плавающей точкой) и имеет значение от -255.0 до 255.0.
+		# Значение насыщенности лежит в пределах от 0 до 255.
+		# Все значения, выходящие за указанные интервалы,
+		# корректируются автоматически.
+		#
+		class Tone
+			# Создает экземпляр класса.
+			# * r, g, b - задает изначальные значения красного, зеленого и синего цветов
+			# * gs - задает насыщенность, по умолчанию имеет значение 0
+			def initialize(r,g,b,gs=0.0)
+				@r,@g,@b,@gs = r.to_f,g.to_f,b.to_f,gs.to_f
+				_normalize
+			end
+			
+			# Возвращает значение красного цвета
+			def red
+				@r
+			end
+			
+			# Возвращает значение зеленого цвета
+			def green
+				@g
+			end
+			
+			# Возвращает значение синего цвета
+			def blue
+				@b
+			end
+			
+			# Возвращает значение насыщенности
+			def gray
+				@gs
+			end
+			
+			# Задает новые значения цвета и насыщенности.<br>
+			# <b>Варианты параметров:</b>
+			# * set(Tone) - в качестве параметра задан другой экземпляр класса Tone
+			# Все значения цвета и прозрачности будут скопированы из него.
+			# * set(red, green, blue) - задает новые значения цвета.
+			# Прозрачность по умолчанию становится равна 255.0
+			# * set(red, green, blue, greyscale) - задает новые значения цвета и насыщенности.
+			def set(*args)
+				if args.size==1
+					@r,@g,@b,@gs = args[0].red,args[0].green,args[0].blue,args[0].gray
+				elsif args.size==4
+					@r,@g,@b,@gs = args[0],args[1],args[2],args[3]
+				elsif args.size==3
+					@r,@g,@b,@gs = args[0],args[1],args[2],0.0
+				elsif args.size==2
+					# throw error like in Rect class
+				end
+				_normalize
+			end
+			
+			private
+			
+			def _normalize
+				@r=-255.0 if @r<-255.0
+				@r=255.0 if @r>255.0
+				@g=-255.0 if @g<-255.0
+				@g=255.0 if @g>255.0
+				@b=-255.0 if @b<-255.0
+				@b=255.0 if @b>255.0
+				@gs=0.0 if @gs<0.0
+				@gs=255.0 if @gs>255.0
+			end
+		end
+		
+		# Console-only version of this class
+		class Win3#:nodoc:
+			# X Coordinate of Window
+			attr_accessor :x
+			# Y Coordinate of Window
+			attr_accessor :y
+			# X Coordinate of contens
+			attr_accessor :ox
+			# Y Coordinate of contents
+			attr_accessor :oy
+			# Width of Window
+			attr_accessor :width
+			# Height of Window
+			attr_accessor :height
+			# Speed movement
+			attr_accessor :speed
+			# Opacity of window. May be in range of 0 to 255
+			attr_accessor :opacity
+			# Back opacity of window. May be in range of 0 to 255
+			attr_accessor :back_opacity
+			# Label of window
+			attr_reader :label
+			# If window is active then it updates
+			attr_accessor :active
+			# Openness of window
+			attr_accessor :openness
+			# Window skin - what window looks like
+			attr_accessor :windowskin
+			# Tone of the window
+			attr_accessor :tone
+			#
+			
+			# Create window
+			def initialize
+				@x,@y,@width,@height = 0, 0, 192, 64
+				@ox,@oy,@speed=0,0,:auto
+				@opacity, @back_opacity, @contents_opacity = 255, 255, 255
+				@z, @tone, @openness = 100, Tone.new(0,0,0,0), 255
+				@active, @label = true, nil
+				@windowskin='window'
+				@items=[]
+			end
+			
+			# Resize (simple)
+			def resize(new_width, new_height)
+				@width=new_width
+				@height=new_height
+			end
+			
+			# Update window (do nothing now)
+			def update;end
+			
+			# Close window
+			def close
+				@openness=0
+			end
+			
+			# Open window
+			def open
+				@openness=255
+			end
+			
+			# Dispose window
+			def dispose;end
+			
+			def label=(string)
+				return if string.nil?
+				# make right label
+				string.gsub!(/[\[\]\(\)\'\"]/){''}
+				string.gsub!(/[ \t\<\>]/){'_'}
+				# then label it
+				@label = string
+			end
+		end
+		
+		# Класс спрайта со всеми параметрами, доступными в RGSS3. Пока пустой, ожидается обновление во время работы над спрайтами
+		# (ветка work-with-sprites в github).
+		#
+		class Spr3
+			# Создает новый спрайт
+			def initialize;end
+			
+			# Производит обновление спрайта
+			def update;end
+			
+			# Производит повторную отрисовку содержимого спрайта
+			def refresh;end
+			
+			# Удаляет спрайт
+			def dispose;end
 		end
 	end
 end
@@ -573,7 +651,7 @@ end
 # Для передачи команд используйте массив $do, например:
 # * $do<<"команда"
 # * $do.push("команда")
-# Оба варианта имеют одно и то же действие.<br>
+# Оба варианта имеют один и тот же результат.<br>
 # Перед запуском модуля вызовите метод CIGUI.setup.<br>
 # Для исполнения команд вызовите метод CIGUI.update.<br>
 #
@@ -590,6 +668,9 @@ module CIGUI
   # * sprite - самостоятельными изображениями;
   # * text - текстом и шрифтами
   # * window - окнами.
+  # Русификацию этого словаря Вы можете найти в файле localize.rb
+  # по адресу: <https://github.com/deadelf79/CIGUI/>, если этот файл
+  # не приложен к демонстрационной версии проекта, который у Вас есть.
   #
   VOCAB={
 	#--COMMON unbranch
@@ -599,6 +680,10 @@ module CIGUI
 	:true=>'true|1', # for active||visible
 	:false=>'false|0',
 	:equal=>'[\s]*[\=]?[\s]*',
+	:global=>'global',
+		:switch=>'s[wv]it[ch]',
+		:variable=>'var(?:iable)?',
+	:local=>'local',
 	#--CIGUI branch
     :cigui=>{
       :main=>'cigui',
@@ -630,8 +715,6 @@ module CIGUI
 		#~FLOW CONTROL group
 		:condition=>'condition|if|case',
 			:branch=>'bran[ch]|when',
-			:switch=>'swit[ch]',
-			:variable=>'var(?:iable)?',
 			:self=>'self', # to use as - self switch
 			:timer=>'timer',
 				:min=>'min(?:ute[s]?)?',
@@ -709,7 +792,7 @@ module CIGUI
 			:touch=>'touch|enter',
 				:by_event=>'by[\s]*event',
 			:autorun=>'auto[\s]*run',
-			:parallel=>'para[ll]*el',
+			:parallel=>'para[l]*e[l]*',
 		
 		:wait=>'wait',
 			:frames=>'frame[s]?',
@@ -717,10 +800,53 @@ module CIGUI
 	#--MAP branch
 	:map=>{
 		:main=>'map',
-		:name=>'name',
+		:set=>'set',
+		:display=>'display', # to use as - set display map name (имя карты для отображения в игре)
+		:editor=>'editor', # to use as - set editor map name (имя картя только для редактора)
+			:name=>'name',
 		:width=>'width',
 		:height=>'height',
-		
+		:mode=>'mode',
+			:field=>'field',
+			:area=>'area',
+			:vx_compatible=>'vx',
+		:visible=>'visible',
+		:ox=>'ox',
+		:oy=>'oy',
+		:tileset=>'tileset',
+		# for RPG Maker VX Ace only
+			:_A=>'A',
+			:_B=>'B',
+			:_C=>'C',
+			:_D=>'D',
+			:_E=>'E',
+		:tile=>'tile',
+			:index=>'index', # to use as - set tile index
+			:terrain=>'terrain',
+				:tag=>'tag',
+			:bush=>'bush',
+			:flag=>'flag', # как я понял, это для ID тайла, привязка случайных битв и все такое
+		:battle=>'battle',
+			:background=>'background|bg',
+		:music=>'music',
+		:sound=>'sound',
+			:effect=>'effect|fx',
+		:scroll=>'scroll',
+			:type=>'type',
+				:loop=>'loop',
+				:no=>'no',
+				:vertical=>'vertical',
+				:horizontal=>'horizontal',
+				:both=>'both',
+		:note=>'note',
+		:dash=>'dash',
+			:dashing=>'dashing',
+			:enable=>'enable',
+			:disable=>'disable',
+		:parallax=>'para[l]*a[xks]',
+			:show=>'show',
+				:in=>'in',# to use as - set map parallax show in the editor
+				:the=>'the',
 	},
 	#--PICTURE branch
 	:picture=>{
@@ -728,14 +854,14 @@ module CIGUI
 	},
 	#--SPRITE branch
 	:sprite=>{
-		:main=>'sprite|спрайт',
-		:create=>'create|созда(?:[йть]|ва[йть])',
+		:main=>'sprite',
+		:create=>'create',
 		:dispose=>'dispose|delete',
 		:move=>'move',
 		:resize=>'resize',
 		:set=>'set',
-		:x=>'x|х|икс',
-		:y=>'y|у|игрек',
+		:x=>'x',
+		:y=>'y',
 		:width=>'width',
 		:height=>'height',
 	},
@@ -743,11 +869,19 @@ module CIGUI
 	:text=>{
 		:main=>'text',
 		:make=>'make',
-		:bigger=>'bigger',
-		:smaller=>'smaller',
+			:bigger=>'bigger',
+			:smaller=>'smaller',
 		:set=>'set',
 		:font=>'font',
-		:size=>'size',
+			:size=>'size',
+		:bold=>'bold',
+		:italic=>'italic',
+		:underline=>'under[\s]*line',
+		:fit=>'fit',
+		:color=>'color',
+			:out=>'out', # to use as - set out color
+		:line=>'line', # to use as - set outline=BOOL
+		:shadow=>'shadow',
 	},
 	#--WINDOW branch
 	:window=>{
@@ -788,6 +922,9 @@ module CIGUI
 		:windowskin=>'skin|window[\s_]*skin',
 		:cursor=>'cursor',
 			:rect=>'rect',
+		:visibility=>'visibility',
+			:visible=>'visible',
+			:invisible=>'invisible',
 	}
   }
   
@@ -796,19 +933,31 @@ module CIGUI
   # составления регулярных выражений не рекомендуется.
   CMB={
 	#~COMMON unbranch
+		# selection window
 	:select_window=>"(?:(?:#{VOCAB[:select]})+[\s]*(?:#{VOCAB[:window][:main]})+)|"+
 		"(?:(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:select]})+)",
-	:select_by_index=>"(?:#{VOCAB[:window][:index]})+(?:#{VOCAB[:equal]}|[\s]*)+",
-	:select_by_label=>"(?:#{VOCAB[:window][:label]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+	:select_by_index=>"(?:(?:(?:#{VOCAB[:window][:index]})+(?:#{VOCAB[:equal]}|[\s]*)+)|"+
+		"(?:(?:#{VOCAB[:window][:indexed]})+[\s]*(?:#{VOCAB[:window][:as]})?(?:#{VOCAB[:equal]}|[\s]*)?))",
+	:select_by_label=>"(?:(?:(?:#{VOCAB[:window][:label]})+(?:#{VOCAB[:equal]}|[\s]*)+)|"+
+		"(?:(?:#{VOCAB[:window][:labeled]})+[\s]*(?:#{VOCAB[:window][:as]})?(?:#{VOCAB[:equal]}|[\s]*)?))",
 	#~CIGUI branch
-	:cigui_start=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+",
-	:cigui_finish=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:finish]})+)+",
-	:cigui_flush=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:flush]})+)+",
-	:cigui_restart=>"((?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:restart]})+)+",
+		# commands only
+	:cigui_start=>"(?:(?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+",
+	:cigui_finish=>"(?:(?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:finish]})+)+",
+	:cigui_flush=>"(?:(?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:flush]})+)+",
+	:cigui_restart=>"(?:(?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:restart]})+)+",
+	#~TEXT branch
+		# expressions
+	:text_font_size=>"(?:#{VOCAB[:text][:font]})+[\s]*(?:#{VOCAB[:text][:size]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+		# commands
+	:text_set=>"(?:(?:#{VOCAB[:text][:main]})+[\s]*(?:#{VOCAB[:text][:set]})+)|"+
+		"(?:(?:#{VOCAB[:text][:set]})+[\s]*(?:#{VOCAB[:text][:main]})+)",
 	#~WINDOW branch
 		# expressions
 	:window_x_equal=>"(?:#{VOCAB[:window][:x]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_y_equal=>"(?:#{VOCAB[:window][:y]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+	:window_ox_equal=>"(?:#{VOCAB[:window][:ox]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+	:window_oy_equal=>"(?:#{VOCAB[:window][:oy]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_w_equal=>"(?:#{VOCAB[:window][:width]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_h_equal=>"(?:#{VOCAB[:window][:height]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_s_equal=>"(?:#{VOCAB[:window][:speed]})+(?:#{VOCAB[:equal]}|[\s]*)+",
@@ -816,8 +965,10 @@ module CIGUI
 	:window_ba_equal=>"(?:(?:#{VOCAB[:window][:back]})+[\s_]*(?:#{VOCAB[:window][:opacity]}))+(?:#{VOCAB[:equal]}|[\s])+",
 	:window_ca_equal=>"(?:(?:#{VOCAB[:window][:contents]})+[\s_]*(?:#{VOCAB[:window][:opacity]}))+(?:#{VOCAB[:equal]}|[\s])+",
 	:window_active_equal=>"(?:#{VOCAB[:window][:active]})+(?:#{VOCAB[:equal]}|[\s]*)+",
-	:window_skin_equal=>"(?:#{VOCAB[:window][:windowskin]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+	:window_skin_equal=>"(?:(?:#{VOCAB[:window][:windowskin]})+(?:#{VOCAB[:equal]}|[\s]*)+)",
 	:window_openness_equal=>"(?:#{VOCAB[:window][:openness]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+	:window_tone_equal=>"(?:#{VOCAB[:window][:tone]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+	:window_visibility_equal=>"(?:#{VOCAB[:window][:visibility]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 		# commands
 	:window_create=>"(((?:#{VOCAB[:window][:create]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
 		"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:create]})+)",
@@ -825,6 +976,8 @@ module CIGUI
 		"((?:#{VOCAB[:window][:with]})+[\s]*(?:#{VOCAB[:window][:width]}|#{VOCAB[:window][:height]}))",
 	:window_dispose=>"(((?:#{VOCAB[:window][:dispose]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
 		"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:dispose]})+)",
+	:window_dispose_this=>"(((?:#{VOCAB[:window][:dispose]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
+		"((?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:dispose]})+)",
 	:window_move=>"(?:(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:move]}))|"+
 		"(?:(?:#{VOCAB[:window][:move]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})))",
 	:window_resize=>"(?:(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:resize]}))|"+
@@ -835,10 +988,12 @@ module CIGUI
 		"(?:(?:#{VOCAB[:window][:activate]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+)",
 	:window_deactivate=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:deactivate]})+)|"+
 		"(?:(?:#{VOCAB[:window][:deactivate]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+)",
-	:window_open=>"(?:(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:open]}))|"+
-		"(?:(?:#{VOCAB[:window][:open]})+[\s]*(?:#{VOCAB[:window][:main]}))|",
+	:window_open=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:open]}))|"+
+		"(?:(?:#{VOCAB[:window][:open]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]}))",
 	:window_close=>"(?:(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:close]}))|"+
-		"(?:(?:#{VOCAB[:window][:close]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]}))|",
+		"(?:(?:#{VOCAB[:window][:close]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]}))",
+	:window_visible=>"(?:(?:#{VOCAB[:window][:set]})*[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:visible]})+)",
+	:window_invisible=>"(?:(?:#{VOCAB[:window][:set]})*[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:invisible]})+)",
   }
   
   # 
@@ -853,11 +1008,25 @@ module CIGUI
 	# 
 	attr_reader :sprites
 	
+	# Хранит массив всех произведенных действий (все записи #last).<br>
+	# Действия записываются только если параметр ::logging имеет значение
+	# true. Результаты работы #decimal, #fraction, #boolean, #substring
+	# и их расширенных аналогов не логгируются.<br>
+	# Открыт только для чтения.
+	# 
+	attr_reader :last_log
+	
+	# Флаг включения/выключения логгирования действий.
+	# Если имеет значение true, то записи всех произведенных
+	# действий с момента применения значения будут записываться
+	# в массив ::last_log
+	attr_accessor :logging
+	
     # Требуется выполнить этот метод перед началом работы с CIGUI.<br>
 	# Инициализирует массив $do, если он еще не был создан. В этот массив пользователь подает
 	# команды для исполнения при следующем запуске метода #update.<br>
 	# Если даже массив $do был инициализирован ранее,
-	# то исполняет команду <i>cigui start</i> прежде всего.
+	# то исполняет команду <i>cigui start</i> прежде всего.<br>
 	# <b>Пример:</b>
 	#	begin
 	#		CIGUI.setup
@@ -895,8 +1064,8 @@ module CIGUI
 		$do.clear if clear_after_update
     end
 	
-	# Вызывает обновление всех объектов из внутренних массивов windows и sprite.
-	#
+	# Вызывает обновление всех объектов из внутренних массивов ::windows и ::sprites.<br>
+	# Вызывается автоматически по окончании обработки команд из массива $do в методе #update.
 	def update_internal_objects
 		@windows.each{ |win|
 			win.update if win.is_a? Win3
@@ -908,16 +1077,16 @@ module CIGUI
 	
 	# Метод обработки текста, созданный для пользовательских модификаций, не влияющих на работу
 	# встроенных обработчиков.<br>
-	# Используйте <i>alias</i> этого метода для добавления обработки собственных команд.<br>
+	# Используйте <i>alias</i> этого метода при добавлении обработки собственных команд.<br>
 	# <b>Пример:</b>
 	#	alias my_update update_by_user
 	#	def update_by_user
 	#		# add new word
-	#		VOCAB[:window][:close]='close'
-	#		# add 'window close' combination
-	#		CMB[:window_close]="(?:(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:close]})+)"
+	#		VOCAB[:window][:throw]='throw'
+	#		# add 'window throw' combination
+	#		CMB[:window_throw]="(?:(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:throw]})+)"
 	#		# call method
-	#		window_close? line
+	#		window_throw? line
 	#	end
 	#
 	def update_by_user(string)
@@ -968,7 +1137,7 @@ module CIGUI
 	# запускать для вычисления #setup и #update.
 	#
 	def fraction(source_string, std_conversion=true)
-	  match='(?:[\[|"\(\'])[\s]*([\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)(?:[\]|"\)\'])'
+	  match='(?:[\[|"\(\'])[\s]*([\-\+]?[\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)(?:[\]|"\)\'])'
 	  return source_string.match(/#{match}/i)[1].gsub!(/[\s_]*/){}.to_f if !std_conversion
 	  source_string.match(/#{match}/i)[1].to_f
 	rescue
@@ -978,6 +1147,7 @@ module CIGUI
 	# Данный метод производит поиск подстроки, используемой в качестве параметра.<br>
 	# Строка должна быть заключена в одинарные или двойные кавычки или же в круглые
 	# или квадратные скобки.
+	# <b>Пример:</b>
 	# 	substring('[Hello cruel world!]') # => Hello cruel world!
 	#	substring("set window label='SomeSome' and no more else") # => SomeSome
 	#
@@ -989,7 +1159,9 @@ module CIGUI
 	end
 	
 	# Данный метод производит поиск булевого значения (true или false) в строке и возвращает его.
-	# Если булевое значение в строке не обнаружено, по умолчанию возвращает false.
+	# Если булевое значение в строке не обнаружено, по умолчанию возвращает false.<br>
+	# Слова true и false берутся из словаря VOCAB, что значит, что их локализованные версии
+	# также могут быть успешно найдены при поиске.
 	def boolean(source_string)
 		match="((?:#{VOCAB[:true]}|#{VOCAB[:false]}))"
 		if source_string.match(match).size>1
@@ -1002,7 +1174,7 @@ module CIGUI
 	
 	# Возвращает массив из четырех значений для передачи в качестве параметра
 	# в объекты класса Rect. Массив в строке должен быть помещен в квадратные скобки,
-	# а значения в нем должны разделяться точкой с запятой.<br>
+	# а значения в нем должны разделяться <b>точкой с запятой.</b><br>
 	# <b>Пример:</b>
 	#	rect('[1;2,0;3.5;4.0_5]') # => [ 1, 2.0, 3.5, 4.05 ]
 	#
@@ -1030,7 +1202,13 @@ module CIGUI
 				end
 			end
 		end
-		arr.size=4
+		if arr.size<4
+			for index in 1..4-arr.size
+				arr<<0
+			end
+		elsif arr.size>4
+			arr.slice!(4,arr.size)
+		end
 		for index in 0...arr.size
 			arr[index]=dec(arr[index]) if arr[index].is_a? String
 			arr[index]=0 if arr[index].is_a? NilClass
@@ -1070,7 +1248,7 @@ module CIGUI
 	# запускать для вычисления #setup и #update.
 	# 
 	def frac(source_string, prefix='', postfix='', std_conversion=true)
-	  match=prefix+'([\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)'+postfix
+	  match=prefix+'([\-\+]?[\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)'+postfix
 	  return source_string.match(/#{match}/i)[1].gsub!(/[\s_]*/){}.to_f if !std_conversion
 	  source_string.match(/#{match}/i)[1].to_f
 	rescue
@@ -1078,26 +1256,44 @@ module CIGUI
 	end
 	# Данный метод работает по аналогии с #substring, но производит поиск в строке
 	# с учетом указанных префикса (текста перед подстрокой) и постфикса (после подстроки).<br>
-	# Метод не требует обязательного указания символов квадратных и круглых скобок,
-	# а также одинарных и двойных кавычек вокруг подстроки.<br>
+	# Указание квадратных или круглый скобок, а также экранированных одинарных или двойных кавычек
+	# в строке после префикса обязательно.
 	# prefix и postfix могут содержать символы, используемые в регулярных выражениях
-	# для более точного поиска.
+	# для более точного поиска.<br>
+	# <b>Пример:</b>
 	#	puts 'Who can make me strong?'
-	#	someone = substring("Make me invincible",'Make','invincible')
+	#	someone = substring("Make[ me ]invincible",'Make','invincible')
 	#	puts 'Only'+someone # => 'Only me'
 	# Метод работает вне зависимости от работы модуля - нет необходимости
 	# запускать для вычисления #setup и #update.
 	#
 	def substr(source_string, prefix='', postfix='')
-		match=prefix+'([\w\s _\!\#\$\%\^\&\*]*)'+postfix
-		return source_string.match(match)[1]
+		match=prefix+'(?:[\[\(\"\'])[\s]*([\w\s _\!\#\$\%\^\&\*]*)[\s]*(?:[\]|"\)\'])'+postfix
+		return source_string.match(/#{match}/i)[1]
 	rescue
 		raise "#{CIGUIERR::CantReadString}\n\tcurrent line of $do: #{source_string}"
 	end
 	
+	# Данный метод работает по аналогии с #boolean, но производит поиск в строке
+	# с учетом указанных префикса (текста перед подстрокой) и постфикса (после подстроки).<br>
+	# prefix и postfix могут содержать символы, используемые в регулярных выражениях
+	# Если булевое значение в строке не обнаружено, по умолчанию возвращает false.
+	def bool(source_string, prefix='', postfix='')
+		match=prefix+"((?:#{VOCAB[:true]}|#{VOCAB[:false]}))"+postfix
+		if source_string.match(match).size>1
+			return false if source_string.match(/#{match}/i)[1]==nil
+			match2="(#{VOCAB[:true]})"
+			return true if source_string.match(/#{match2}/i)[1]
+		end
+		return false
+	end
+	
 	# Возвращает сообщение о последнем произведенном действии
 	# или классе последнего использованного объекта, используя метод
-	# Kernel.inspect.
+	# Kernel.inspect.<br>
+	# <b>Пример:</b>
+	#	CIGUI.setup
+	#	puts CIGUI.last # => 'CIGUI started'
 	#
 	def last
 		@last_action.is_a?(String) ? @last_action : @last_action.inspect
@@ -1107,7 +1303,9 @@ module CIGUI
 	
 	# SETUP CIGUI / CLEAR FOR RESTART
 	def _setup
-	  @last_action = nil
+	  @last_action ||= nil
+	  @logging ||= true
+	  @last_log ||= []
 	  @finished = false
 	  @windows = []
 	  @sprites = []
@@ -1123,9 +1321,10 @@ module CIGUI
 	def _restart?(string)
 		matches=string.match(/#{CMB[:cigui_restart]}/)
 		if matches
-			__flush?('cigui flush') if not finished
+			__flush?('cigui flush') if not @finished
 			_setup
 			@last_action = 'CIGUI restarted'
+			@last_log << @last_action if @logging
 		else
 			raise "#{CIGUIERR::CantInterpretCommand}\n\tcurrent line of $do: #{string}" if @finished
 		end
@@ -1167,6 +1366,7 @@ module CIGUI
 				end
 			end
 			@last_action = @selection
+			@last_log << @last_action if @logging
 		end
 	end#--------------------end of '__swindow?'-------------------------
 	
@@ -1183,6 +1383,7 @@ module CIGUI
 			begin
 				@finished = false
 				@last_action = 'CIGUI started'
+				@last_log << @last_action if @logging
 			rescue
 				raise "#{CIGUIERR::CantStart}\n\tcurrent line of $do: #{string}"
 			end
@@ -1194,6 +1395,7 @@ module CIGUI
 		if matches
 			@finished = true
 			@last_action = 'CIGUI finished'
+			@last_log << @last_action if @logging
 		end
 	end
 	
@@ -1205,6 +1407,7 @@ module CIGUI
 			@sprites.each{|item|item.dispose}
 			@sprites.clear
 			@last_action = 'CIGUI cleared'
+			@last_log << @last_action if @logging
 		end
 	end
 	
@@ -1236,26 +1439,26 @@ module CIGUI
 				rescue
 					@windows<<NilClass
 				end
-				@last_action = @windows.last
 			rescue
 				raise "#{CIGUIERR::CannotCreateWindow}\n\tcurrent line of $do: #{string}"
 			end
-		end
-		# Read params
-		if string.match(/#{CMB[:window_create_atORwith]}/i)
-			# at OR with: check x and y
-			new_x = string[/#{CMB[:window_x_equal]}/i] ? dec(string,CMB[:window_x_equal]) : @windows.last.x
-			new_y = string[/#{CMB[:window_y_equal]}/i] ? dec(string,CMB[:window_y_equal]) : @windows.last.y
-			# at OR with: check w and h
-			new_w = string[/#{CMB[:window_w_equal]}/i] ? dec(string,CMB[:window_w_equal]) : @windows.last.width
-			new_h = string[/#{CMB[:window_h_equal]}/i] ? dec(string,CMB[:window_h_equal]) : @windows.last.height
-			# Set parameters for created window
-			@windows.last.x = new_x
-			@windows.last.y = new_y
-			@windows.last.width = new_w
-			@windows.last.height = new_h
+			# Read params
+			if string.match(/#{CMB[:window_create_atORwith]}/i)
+				# at OR with: check x and y
+				new_x = string[/#{CMB[:window_x_equal]}/i] ? dec(string,CMB[:window_x_equal]) : @windows.last.x
+				new_y = string[/#{CMB[:window_y_equal]}/i] ? dec(string,CMB[:window_y_equal]) : @windows.last.y
+				# at OR with: check w and h
+				new_w = string[/#{CMB[:window_w_equal]}/i] ? dec(string,CMB[:window_w_equal]) : @windows.last.width
+				new_h = string[/#{CMB[:window_h_equal]}/i] ? dec(string,CMB[:window_h_equal]) : @windows.last.height
+				# Set parameters for created window
+				@windows.last.x = new_x
+				@windows.last.y = new_y
+				@windows.last.width = new_w
+				@windows.last.height = new_h
+			end
 			# Set last action to inspect this window
 			@last_action = @windows.last
+			@last_log << @last_action if @logging
 			# Select this window
 			@selection[:type]=:window
 			@selection[:index]=@windows.size-1
@@ -1266,9 +1469,20 @@ module CIGUI
 	# dispose window index=DEC
 	# dispose window label=STR
 	def __wdispose?(string)
+		# Если какое-то окно уже выбрано, то...
+		matches=string.match(/#{CMB[:window_dispose_this]}/i)
+		if matches
+			if @selection[:type]==:window #(0...@windows.size).include?(@selection[:index])
+				# ...удалим его как полагается...
+				@windows[@selection[:index]].dispose if @windows[@selection[:index]].methods.include? :dispose
+				@windows.delete_at(@selection[:index])
+				@last_action = 'CIGUI disposed window'
+				@last_log << @last_action if @logging
+				return
+			end
+		end
+		# ... а если же нет, то посмотрим, указаны ли его индекс или метка.
 		matches=string.match(/#{CMB[:window_dispose]}/i)
-		# Здесь был какой-то собственный select window
-		# и я решил от него избавиться.
 		if matches
 			if string.match(/#{CMB[:select_by_index]}/i)
 				index=dec(string,CMB[:select_by_index])
@@ -1283,10 +1497,21 @@ module CIGUI
 					"\n\tcurrent line of $do: #{string}"
 				end
 			elsif string.match(/#{CMB[:select_by_label]}/i)
-				
+				label = substr(string,CMB[:select_by_label])
+				if label!=nil
+					for index in 0...@windows.size
+						if @windows[index]!=nil && @windows[index].is_a?(Win3)
+							if @windows[index].label==label
+								break
+							end
+						end
+					end
+				end
+				@windows[index].dispose if @windows[index].methods.include? :dispose
+				@windows.delete_at(index)
 			end
-			@last_action = 'CIGUI disposed window'
-			
+			@last_action = 'CIGUI disposed window by index or label'
+			@last_log << @last_action if @logging
 		end
 	end#--------------------end of '__wdispose?'-------------------------
 	
@@ -1309,6 +1534,7 @@ module CIGUI
 					@windows[@selection[:index]].y = new_y
 					@windows[@selection[:index]].speed = new_s
 					@last_action = @windows[@selection[:index]]
+					@last_log << @last_action if @logging
 				end
 			end
 		end
@@ -1328,6 +1554,7 @@ module CIGUI
 				if @selection[:type]==:window
 					@windows[@selection[:index]].resize(new_w,new_h)
 					@last_action = @windows[@selection[:index]]
+					@last_log << @last_action if @logging
 				end
 			end
 		end
@@ -1351,29 +1578,40 @@ module CIGUI
 				# Read params
 				new_x = string[/#{CMB[:window_x_equal]}/i] ? dec(string,CMB[:window_x_equal]) : @windows[@selection[:index]].x
 				new_y = string[/#{CMB[:window_y_equal]}/i] ? dec(string,CMB[:window_y_equal]) : @windows[@selection[:index]].y
+				new_ox = string[/#{CMB[:window_ox_equal]}/i] ? dec(string,CMB[:window_ox_equal]) : @windows[@selection[:index]].ox
+				new_oy = string[/#{CMB[:window_oy_equal]}/i] ? dec(string,CMB[:window_oy_equal]) : @windows[@selection[:index]].oy
 				new_w = string[/#{CMB[:window_w_equal]}/i] ? dec(string,CMB[:window_w_equal]) : @windows[@selection[:index]].width
 				new_h = string[/#{CMB[:window_h_equal]}/i] ? dec(string,CMB[:window_h_equal]) : @windows[@selection[:index]].height
 				new_s = string[/#{CMB[:window_s_equal]}/i] ? dec(string,CMB[:window_s_equal]) : @windows[@selection[:index]].speed
 				new_a = string[/#{CMB[:window_a_equal]}/i] ? dec(string,CMB[:window_a_equal]) : @windows[@selection[:index]].opacity
 				new_ba = string[/#{CMB[:window_ba_equal]}/i] ? dec(string,CMB[:window_ba_equal]) : @windows[@selection[:index]].back_opacity
-				new_act = string[/#{CMB[:window_active_equal]}/i] ? boolean(string,CMB[:window_active_equal]) : @windows[@selection[:index]].active
+				new_act = string[/#{CMB[:window_active_equal]}/i] ? bool(string,CMB[:window_active_equal]) : @windows[@selection[:index]].active
 				new_skin = string[/#{CMB[:window_skin_equal]}/i] ? substr(string,CMB[:window_skin_equal]) : @windows[@selection[:index]].windowskin
 				new_open = string[/#{CMB[:window_openness_equal]}/i] ? dec(string,CMB[:window_openness_equal]) : @windows[@selection[:index]].openness
 				new_label = string[/#{CMB[:select_by_label]}/i] ? substr(string,CMB[:select_by_label]) : @windows[@selection[:index]].label
+				new_tone = string[/#{CMB[:window_tone_equal]}/i] ? rect(string) : @windows[@selection[:index]].tone
 				# Change it
 				if @selection[:type]==:window
 					@windows[@selection[:index]].x = new_x
 					@windows[@selection[:index]].y = new_y
+					@windows[@selection[:index]].ox = new_ox
+					@windows[@selection[:index]].oy = new_oy
 					@windows[@selection[:index]].resize(new_w,new_h)
-					@windows[@selection[:index]].speed = new_s
+					@windows[@selection[:index]].speed = new_s==0 ? :auto : new_s
 					@windows[@selection[:index]].opacity = new_a
 					@windows[@selection[:index]].back_opacity = new_ba
 					@windows[@selection[:index]].active = new_act
 					@windows[@selection[:index]].windowskin = new_skin
 					@windows[@selection[:index]].openness = new_open
 					@windows[@selection[:index]].label = new_label
+					if new_tone.is_a? Tone
+						@windows[@selection[:index]].tone.set(new_tone)
+					elsif new_tone.is_a? Array
+						@windows[@selection[:index]].tone.set(new_tone[0],new_tone[1],new_tone[2],new_tone[3])
+					end
 					@selection[:label] = new_label
 					@last_action = @windows[@selection[:index]]
+					@last_log << @last_action if @logging
 				end
 			end
 		end
@@ -1385,6 +1623,7 @@ module CIGUI
 			if @selection[:type]==:window
 				@windows[@selection[:index]].active=true
 				@last_action = @windows[@selection[:index]]
+				@last_log << @last_action if @logging
 			end
 		end
 	end#--------------------end of '__wactivate?'-------------------------
@@ -1395,6 +1634,7 @@ module CIGUI
 			if @selection[:type]==:window
 				@windows[@selection[:index]].active=false
 				@last_action = @windows[@selection[:index]]
+				@last_log << @last_action if @logging
 			end
 		end
 	end#--------------------end of '__wdeactivate?'-------------------------
@@ -1405,6 +1645,7 @@ module CIGUI
 			if @selection[:type]==:window
 				@windows[@selection[:index]].open
 				@last_action = @windows[@selection[:index]]
+				@last_log << @last_action if @logging
 			end
 		end
 	end#--------------------end of '__wopen?'-------------------------
@@ -1415,6 +1656,7 @@ module CIGUI
 			if @selection[:type]==:window
 				@windows[@selection[:index]].close
 				@last_action = @windows[@selection[:index]]
+				@last_log << @last_action if @logging
 			end
 		end
 	end#--------------------end of '__wopen?'-------------------------
@@ -1425,10 +1667,15 @@ end# END OF CIGUI MODULE
 # delete this when copy to 'Script editor' in RPG Maker
 begin
 	$do=[
-		'create window',
-		'close this window'
+		'create window at x=1540,y=9000 with width=900,height=560',
+		'this window set ox=22,oy=33,tone=[255;123;40;20],label=[Current],speed=0,windowskin="Something other"',
+		'close this window',
+		'deactivate this window',
+		'this window set active=true',
+		'cigui restart'
 	]
 	CIGUI.setup
 	CIGUI.update
 	puts CIGUI.last
+	puts CIGUI.decimal('[-100]')
 end
