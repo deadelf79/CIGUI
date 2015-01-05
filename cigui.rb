@@ -171,11 +171,17 @@ if RUBY_VERSION.to_f>=1.9
 				i=indexORcomORproc
 				case i.class
 				when Fixnum
-				
+					@items-=[@items[i.to_i]]
 				when String
-					# try to find by commands
-					
-					# try to find by procnames
+					# Довольно ненадёжный поиск, но я пока не придумал,
+					# как его улучшить. Может, стоит добавить
+					# возможность поиска регулярных выражений?
+					@items.each{ |item|
+						# try to find by commands
+						@items-=[item] if item[:command]==i
+						# try to find by procnames
+						@items-=[item] if item[:procname]==i
+					}
 				end
 			end
 			
