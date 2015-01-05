@@ -144,7 +144,7 @@ if RUBY_VERSION.to_f>=1.9
 			# Этот метод добавляет команду во внутренний массив <i>items</i>.
 			# Команды используются для отображения кнопок.<br>
 			# * command - отображаемый текст кнопки
-			# * procname - название вызываемого метода
+			# * procname - название вызываемого метода (String или Symbol)
 			# По умолчанию значение enable равно true, что значит,
 			# что кнопка включена и может быть нажата.
 			# 
@@ -166,6 +166,7 @@ if RUBY_VERSION.to_f>=1.9
 			# * индекс команды
 			# * имя команды
 			# * имя вызываемой процедуры
+			# * регулярное выражение для продвинутого поиска по именам команд и процедур
 			# 
 			def delete_item(indexORcomORproc)
 				i=indexORcomORproc
@@ -182,14 +183,23 @@ if RUBY_VERSION.to_f>=1.9
 						# try to find by procnames
 						@items-=[item] if item[:procname]==i
 					}
+				# И впрямь, почему бы и нет?
+				when Regexp
+					@items.each{ |item|
+						@items-=[item] if item[:command].match(/#{ i }/)
+						@items-=[item] if item[:procname].match(/#{ i }/)
+					}
 				end
 			end
 			
 			# Включает кнопку.<br>
 			# В параметр commandORindex помещается либо строковое значение,
 			# являющееся названием кнопки, либо целое число - индекс кнопки	во внутреннем массиве <i>items</i>.
+			#	@items.clear
+			#	add_item('New game',:new_game,false)
 			#	enable_item(0) # => @items[0].enabled set 'true'
 			#	enable_item('New game') # => @items[0].enabled set 'true'
+			#	enable_item(/[Nn][Ee][Ww][\s_]*[Gg][Aa][Mm][Ee]/) # @items[0].enabled set 'true'
 			# Включение происходит только если кнопка не имеет тип text_only (устанавливается
 			# при добавлении с помощью метода #add_text).
 			#
@@ -199,9 +209,19 @@ if RUBY_VERSION.to_f>=1.9
 					@items[commandORindex.to_i][:enabled]=true if (0...@items.size).include? commandORindex.to_i
 					@items[commandORindex.to_i][:enabled]=false if @items[commandORindex.to_i][:text_only]
 				when String
-					index=0
-					@items.times{|index|@items[index][:enabled]=true if @items[index][:command]==commandORindex}
-					@items[index][:enabled]=false if @items[index][:text_only]
+					@items.each{|index|
+						if index[:command]==commandORindex||index[:procname]==commandORindex
+							index[:enabled]=true
+							index[:enabled]=false if index[:text_only]
+						end
+					}
+				when Regexp
+					@items.each{|index|
+						if index[:command].match(/#{commandORindex}/)||index[:procname].match(/#{commandORindex}/)
+							index[:enabled]=true 
+							index[:enabled]=false if index[:text_only]
+						end
+					}
 				else
 					raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{string}"
 				end
@@ -221,9 +241,19 @@ if RUBY_VERSION.to_f>=1.9
 					@items[commandORindex.to_i][:enabled]=false if (0...@items.size).include? commandORindex.to_i
 					@items[commandORindex.to_i][:enabled]=false if @items[commandORindex.to_i][:text_only]
 				when String
-					index=0
-					@items.times{|index|@items[index][:enabled]=false if @items[index][:command]==commandORindex}
-					@items[index][:enabled]=false if @items[index][:text_only]
+					@items.each{|index|
+						if index[:command]==commandORindex||index[:procname]==commandORindex
+							index[:enabled]=false
+							index[:enabled]=false if index[:text_only]
+						end
+					}
+				when Regexp
+					@items.each{|index|
+						if index[:command].match(/#{commandORindex}/)||index[:procname].match(/#{commandORindex}/)
+							index[:enabled]=false
+							index[:enabled]=false if index[:text_only]
+						end
+					}
 				else
 					raise "#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{string}"
 				end
