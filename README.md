@@ -55,5 +55,5 @@ FAQ
 
 ###How to update help?
  - Install [last stable version of Ruby](http://rubyinstaller.org/ ) (this link for Windows)
- - Run 'make.bat' in root OR open command line, move to dir where cigui is and call command like this:
+ - Run 'gendoc.bat' in root OR open command line, move to dir where cigui is and call command like this:
 `rdoc --format=darkfish --encoding=UTF-8 --line-numbers cigui.rb`
