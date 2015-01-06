@@ -225,11 +225,12 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
           <div class="method-source-code" id="new-source">
             <pre><span class="ruby-comment"># File cigui.rb, line 107</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">x</span>=<span class="ruby-value">0</span>,<span class="ruby-identifier">y</span>=<span class="ruby-value">0</span>,<span class="ruby-identifier">w</span>=<span class="ruby-value">192</span>,<span class="ruby-identifier">h</span>=<span class="ruby-value">64</span>)
-        <span class="ruby-keyword">super</span> <span class="ruby-value">0</span>,<span class="ruby-value">0</span>,<span class="ruby-value">192</span>,<span class="ruby-value">64</span>
+        <span class="ruby-keyword">super</span> <span class="ruby-identifier">x</span>,<span class="ruby-identifier">y</span>,<span class="ruby-identifier">w</span>,<span class="ruby-identifier">h</span>
+        <span class="ruby-ivar">@old_x</span>, <span class="ruby-ivar">@old_y</span> = <span class="ruby-identifier">x</span>,<span class="ruby-identifier">y</span>
         <span class="ruby-ivar">@label</span>=<span class="ruby-keyword">nil</span>
         <span class="ruby-ivar">@items</span>=[]
         <span class="ruby-ivar">@texts</span>=[]
-        <span class="ruby-ivar">@speed</span>=<span class="ruby-value">1</span>
+        <span class="ruby-ivar">@speed</span>=<span class="ruby-value">:auto</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -267,7 +268,7 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
 <ul><li>
 <p>command - отображаемый текст кнопки</p>
 </li><li>
-<p>procname - название вызываемого метода</p>
+<p>procname - название вызываемого метода (String или Symbol)</p>
 </li></ul>
 
 <p>По умолчанию значение enable равно true, что значит, что кнопка включена и
@@ -277,7 +278,7 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
 
           
           <div class="method-source-code" id="add_item-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 151</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 154</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">add_item</span>(<span class="ruby-identifier">command</span>,<span class="ruby-identifier">procname</span>,<span class="ruby-identifier">enabled</span>=<span class="ruby-keyword">true</span>, <span class="ruby-identifier">text_only</span>=<span class="ruby-keyword">false</span>)
         <span class="ruby-ivar">@items</span><span class="ruby-operator">+=</span>[
                 {
@@ -286,7 +287,7 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
                         <span class="ruby-value">:enabled=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">enabled</span>,
                         <span class="ruby-value">:x=</span><span class="ruby-operator">&gt;</span><span class="ruby-value">:auto</span>,
                         <span class="ruby-value">:y=</span><span class="ruby-operator">&gt;</span><span class="ruby-value">:auto</span>,
-                        <span class="ruby-value">:text_only=</span><span class="ruby-identifier">text_only</span>
+                        <span class="ruby-value">:text_only=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">text_only</span>
                 }
         ]
 <span class="ruby-keyword">end</span></pre>
@@ -320,7 +321,7 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
 
           
           <div class="method-source-code" id="add_text-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 140</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 143</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">add_text</span>(<span class="ruby-identifier">text</span>)
         <span class="ruby-identifier">add_item</span>(<span class="ruby-identifier">text</span>, <span class="ruby-node">&quot;text_#{@index.last}&quot;</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-keyword">false</span>, <span class="ruby-keyword">true</span>)
 <span class="ruby-keyword">end</span></pre>
@@ -355,22 +356,36 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
 <p>имя команды</p>
 </li><li>
 <p>имя вызываемой процедуры</p>
+</li><li>
+<p>регулярное выражение для продвинутого поиска по именам команд и процедур</p>
 </li></ul>
           
           
 
           
           <div class="method-source-code" id="delete_item-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 170</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 174</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">delete_item</span>(<span class="ruby-identifier">indexORcomORproc</span>)
         <span class="ruby-identifier">i</span>=<span class="ruby-identifier">indexORcomORproc</span>
         <span class="ruby-keyword">case</span> <span class="ruby-identifier">i</span>.<span class="ruby-identifier">class</span>
         <span class="ruby-keyword">when</span> <span class="ruby-constant">Fixnum</span>
-        
+                <span class="ruby-ivar">@items</span><span class="ruby-operator">-=</span>[<span class="ruby-ivar">@items</span>[<span class="ruby-identifier">i</span>.<span class="ruby-identifier">to_i</span>]]
         <span class="ruby-keyword">when</span> <span class="ruby-constant">String</span>
-                <span class="ruby-comment"># try to find by commands</span>
-                
-                <span class="ruby-comment"># try to find by procnames</span>
+                <span class="ruby-comment"># Довольно ненадёжный поиск, но я пока не придумал,</span>
+                <span class="ruby-comment"># как его улучшить. Может, стоит добавить</span>
+                <span class="ruby-comment"># возможность поиска регулярных выражений?</span>
+                <span class="ruby-ivar">@items</span>.<span class="ruby-identifier">each</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">item</span><span class="ruby-operator">|</span>
+                        <span class="ruby-comment"># try to find by commands</span>
+                        <span class="ruby-ivar">@items</span><span class="ruby-operator">-=</span>[<span class="ruby-identifier">item</span>] <span class="ruby-keyword">if</span> <span class="ruby-identifier">item</span>[<span class="ruby-value">:command</span>]<span class="ruby-operator">==</span><span class="ruby-identifier">i</span>
+                        <span class="ruby-comment"># try to find by procnames</span>
+                        <span class="ruby-ivar">@items</span><span class="ruby-operator">-=</span>[<span class="ruby-identifier">item</span>] <span class="ruby-keyword">if</span> <span class="ruby-identifier">item</span>[<span class="ruby-value">:procname</span>]<span class="ruby-operator">==</span><span class="ruby-identifier">i</span>
+                }
+        <span class="ruby-comment"># И впрямь, почему бы и нет?</span>
+        <span class="ruby-keyword">when</span> <span class="ruby-constant">Regexp</span>
+                <span class="ruby-ivar">@items</span>.<span class="ruby-identifier">each</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">item</span><span class="ruby-operator">|</span>
+                        <span class="ruby-ivar">@items</span><span class="ruby-operator">-=</span>[<span class="ruby-identifier">item</span>] <span class="ruby-keyword">if</span> <span class="ruby-identifier">item</span>[<span class="ruby-value">:command</span>].<span class="ruby-identifier">match</span>(<span class="ruby-node">/#{ i }/</span>)
+                        <span class="ruby-ivar">@items</span><span class="ruby-operator">-=</span>[<span class="ruby-identifier">item</span>] <span class="ruby-keyword">if</span> <span class="ruby-identifier">item</span>[<span class="ruby-value">:procname</span>].<span class="ruby-identifier">match</span>(<span class="ruby-node">/#{ i }/</span>)
+                }
         <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
@@ -412,16 +427,26 @@ href="Win3.html#method-i-add_text">add_text</a>).</p>
 
           
           <div class="method-source-code" id="disable_item-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 212</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 241</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">disable_item</span>(<span class="ruby-identifier">commandORindex</span>)
         <span class="ruby-keyword">case</span> <span class="ruby-identifier">commandORindex</span>.<span class="ruby-identifier">class</span>
         <span class="ruby-keyword">when</span> <span class="ruby-constant">Integer</span>, <span class="ruby-constant">Float</span>
                 <span class="ruby-ivar">@items</span>[<span class="ruby-identifier">commandORindex</span>.<span class="ruby-identifier">to_i</span>][<span class="ruby-value">:enabled</span>]=<span class="ruby-keyword">false</span> <span class="ruby-keyword">if</span> (<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-ivar">@items</span>.<span class="ruby-identifier">size</span>).<span class="ruby-identifier">include?</span> <span class="ruby-identifier">commandORindex</span>.<span class="ruby-identifier">to_i</span>
                 <span class="ruby-ivar">@items</span>[<span class="ruby-identifier">commandORindex</span>.<span class="ruby-identifier">to_i</span>][<span class="ruby-value">:enabled</span>]=<span class="ruby-keyword">false</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@items</span>[<span class="ruby-identifier">commandORindex</span>.<span class="ruby-identifier">to_i</span>][<span class="ruby-value">:text_only</span>]
         <span class="ruby-keyword">when</span> <span class="ruby-constant">String</span>
-                <span class="ruby-identifier">index</span>=<span class="ruby-value">0</span>
-                <span class="ruby-ivar">@items</span>.<span class="ruby-identifier">times</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">index</span><span class="ruby-operator">|</span><span class="ruby-ivar">@items</span>[<span class="ruby-identifier">index</span>][<span class="ruby-value">:enabled</span>]=<span class="ruby-keyword">false</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@items</span>[<span class="ruby-identifier">index</span>][<span class="ruby-value">:command</span>]<span class="ruby-operator">==</span><span class="ruby-identifier">commandORindex</span>}
-                <span class="ruby-ivar">@items</span>[<span class="ruby-identifier">index</span>][<span class="ruby-value">:enabled</span>]=<span class="ruby-keyword">false</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@items</span>[<span class="ruby-identifier">index</span>][<span class="ruby-value">:text_only</span>]
+                <span class="ruby-ivar">@items</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">index</span><span class="ruby-operator">|</span>
+                        <span class="ruby-keyword">if</span> <span class="ruby-identifier">index</span>[<span class="ruby-value">:command</span>]<span class="ruby-operator">==</span><span class="ruby-identifier">commandORindex</span><span class="ruby-operator">||</span><span class="ruby-identifier">index</span>[<span class="ruby-value">:procname</span>]<span class="ruby-operator">==</span><span class="ruby-identifier">commandORindex</span>
+                                <span class="ruby-identifier">index</span>[<span class="ruby-value">:enabled</span>]=<span class="ruby-keyword">false</span>
+                                <span class="ruby-identifier">index</span>[<span class="ruby-value">:enabled</span>]=<span class="ruby-keyword">false</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">index</span>[<span class="ruby-value">:text_only</span>]
+                        <span class="ruby-keyword">end</span>
+                }
+        <span class="ruby-keyword">when</span> <span class="ruby-constant">Regexp</span>
+                <span class="ruby-ivar">@items</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">index</span><span class="ruby-operator">|</span>
+                        <span class="ruby-keyword">if</span> <span class="ruby-identifier">index</span>[<span class="ruby-value">:command</span>].<span class="ruby-identifier">match</span>(<span class="ruby-node">/#{commandORindex}/</span>)<span class="ruby-operator">||</span><span class="ruby-identifier">index</span>[<span class="ruby-value">:procname</span>].<span class="ruby-identifier">match</span>(<span class="ruby-node">/#{commandORindex}/</span>)
+                                <span class="ruby-identifier">index</span>[<span class="ruby-value">:enabled</span>]=<span class="ruby-keyword">false</span>
+                                <span class="ruby-identifier">index</span>[<span class="ruby-value">:enabled</span>]=<span class="ruby-keyword">false</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">index</span>[<span class="ruby-value">:text_only</span>]
+                        <span class="ruby-keyword">end</span>
+                }
         <span class="ruby-keyword">else</span>
                 <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{string}&quot;</span>
         <span class="ruby-keyword">end</span>
@@ -460,7 +485,7 @@ href="Win3.html#method-i-add_text">add_text</a>).</p>
 
           
           <div class="method-source-code" id="dispose-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 259</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 300</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">dispose</span>
         <span class="ruby-keyword">super</span>
 <span class="ruby-keyword">end</span></pre>
@@ -497,9 +522,11 @@ href="Win3.html#method-i-add_text">add_text</a>).</p>
 
           
           <div class="method-source-code" id="draw_items-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 232</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 271</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">draw_items</span>(<span class="ruby-identifier">ignore_disabled</span>=<span class="ruby-keyword">false</span>)
-        
+        <span class="ruby-ivar">@items</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">item</span><span class="ruby-operator">|</span>
+                
+        }
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -528,8 +555,11 @@ href="Win3.html#method-i-add_text">add_text</a>).</p>
 значение, являющееся названием кнопки, либо целое число - индекс кнопки    
 во внутреннем массиве <em>items</em>.</p>
 
-<pre class="ruby"><span class="ruby-identifier">enable_item</span>(<span class="ruby-value">0</span>) <span class="ruby-comment"># =&gt; @items[0].enabled set &#39;true&#39;</span>
+<pre class="ruby"><span class="ruby-ivar">@items</span>.<span class="ruby-identifier">clear</span>
+<span class="ruby-identifier">add_item</span>(<span class="ruby-string">&#39;New game&#39;</span>,:<span class="ruby-identifier">new_game</span>,<span class="ruby-keyword">false</span>)
+<span class="ruby-identifier">enable_item</span>(<span class="ruby-value">0</span>) <span class="ruby-comment"># =&gt; @items[0].enabled set &#39;true&#39;</span>
 <span class="ruby-identifier">enable_item</span>(<span class="ruby-string">&#39;New game&#39;</span>) <span class="ruby-comment"># =&gt; @items[0].enabled set &#39;true&#39;</span>
+<span class="ruby-identifier">enable_item</span>(<span class="ruby-regexp">/[Nn][Ee][Ww][\s_]*[Gg][Aa][Mm][Ee]/</span>) <span class="ruby-comment"># @items[0].enabled set &#39;true&#39;</span>
 </pre>
 
 <p>Включение происходит только если кнопка не имеет тип text_only
@@ -540,16 +570,26 @@ href="Win3.html#method-i-add_text">add_text</a>).</p>
 
           
           <div class="method-source-code" id="enable_item-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 190</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 209</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">enable_item</span>(<span class="ruby-identifier">commandORindex</span>)
         <span class="ruby-keyword">case</span> <span class="ruby-identifier">commandORindex</span>.<span class="ruby-identifier">class</span>
         <span class="ruby-keyword">when</span> <span class="ruby-constant">Fixnum</span>
                 <span class="ruby-ivar">@items</span>[<span class="ruby-identifier">commandORindex</span>.<span class="ruby-identifier">to_i</span>][<span class="ruby-value">:enabled</span>]=<span class="ruby-keyword">true</span> <span class="ruby-keyword">if</span> (<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-ivar">@items</span>.<span class="ruby-identifier">size</span>).<span class="ruby-identifier">include?</span> <span class="ruby-identifier">commandORindex</span>.<span class="ruby-identifier">to_i</span>
                 <span class="ruby-ivar">@items</span>[<span class="ruby-identifier">commandORindex</span>.<span class="ruby-identifier">to_i</span>][<span class="ruby-value">:enabled</span>]=<span class="ruby-keyword">false</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@items</span>[<span class="ruby-identifier">commandORindex</span>.<span class="ruby-identifier">to_i</span>][<span class="ruby-value">:text_only</span>]
         <span class="ruby-keyword">when</span> <span class="ruby-constant">String</span>
-                <span class="ruby-identifier">index</span>=<span class="ruby-value">0</span>
-                <span class="ruby-ivar">@items</span>.<span class="ruby-identifier">times</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">index</span><span class="ruby-operator">|</span><span class="ruby-ivar">@items</span>[<span class="ruby-identifier">index</span>][<span class="ruby-value">:enabled</span>]=<span class="ruby-keyword">true</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@items</span>[<span class="ruby-identifier">index</span>][<span class="ruby-value">:command</span>]<span class="ruby-operator">==</span><span class="ruby-identifier">commandORindex</span>}
-                <span class="ruby-ivar">@items</span>[<span class="ruby-identifier">index</span>][<span class="ruby-value">:enabled</span>]=<span class="ruby-keyword">false</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@items</span>[<span class="ruby-identifier">index</span>][<span class="ruby-value">:text_only</span>]
+                <span class="ruby-ivar">@items</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">index</span><span class="ruby-operator">|</span>
+                        <span class="ruby-keyword">if</span> <span class="ruby-identifier">index</span>[<span class="ruby-value">:command</span>]<span class="ruby-operator">==</span><span class="ruby-identifier">commandORindex</span><span class="ruby-operator">||</span><span class="ruby-identifier">index</span>[<span class="ruby-value">:procname</span>]<span class="ruby-operator">==</span><span class="ruby-identifier">commandORindex</span>
+                                <span class="ruby-identifier">index</span>[<span class="ruby-value">:enabled</span>]=<span class="ruby-keyword">true</span>
+                                <span class="ruby-identifier">index</span>[<span class="ruby-value">:enabled</span>]=<span class="ruby-keyword">false</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">index</span>[<span class="ruby-value">:text_only</span>]
+                        <span class="ruby-keyword">end</span>
+                }
+        <span class="ruby-keyword">when</span> <span class="ruby-constant">Regexp</span>
+                <span class="ruby-ivar">@items</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">index</span><span class="ruby-operator">|</span>
+                        <span class="ruby-keyword">if</span> <span class="ruby-identifier">index</span>[<span class="ruby-value">:command</span>].<span class="ruby-identifier">match</span>(<span class="ruby-node">/#{commandORindex}/</span>)<span class="ruby-operator">||</span><span class="ruby-identifier">index</span>[<span class="ruby-value">:procname</span>].<span class="ruby-identifier">match</span>(<span class="ruby-node">/#{commandORindex}/</span>)
+                                <span class="ruby-identifier">index</span>[<span class="ruby-value">:enabled</span>]=<span class="ruby-keyword">true</span> 
+                                <span class="ruby-identifier">index</span>[<span class="ruby-value">:enabled</span>]=<span class="ruby-keyword">false</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">index</span>[<span class="ruby-value">:text_only</span>]
+                        <span class="ruby-keyword">end</span>
+                }
         <span class="ruby-keyword">else</span>
                 <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{string}&quot;</span>
         <span class="ruby-keyword">end</span>
@@ -583,7 +623,7 @@ href="Win3.html#method-i-add_text">add_text</a>).</p>
 
           
           <div class="method-source-code" id="inspect-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 266</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 307</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">inspect</span>
         <span class="ruby-node">&quot;&lt;#{self.class}:&quot;</span><span class="ruby-operator">+</span>
         <span class="ruby-node">&quot; @back_opacity=#{back_opacity},&quot;</span><span class="ruby-operator">+</span>
@@ -633,7 +673,7 @@ href="Win3.html#method-i-add_text">add_text</a>).</p>
 
           
           <div class="method-source-code" id="label-3D-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 130</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 133</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">label=</span>(<span class="ruby-identifier">string</span>)
         <span class="ruby-comment"># make right label</span>
         <span class="ruby-identifier">string</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">/[\[\]\(\)\\&quot;]/</span>){<span class="ruby-string">&#39;&#39;</span>}
@@ -672,7 +712,7 @@ href="Win3.html#method-i-update">update</a>, влияет только на со
 
           
           <div class="method-source-code" id="refresh-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 121</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 124</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">refresh</span>
         <span class="ruby-keyword">self</span>.<span class="ruby-identifier">contents</span>.<span class="ruby-identifier">clear</span>
 <span class="ruby-keyword">end</span></pre>
@@ -707,7 +747,7 @@ href="Win3.html#method-i-update">update</a>, влияет только на со
 
           
           <div class="method-source-code" id="resize-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 241</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 282</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">resize</span>(<span class="ruby-identifier">new_width</span>, <span class="ruby-identifier">new_height</span>)
         <span class="ruby-identifier">temp</span>=<span class="ruby-constant">Sprite</span>.<span class="ruby-identifier">new</span>
         <span class="ruby-identifier">temp</span>.<span class="ruby-identifier">bitmap</span>=<span class="ruby-keyword">self</span>.<span class="ruby-identifier">contents</span>
@@ -753,8 +793,10 @@ href="Win3.html#method-i-update">update</a>, влияет только на со
 
           
           <div class="method-source-code" id="update-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 117</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">update</span>;<span class="ruby-keyword">end</span></pre>
+            <pre><span class="ruby-comment"># File cigui.rb, line 118</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">update</span>
+        <span class="ruby-identifier">_movement</span>
+<span class="ruby-keyword">end</span></pre>
           </div>
           
         </div>
