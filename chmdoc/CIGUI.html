@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<title>module CIGUI - RDoc Documentation</title>
+
+<link type="text/css" media="screen" href="./rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script type="text/javascript" charset="utf-8" src="./js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/darkfish.js"></script>
+
+
+<body id="top" class="module">
+  <div id="documentation">
+    <h1 class="module">module CIGUI</h1>
+
+    <div id="description" class="description">
+      
+<p>Основной модуль, обеспечивающий работу Cigui.&lt;br&gt; Для передачи команд
+используйте массив $do, например:</p>
+<ul><li>
+<p>$do&lt;&lt;“команда”</p>
+</li><li>
+<p>$do.push(“команда”)</p>
+</li></ul>
+
+<p>Оба варианта имеют один и тот же результат.&lt;br&gt; Перед запуском модуля
+вызовите метод <a href="CIGUI.html#method-c-setup">::setup</a>.&lt;br&gt;
+Для исполнения команд вызовите метод <a
+href="CIGUI.html#method-c-update">::update</a>.&lt;br&gt;</p>
+
+    </div><!-- description -->
+
+    <!-- Metadata -->
+    	<!--<div id="metadata"> -->
+		<div id="file-metadata">
+			<div id="file-list-section" class="section">
+				<h3 class="section-header">In Files</h3>
+				<div class="section-body">
+					<ul>
+					
+						<li>cigui.rb</li>
+					
+						<li>localize.rb</li>
+					
+					</ul>
+				</div>
+			</div>
+
+		<div id="class-metadata">
+
+			<!-- Parent Class -->
+			
+
+			<!-- Included Modules -->
+			
+		</div>
+
+	<!-- </div> -->
+
+
+    
+    
+    
+    <section id="5Buntitled-5D" class="documentation-section">
+      
+
+      
+
+      
+      <!-- Constants -->
+      <section id="constants-list" class="section">
+        <h3 class="section-header">Constants</h3>
+        <dl>
+        
+          <dt id="CMB">CMB
+          
+          <dd class="description"><p>Хэш-таблица всех возможных сочетаний слов из <a
+href="CIGUI.html#VOCAB">VOCAB</a> и их положения относительно друг друга в
+тексте.&lt;br&gt; Именно по этим сочетаниям производится поиск команд Cigui
+в тексте. Редактировать без понимания правил составления регулярных
+выражений не рекомендуется.</p>
+          
+        
+          <dt id="VOCAB">VOCAB
+          
+          <dd class="description"><p>Специальный словарь, содержащий все используемые команды Cigui.
+Предоставляет возможности не только внесения новых слов, но и добавление
+локализации (перевода) имеющихся (см. update_by_user).&lt;br&gt; Для
+удобства поиска разбит по категориям:</p>
+<ul><li>
+<p>common - общие команды, не имеющие категории;</p>
+</li><li>
+<p>cigui - управление интерпретатором;</p>
+</li><li>
+<p>event - событиями на карте;</p>
+</li><li>
+<p>map - параметрами карты;</p>
+</li><li>
+<p>picture - изображениями, используемыми через команды событий;</p>
+</li><li>
+<p>sprite - самостоятельными изображениями;</p>
+</li><li>
+<p>text - текстом и шрифтами</p>
+</li><li>
+<p>window - окнами.</p>
+</li></ul>
+
+<p>Русификацию этого словаря Вы можете найти в файле localize.rb по адресу:
+&lt;<a
+href="https://github.com/deadelf79/CIGUI/">github.com/deadelf79/CIGUI/</a>&gt;,
+если этот файл не приложен к демонстрационной версии проекта, который у Вас
+есть.</p>
+          
+        
+        </dl>
+      </section>
+      
+
+      
+      <!-- Attributes -->
+      <section id="attribute-method-details" class="method-section section">
+        <h3 class="section-header">Attributes</h3>
+
+        
+        <div id="attribute-c-last_log" class="method-detail">
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">last_log</span><span
+              class="attribute-access-type">[R]</span>
+          </div>
+
+          <div class="method-description">
+          
+          <p>Хранит массив всех произведенных действий (все записи last).&lt;br&gt;
+Действия записываются только если параметр <a
+href="CIGUI.html#attribute-c-logging">::logging</a> имеет значение true.
+Результаты работы decimal, fraction, boolean, substring и их расширенных
+аналогов не логгируются.&lt;br&gt; Открыт только для чтения.</p>
+          
+          </div>
+        </div>
+        
+        <div id="attribute-c-logging" class="method-detail">
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">logging</span><span
+              class="attribute-access-type">[RW]</span>
+          </div>
+
+          <div class="method-description">
+          
+          <p>Флаг включения/выключения логгирования действий. Если имеет значение true,
+то записи всех произведенных действий с момента применения значения будут
+записываться в массив <a
+href="CIGUI.html#attribute-c-last_log">::last_log</a></p>
+          
+          </div>
+        </div>
+        
+        <div id="attribute-c-sprites" class="method-detail">
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">sprites</span><span
+              class="attribute-access-type">[R]</span>
+          </div>
+
+          <div class="method-description">
+          
+          <p>Внутренний массив для вывода информации обо всех созданных
+спрайтах.&lt;br&gt; Открыт только для чтения.</p>
+          
+          </div>
+        </div>
+        
+        <div id="attribute-c-windows" class="method-detail">
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">windows</span><span
+              class="attribute-access-type">[R]</span>
+          </div>
+
+          <div class="method-description">
+          
+          <p>Внутренний массив для вывода информации обо всех созданных окнах.&lt;br&gt;
+Открыт только для чтения.</p>
+          
+          </div>
+        </div>
+        
+      </section><!-- attribute-method-details -->
+      
+
+      <!-- Methods -->
+      
+       <section id="public-class-5Buntitled-5D-method-details" class="method-section section">
+        <h3 class="section-header">Public Class Methods</h3>
+
+      
+        <div id="method-c-bool" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">bool</span><span
+              class="method-args">(source_string, prefix='', postfix='')</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Данный метод работает по аналогии с boolean, но производит поиск в строке с
+учетом указанных префикса (текста перед подстрокой) и постфикса (после
+подстроки).&lt;br&gt; prefix и postfix могут содержать символы,
+используемые в регулярных выражениях Если булевое значение в строке не
+обнаружено, по умолчанию возвращает false.</p>
+            
+
+            
+            <div class="method-source-code" id="bool-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 1444</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">bool</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">prefix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">postfix</span>=<span class="ruby-string">&#39;&#39;</span>)
+        <span class="ruby-identifier">match</span>=<span class="ruby-identifier">prefix</span><span class="ruby-operator">+</span><span class="ruby-node">&quot;((?:#{VOCAB[:true]}|#{VOCAB[:false]}))&quot;</span><span class="ruby-operator">+</span><span class="ruby-identifier">postfix</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">match</span>).<span class="ruby-identifier">size</span><span class="ruby-operator">&gt;</span><span class="ruby-value">1</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-node">/#{match}/</span>)[<span class="ruby-value">1</span>]<span class="ruby-operator">==</span><span class="ruby-keyword">nil</span>
+                <span class="ruby-identifier">match2</span>=<span class="ruby-node">&quot;(#{VOCAB[:true]})&quot;</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-node">/#{match2}/</span>)[<span class="ruby-value">1</span>]
+        <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- bool-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- bool-method -->
+
+      
+        <div id="method-c-boolean" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">boolean</span><span
+              class="method-args">(source_string)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Данный метод производит поиск булевого значения (true или false) в строке и
+возвращает его. Если булевое значение в строке не обнаружено, по умолчанию
+возвращает false.&lt;br&gt; Слова true и false берутся из словаря <a
+href="CIGUI.html#VOCAB">VOCAB</a>, что значит, что их локализованные версии
+также могут быть успешно найдены при поиске.</p>
+            
+
+            
+            <div class="method-source-code" id="boolean-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 1328</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">boolean</span>(<span class="ruby-identifier">source_string</span>)
+        <span class="ruby-identifier">match</span>=<span class="ruby-node">&quot;((?:#{VOCAB[:true]}|#{VOCAB[:false]}))&quot;</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">match</span>).<span class="ruby-identifier">size</span><span class="ruby-operator">&gt;</span><span class="ruby-value">1</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-node">/#{match}/</span>)[<span class="ruby-value">1</span>]<span class="ruby-operator">==</span><span class="ruby-keyword">nil</span>
+                <span class="ruby-identifier">match2</span>=<span class="ruby-node">&quot;(#{VOCAB[:true]})&quot;</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-node">/#{match2}/</span>)[<span class="ruby-value">1</span>]
+        <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- boolean-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- boolean-method -->
+
+      
+        <div id="method-c-dec" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">dec</span><span
+              class="method-args">(source_string, prefix='', postfix='', std_conversion=true)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Данный метод работает по аналогии с decimal, но производит поиск в строке с
+учетом указанных префикса (текста перед числом) и постфикса (после
+числа).&lt;br&gt; Метод не требует обязательного указания символов
+квадратных и круглых скобок, а также одинарных и двойных кавычек вокруг
+числа.&lt;br&gt; prefix и postfix могут содержать символы, используемые в
+регулярных выражениях для более точного поиска.</p>
+
+<pre class="ruby"><span class="ruby-identifier">dec</span>(<span class="ruby-string">&#39;x=1cm&#39;</span>,<span class="ruby-string">&#39;x=&#39;</span>,<span class="ruby-string">&#39;cm&#39;</span>) <span class="ruby-comment"># =&gt; 1</span>
+<span class="ruby-identifier">dec</span>(<span class="ruby-string">&#39;y=120 m&#39;</span>,<span class="ruby-string">&#39;[xy]=&#39;</span>,<span class="ruby-string">&#39;[\s]*(?:cm|m|km)&#39;</span>) <span class="ruby-comment"># =&gt; 120</span>
+</pre>
+
+<p>В отличие от frac, возвращает целое число. &lt;br&gt; Метод работает вне
+зависимости от работы модуля - нет необходимости запускать для вычисления
+setup и update.</p>
+            
+
+            
+            <div class="method-source-code" id="dec-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 1395</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">dec</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">prefix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">postfix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
+  <span class="ruby-identifier">frac</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">prefix</span>, <span class="ruby-identifier">postfix</span>, <span class="ruby-identifier">std_conversion</span>).<span class="ruby-identifier">to_i</span>
+<span class="ruby-keyword">rescue</span>
+  <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{source_string}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- dec-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- dec-method -->
+
+      
+        <div id="method-c-decimal" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">decimal</span><span
+              class="method-args">(source_string, std_conversion=true)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Данный метод возвращает первое попавшееся целое число, найденное в строке
+source_string.&lt;br&gt; Производит поиск только в том случае, если число
+записано:</p>
+<ul><li>
+<p>в скобки, например (10);</p>
+</li><li>
+<p>в квадратные скобки, например [23];</p>
+</li><li>
+<p>в кавычки(апострофы), например &#39;45&#39;;</p>
+</li><li>
+<p>в двойные кавычки, например “8765”.</p>
+</li></ul>
+
+<p>Также, вернет всю целую часть числа записанную:</p>
+<ul><li>
+<p>до точки, так здесь [1.35] вернет 1;</p>
+</li><li>
+<p>до запятой, так здесь (103,81) вернет 103;</p>
+</li><li>
+<p>до первого пробела (при стандартной конвертации в целое число), так здесь
+“816 586,64” вернет только 816;</p>
+</li><li>
+<p>через символ подчеркивания, так здесь &#39;1_000_0_0_0,143&#39; вернет
+ровно один миллион (1000000).</p>
+</li></ul>
+
+<p>Если присвоить std_conversion значение false, то это отменит стандартную
+конвертацию строки, встроенную в Ruby, и метод попробует найти число,
+игнорируя пробелы, табуляцию и знаки подчеркивания. Выключение
+std_conversion может привести к неожиданным последствиям.</p>
+
+<pre class="ruby"><span class="ruby-identifier">decimal</span>(<span class="ruby-string">&#39;[10,25]&#39;</span>) <span class="ruby-comment"># =&gt; 10</span>
+<span class="ruby-identifier">decimal</span>(<span class="ruby-string">&#39;[1 0 2]&#39;</span>,<span class="ruby-keyword">false</span>) <span class="ruby-comment"># =&gt; 102</span>
+<span class="ruby-identifier">decimal</span>(<span class="ruby-string">&#39;[1_234_5678 89]&#39;</span>,<span class="ruby-keyword">false</span>) <span class="ruby-comment"># =&gt; 123456789</span>
+</pre>
+
+<p>&lt;br&gt; Метод работает вне зависимости от работы модуля - нет
+необходимости запускать для вычисления setup и update.</p>
+            
+
+            
+            <div class="method-source-code" id="decimal-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 1281</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">decimal</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
+      <span class="ruby-identifier">fraction</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">std_conversion</span>).<span class="ruby-identifier">to_i</span>
+    <span class="ruby-keyword">rescue</span>
+      <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{source_string}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- decimal-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- decimal-method -->
+
+      
+        <div id="method-c-frac" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">frac</span><span
+              class="method-args">(source_string, prefix='', postfix='', std_conversion=true)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Данный метод работает по аналогии с fraction, но производит поиск в строке
+с учетом указанных префикса (текста перед числом) и постфикса (после
+числа).&lt;br&gt; Метод не требует обязательного указания символов
+квадратных и круглых скобок, а также одинарных и двойных кавычек вокруг
+числа.&lt;br&gt; prefix и postfix могут содержать символы, используемые в
+регулярных выражениях для более точного поиска.</p>
+
+<pre class="ruby"><span class="ruby-identifier">frac</span>(<span class="ruby-string">&#39;x=31.2mm&#39;</span>,<span class="ruby-string">&#39;x=&#39;</span>,<span class="ruby-string">&#39;mm&#39;</span>) <span class="ruby-comment"># =&gt; 31.2</span>
+<span class="ruby-identifier">frac</span>(<span class="ruby-string">&#39;y=987,67 m&#39;</span>,<span class="ruby-string">&#39;[xy]=&#39;</span>,<span class="ruby-string">&#39;[\s]*(?:cm|m|km)&#39;</span>) <span class="ruby-comment"># =&gt; 987.67</span>
+</pre>
+
+<p>В отличие от dec, возвращает рациональное число. &lt;br&gt; Метод работает
+вне зависимости от работы модуля - нет необходимости запускать для
+вычисления setup и update.</p>
+            
+
+            
+            <div class="method-source-code" id="frac-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 1413</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">frac</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">prefix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">postfix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
+  <span class="ruby-identifier">match</span>=<span class="ruby-identifier">prefix</span><span class="ruby-operator">+</span><span class="ruby-string">&#39;([\-\+]?[\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)&#39;</span><span class="ruby-operator">+</span><span class="ruby-identifier">postfix</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-node">/#{match}/</span>)[<span class="ruby-value">1</span>].<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">/[\s_]*/</span>){}.<span class="ruby-identifier">to_f</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">std_conversion</span>
+  <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-node">/#{match}/</span>)[<span class="ruby-value">1</span>].<span class="ruby-identifier">to_f</span>
+<span class="ruby-keyword">rescue</span>
+  <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{source_string}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- frac-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- frac-method -->
+
+      
+        <div id="method-c-fraction" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">fraction</span><span
+              class="method-args">(source_string, std_conversion=true)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Данный метод работает по аналогии с decimal, но возвращает рациональное
+число (число с плавающей запятой или точкой).&lt;br&gt; Имеется пара
+замечаний к правилам использования в дополнение к  упомянутым в decimal:</p>
+<ul><li>
+<p>Все цифры после запятой или точки считаются дробной частью и также могут
+содержать помимо цифр символ подчёркивания;</p>
+</li><li>
+<p>При наличии между цифрами в дробной части пробела вернет ноль (в
+стандартной конвертации в целое или дробное число).</p>
+</li></ul>
+
+<p>Если присвоить std_conversion значение false, то это отменит стандартную
+конвертацию строки, встроенную в Ruby, и метод попробует найти число,
+игнорируя пробелы, табуляцию и знаки подчеркивания. Выключение
+std_conversion может привести к неожиданным последствиям.</p>
+
+<pre class="ruby"><span class="ruby-identifier">fraction</span>(<span class="ruby-string">&#39;(109,86)&#39;</span>) <span class="ruby-comment"># =&gt; 109.86</span>
+<span class="ruby-identifier">fraction</span>(<span class="ruby-string">&#39;(1 0 9 , 8 6)&#39;</span>,<span class="ruby-keyword">false</span>) <span class="ruby-comment"># =&gt; 109.86</span>
+</pre>
+
+<p>&lt;br&gt; Метод работает вне зависимости от работы модуля - нет
+необходимости запускать для вычисления setup и update.</p>
+            
+
+            
+            <div class="method-source-code" id="fraction-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 1302</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">fraction</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">std_conversion</span>=<span class="ruby-keyword">true</span>)
+  <span class="ruby-identifier">match</span>=<span class="ruby-string">&#39;(?:[\[|&quot;\(\])[\s]*([\-\+]?[\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)(?:[\]|&quot;\)\])&#39;</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-node">/#{match}/</span>)[<span class="ruby-value">1</span>].<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">/[\s_]*/</span>){}.<span class="ruby-identifier">to_f</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">std_conversion</span>
+  <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-node">/#{match}/</span>)[<span class="ruby-value">1</span>].<span class="ruby-identifier">to_f</span>
+<span class="ruby-keyword">rescue</span>
+  <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;#{CIGUIERR::CantReadNumber}\n\tcurrent line of $do: #{source_string}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- fraction-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- fraction-method -->
+
+      
+        <div id="method-c-last" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">last</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Возвращает сообщение о последнем произведенном действии или классе
+последнего использованного объекта, используя метод
+Kernel.inspect.&lt;br&gt; <strong>Пример:</strong></p>
+
+<pre class="ruby"><span class="ruby-constant">CIGUI</span>.<span class="ruby-identifier">setup</span>
+<span class="ruby-identifier">puts</span> <span class="ruby-constant">CIGUI</span>.<span class="ruby-identifier">last</span> <span class="ruby-comment"># =&gt; &#39;CIGUI started&#39;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="last-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 1461</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">last</span>
+        <span class="ruby-ivar">@last_action</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">?</span> <span class="ruby-ivar">@last_action</span> <span class="ruby-operator">:</span> <span class="ruby-ivar">@last_action</span>.<span class="ruby-identifier">inspect</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- last-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- last-method -->
+
+      
+        <div id="method-c-rect" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">rect</span><span
+              class="method-args">(source_string)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Возвращает массив из четырех значений для передачи в качестве параметра в
+объекты класса <a href="Rect.html">Rect</a>. Массив в строке должен быть
+помещен в квадратные скобки, а значения в нем должны разделяться
+<strong>точкой с запятой.</strong>&lt;br&gt; <strong>Пример:</strong></p>
+
+<pre class="ruby"><span class="ruby-identifier">rect</span>(<span class="ruby-string">&#39;[1;2,0;3.5;4.0_5]&#39;</span>) <span class="ruby-comment"># =&gt; [ 1, 2.0, 3.5, 4.05 ]</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="rect-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 1344</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">rect</span>(<span class="ruby-identifier">source_string</span>)
+        <span class="ruby-identifier">read</span>=<span class="ruby-string">&#39;&#39;</span>
+        <span class="ruby-identifier">start</span>=<span class="ruby-keyword">false</span>
+        <span class="ruby-identifier">arr</span>=[]
+        <span class="ruby-keyword">for</span> <span class="ruby-identifier">index</span> <span class="ruby-keyword">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">size</span>
+                <span class="ruby-identifier">char</span>=<span class="ruby-identifier">source_string</span>[<span class="ruby-identifier">index</span>]
+                <span class="ruby-keyword">if</span> <span class="ruby-identifier">char</span><span class="ruby-operator">==</span><span class="ruby-string">&#39;[&#39;</span>
+                        <span class="ruby-identifier">start</span>=<span class="ruby-keyword">true</span>
+                        <span class="ruby-keyword">next</span>
+                <span class="ruby-keyword">end</span>
+                <span class="ruby-keyword">if</span> <span class="ruby-identifier">start</span>
+                        <span class="ruby-keyword">if</span> <span class="ruby-identifier">char!</span>=<span class="ruby-string">&#39;;&#39;</span>
+                                <span class="ruby-keyword">if</span> <span class="ruby-identifier">char!</span>=<span class="ruby-string">&#39;]&#39;</span>
+                                        <span class="ruby-identifier">read</span><span class="ruby-operator">+=</span><span class="ruby-identifier">char</span>
+                                <span class="ruby-keyword">else</span>
+                                        <span class="ruby-identifier">arr</span><span class="ruby-operator">&lt;&lt;</span><span class="ruby-identifier">read</span>
+                        <span class="ruby-keyword">break</span>
+                                <span class="ruby-keyword">end</span>
+                        <span class="ruby-keyword">else</span>
+                                <span class="ruby-identifier">arr</span><span class="ruby-operator">&lt;&lt;</span><span class="ruby-identifier">read</span>
+                                <span class="ruby-identifier">read</span>=<span class="ruby-string">&#39;&#39;</span>
+                        <span class="ruby-keyword">end</span>
+                <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">arr</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">&lt;</span><span class="ruby-value">4</span>
+                <span class="ruby-keyword">for</span> <span class="ruby-identifier">index</span> <span class="ruby-keyword">in</span> <span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-value">4</span><span class="ruby-operator">-</span><span class="ruby-identifier">arr</span>.<span class="ruby-identifier">size</span>
+                        <span class="ruby-identifier">arr</span><span class="ruby-operator">&lt;&lt;</span><span class="ruby-value">0</span>
+                <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">arr</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">&gt;</span><span class="ruby-value">4</span>
+                <span class="ruby-identifier">arr</span>.<span class="ruby-identifier">slice!</span>(<span class="ruby-value">4</span>,<span class="ruby-identifier">arr</span>.<span class="ruby-identifier">size</span>)
+        <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">for</span> <span class="ruby-identifier">index</span> <span class="ruby-keyword">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">arr</span>.<span class="ruby-identifier">size</span>
+                <span class="ruby-identifier">arr</span>[<span class="ruby-identifier">index</span>]=<span class="ruby-identifier">dec</span>(<span class="ruby-identifier">arr</span>[<span class="ruby-identifier">index</span>]) <span class="ruby-keyword">if</span> <span class="ruby-identifier">arr</span>[<span class="ruby-identifier">index</span>].<span class="ruby-identifier">is_a?</span> <span class="ruby-constant">String</span>
+                <span class="ruby-identifier">arr</span>[<span class="ruby-identifier">index</span>]=<span class="ruby-value">0</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">arr</span>[<span class="ruby-identifier">index</span>].<span class="ruby-identifier">is_a?</span> <span class="ruby-constant">NilClass</span>
+        <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">return</span> <span class="ruby-identifier">arr</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- rect-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- rect-method -->
+
+      
+        <div id="method-c-setup" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">setup</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Требуется выполнить этот метод перед началом работы с <a
+href="CIGUI.html">CIGUI</a>.&lt;br&gt; Инициализирует массив $do, если он
+еще не был создан. В этот массив пользователь подает команды для исполнения
+при следующем запуске метода update.&lt;br&gt; Если даже массив $do был
+инициализирован ранее, то исполняет команду <em>cigui start</em> прежде
+всего.&lt;br&gt; <strong>Пример:</strong></p>
+
+<pre>begin
+        CIGUI.setup
+        #~~~ some code fragment ~~~
+        CIGUI.update
+        #~~~ some other code fragment ~~~
+end</pre>
+            
+
+            
+            <div class="method-source-code" id="setup-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 1201</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">setup</span>
+  <span class="ruby-identifier">$do</span><span class="ruby-operator">||=</span>[]
+  <span class="ruby-identifier">$do</span>.<span class="ruby-identifier">insert</span> <span class="ruby-value">0</span>,<span class="ruby-string">&#39;cigui start&#39;</span>
+  <span class="ruby-identifier">_setup</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- setup-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- setup-method -->
+
+      
+        <div id="method-c-substr" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">substr</span><span
+              class="method-args">(source_string, prefix='', postfix='')</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Данный метод работает по аналогии с substring, но производит поиск в строке
+с учетом указанных префикса (текста перед подстрокой) и постфикса (после
+подстроки).&lt;br&gt; Указание квадратных или круглый скобок, а также
+экранированных одинарных или двойных кавычек в строке после префикса
+обязательно. prefix и postfix могут содержать символы, используемые в
+регулярных выражениях для более точного поиска.&lt;br&gt;
+<strong>Пример:</strong></p>
+
+<pre class="ruby"><span class="ruby-identifier">puts</span> <span class="ruby-string">&#39;Who can make me strong?&#39;</span>
+<span class="ruby-identifier">someone</span> = <span class="ruby-identifier">substring</span>(<span class="ruby-string">&quot;Make[ me ]invincible&quot;</span>,<span class="ruby-string">&#39;Make&#39;</span>,<span class="ruby-string">&#39;invincible&#39;</span>)
+<span class="ruby-identifier">puts</span> <span class="ruby-string">&#39;Only&#39;</span><span class="ruby-operator">+</span><span class="ruby-identifier">someone</span> <span class="ruby-comment"># =&gt; &#39;Only me&#39;</span>
+</pre>
+
+<p>Метод работает вне зависимости от работы модуля - нет необходимости
+запускать для вычисления setup и update.</p>
+            
+
+            
+            <div class="method-source-code" id="substr-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 1433</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">substr</span>(<span class="ruby-identifier">source_string</span>, <span class="ruby-identifier">prefix</span>=<span class="ruby-string">&#39;&#39;</span>, <span class="ruby-identifier">postfix</span>=<span class="ruby-string">&#39;&#39;</span>)
+        <span class="ruby-identifier">match</span>=<span class="ruby-identifier">prefix</span><span class="ruby-operator">+</span><span class="ruby-string">&#39;(?:[\[\(\&quot;\])[\s]*([\w\s _\!\#\$\%\^\&amp;\*]*)[\s]*(?:[\]|&quot;\)\])&#39;</span><span class="ruby-operator">+</span><span class="ruby-identifier">postfix</span>
+        <span class="ruby-keyword">return</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-node">/#{match}/</span>)[<span class="ruby-value">1</span>]
+<span class="ruby-keyword">rescue</span>
+        <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;#{CIGUIERR::CantReadString}\n\tcurrent line of $do: #{source_string}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- substr-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- substr-method -->
+
+      
+        <div id="method-c-substring" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">substring</span><span
+              class="method-args">(source_string)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Данный метод производит поиск подстроки, используемой в качестве
+параметра.&lt;br&gt; Строка должна быть заключена в одинарные или двойные
+кавычки или же в круглые или квадратные скобки. <strong>Пример:</strong></p>
+
+<pre class="ruby"><span class="ruby-identifier">substring</span>(<span class="ruby-string">&#39;[Hello cruel world!]&#39;</span>) <span class="ruby-comment"># =&gt; Hello cruel world!</span>
+<span class="ruby-identifier">substring</span>(<span class="ruby-string">&quot;set window label=&#39;SomeSome&#39; and no more else&quot;</span>) <span class="ruby-comment"># =&gt; SomeSome</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="substring-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 1317</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">substring</span>(<span class="ruby-identifier">source_string</span>)
+        <span class="ruby-identifier">match</span>=<span class="ruby-string">&#39;(?:[\[\(\&quot;\])[\s]*([\w\s _\!\#\$\%\^\&amp;\*]*)[\s]*(?:[\]|&quot;\)\])&#39;</span>
+        <span class="ruby-keyword">return</span> <span class="ruby-identifier">source_string</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">match</span>)[<span class="ruby-value">1</span>]
+<span class="ruby-keyword">rescue</span>
+        <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;#{CIGUIERR::CantReadString}\n\tcurrent line of $do: #{source_string}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- substring-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- substring-method -->
+
+      
+        <div id="method-c-update" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">update</span><span
+              class="method-args">(clear_after_update=true)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Вызывает все методы обработки команд, содержащиеся в массиве $do.&lt;br&gt;
+Вызовет исключение <a
+href="CIGUIERR/CantInterpretCommand.html">CIGUIERR::CantInterpretCommand</a>
+в том случае, если после выполнения <em>cigui finish</em> в массиве $do
+будут находится новые команды для обработки.&lt;br&gt; По умолчанию очищает
+массив $do после обработки всех команд. Если clear_after_update поставить
+значение false, то все команды из массива $do будут выполнены повторно при
+следующем запуске этого метода.&lt;br&gt; Помимо приватных методов
+обработки вызывает также метод update_by_user, который может быть
+модифицирован пользователем (подробнее смотри в описании метода).&lt;br&gt;</p>
+            
+
+            
+            <div class="method-source-code" id="update-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 1217</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">update</span>(<span class="ruby-identifier">clear_after_update</span>=<span class="ruby-keyword">true</span>)
+            <span class="ruby-identifier">$do</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
+                    <span class="ruby-identifier">_restart?</span> <span class="ruby-identifier">line</span>
+                    <span class="ruby-identifier">_common?</span> <span class="ruby-identifier">line</span>
+                    <span class="ruby-identifier">_cigui?</span> <span class="ruby-identifier">line</span>
+                    <span class="ruby-identifier">_window?</span> <span class="ruby-identifier">line</span>
+                    <span class="ruby-comment">#_</span>
+                    <span class="ruby-identifier">update_internal_objects</span>
+                    <span class="ruby-identifier">update_by_user</span>(<span class="ruby-identifier">line</span>)
+            <span class="ruby-keyword">end</span>
+            <span class="ruby-identifier">$do</span>.<span class="ruby-identifier">clear</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">clear_after_update</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- update-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- update-method -->
+
+      
+        <div id="method-c-update_by_user" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">update_by_user</span><span
+              class="method-args">(string)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Метод обработки текста, созданный для пользовательских модификаций, не
+влияющих на работу встроенных обработчиков.&lt;br&gt; Используйте
+<em>alias</em> этого метода при добавлении обработки собственных
+команд.&lt;br&gt; <strong>Пример:</strong></p>
+
+<pre class="ruby"><span class="ruby-keyword">alias</span> <span class="ruby-identifier">my_update</span> <span class="ruby-identifier">update_by_user</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">update_by_user</span>
+        <span class="ruby-comment"># add new word</span>
+        <span class="ruby-constant">VOCAB</span>[:<span class="ruby-identifier">window</span>][:<span class="ruby-identifier">throw</span>]=<span class="ruby-string">&#39;throw&#39;</span>
+        <span class="ruby-comment"># add &#39;window throw&#39; combination</span>
+        <span class="ruby-constant">CMB</span>[:<span class="ruby-identifier">window_throw</span>]=<span class="ruby-node">&quot;(?:(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:throw]})+)&quot;</span>
+        <span class="ruby-comment"># call method</span>
+        <span class="ruby-identifier">window_throw?</span> <span class="ruby-identifier">line</span>
+<span class="ruby-keyword">end</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="update_by_user-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 1255</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">update_by_user</span>(<span class="ruby-identifier">string</span>)
+        
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- update_by_user-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- update_by_user-method -->
+
+      
+        <div id="method-c-update_internal_objects" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">update_internal_objects</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Вызывает обновление всех объектов из внутренних массивов <a
+href="CIGUI.html#attribute-c-windows">::windows</a> и <a
+href="CIGUI.html#attribute-c-sprites">::sprites</a>.&lt;br&gt; Вызывается
+автоматически по окончании обработки команд из массива $do в методе update.</p>
+            
+
+            
+            <div class="method-source-code" id="update_internal_objects-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 1232</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">update_internal_objects</span>
+        <span class="ruby-ivar">@windows</span>.<span class="ruby-identifier">each</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">win</span><span class="ruby-operator">|</span>
+                <span class="ruby-identifier">win</span>.<span class="ruby-identifier">update</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">win</span>.<span class="ruby-identifier">is_a?</span> <span class="ruby-constant">Win3</span>
+        }
+        <span class="ruby-ivar">@sprites</span>.<span class="ruby-identifier">each</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">spr</span><span class="ruby-operator">|</span>
+                <span class="ruby-identifier">spr</span>.<span class="ruby-identifier">update</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">spr</span>.<span class="ruby-identifier">is_a?</span> <span class="ruby-constant">Spr3</span>
+        }
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- update_internal_objects-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- update_internal_objects-method -->
+
+      
+      </section><!-- public-class-method-details -->
+    
+    </section><!-- 5Buntitled-5D -->
+  
+
+  </div><!-- documentation -->
+
+
+<footer id="validator-badges">
+  <p>Generated by <a href="https://github.com/rdoc/rdoc">RDoc</a> 3.12.2.
+  <p>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish Rdoc Generator</a> 3.
+</footer>
+

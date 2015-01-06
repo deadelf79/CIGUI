@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<title>class Color - RDoc Documentation</title>
+
+<link type="text/css" media="screen" href="./rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script type="text/javascript" charset="utf-8" src="./js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/darkfish.js"></script>
+
+
+<body id="top" class="class">
+  <div id="documentation">
+    <h1 class="class">class Color</h1>
+
+    <div id="description" class="description">
+      
+<p>Класс, хранящий данные о цвете в формате RGBA (красный, зеленый, синий и
+прозрачность). Каждое значение является рациональным числом (число с
+плавающей точкой) и имеет значение от 0.0 до 255.0. Все значения, выходящие
+за указанный интервал, корректируются автоматически.</p>
+
+    </div><!-- description -->
+
+    <!-- Metadata -->
+    	<!--<div id="metadata"> -->
+		<div id="file-metadata">
+			<div id="file-list-section" class="section">
+				<h3 class="section-header">In Files</h3>
+				<div class="section-body">
+					<ul>
+					
+						<li>cigui.rb</li>
+					
+					</ul>
+				</div>
+			</div>
+
+		<div id="class-metadata">
+
+			<!-- Parent Class -->
+			
+			<div id="parent-class-section" class="section">
+				<h3 class="section-header">Parent</h3>
+				
+				<p class="link">Object</p>
+				
+			</div>
+			
+
+			<!-- Included Modules -->
+			
+		</div>
+
+	<!-- </div> -->
+
+
+    
+    
+    
+    <section id="5Buntitled-5D" class="documentation-section">
+      
+
+      
+
+      
+
+      
+
+      <!-- Methods -->
+      
+       <section id="public-class-5Buntitled-5D-method-details" class="method-section section">
+        <h3 class="section-header">Public Class Methods</h3>
+
+      
+        <div id="method-c-new" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">new</span><span
+              class="method-args">(r,g,b,a=255.0)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Создает экземпляр класса.</p>
+<ul><li>
+<p>r, g, b - задает изначальные значения красного, зеленого и синего цветов</p>
+</li><li>
+<p>a - задает прозрачность, по умолчанию имеет значение 255.0 (полностью
+непрозрачный цвет)</p>
+</li></ul>
+            
+
+            
+            <div class="method-source-code" id="new-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 418</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">r</span>,<span class="ruby-identifier">g</span>,<span class="ruby-identifier">b</span>,<span class="ruby-identifier">a</span>=<span class="ruby-value">255.0</span>)
+        <span class="ruby-ivar">@r</span>,<span class="ruby-ivar">@g</span>,<span class="ruby-ivar">@b</span>,<span class="ruby-ivar">@a</span> = <span class="ruby-identifier">r</span>.<span class="ruby-identifier">to_f</span>,<span class="ruby-identifier">g</span>.<span class="ruby-identifier">to_f</span>,<span class="ruby-identifier">b</span>.<span class="ruby-identifier">to_f</span>,<span class="ruby-identifier">a</span>.<span class="ruby-identifier">to_f</span>
+        <span class="ruby-identifier">_normalize</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- new-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- new-method -->
+
+      
+      </section><!-- public-class-method-details -->
+    
+       <section id="public-instance-5Buntitled-5D-method-details" class="method-section section">
+        <h3 class="section-header">Public Instance Methods</h3>
+
+      
+        <div id="method-i-alpha" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">alpha</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Возвращает значение прозрачности</p>
+            
+
+            
+            <div class="method-source-code" id="alpha-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 439</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">alpha</span>
+        <span class="ruby-ivar">@a</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- alpha-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- alpha-method -->
+
+      
+        <div id="method-i-blue" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">blue</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Возвращает значение синего цвета</p>
+            
+
+            
+            <div class="method-source-code" id="blue-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 434</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">blue</span>
+        <span class="ruby-ivar">@b</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- blue-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- blue-method -->
+
+      
+        <div id="method-i-green" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">green</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Возвращает значение зеленого цвета</p>
+            
+
+            
+            <div class="method-source-code" id="green-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 429</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">green</span>
+        <span class="ruby-ivar">@g</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- green-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- green-method -->
+
+      
+        <div id="method-i-red" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">red</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Возвращает значение красного цвета</p>
+            
+
+            
+            <div class="method-source-code" id="red-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 424</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">red</span>
+        <span class="ruby-ivar">@r</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- red-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- red-method -->
+
+      
+        <div id="method-i-set" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">set</span><span
+              class="method-args">(*args)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Задает новые значения цвета и прозрачности.&lt;br&gt; <strong>Варианты
+параметров:</strong></p>
+<ul><li>
+<p>set(<a href="Color.html">Color</a>) - в качестве параметра задан другой
+экземпляр класса <a href="Color.html">Color</a></p>
+</li></ul>
+
+<p>Все значения цвета и прозрачности будут скопированы из него.</p>
+<ul><li>
+<p>set(red, green, blue) - задает новые значения цвета.</p>
+</li></ul>
+
+<p>Прозрачность по умолчанию становится равна 255.0</p>
+<ul><li>
+<p>set(red, green, blue, alpha) - задает новые значения цвета и прозрачности.</p>
+</li></ul>
+            
+
+            
+            <div class="method-source-code" id="set-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 450</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">set</span>(*<span class="ruby-identifier">args</span>)
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">1</span>
+                <span class="ruby-ivar">@r</span>,<span class="ruby-ivar">@g</span>,<span class="ruby-ivar">@b</span>,<span class="ruby-ivar">@a</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">red</span>,<span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">green</span>,<span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">blue</span>,<span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">alpha</span>
+        <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">4</span>
+                <span class="ruby-ivar">@r</span>,<span class="ruby-ivar">@g</span>,<span class="ruby-ivar">@b</span>,<span class="ruby-ivar">@a</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">1</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">2</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">3</span>]
+        <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">3</span>
+                <span class="ruby-ivar">@r</span>,<span class="ruby-ivar">@g</span>,<span class="ruby-ivar">@b</span>,<span class="ruby-ivar">@a</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">1</span>],<span class="ruby-identifier">args</span>[<span class="ruby-value">2</span>],<span class="ruby-value">255.0</span>
+        <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">2</span>
+                <span class="ruby-comment"># throw error like in Rect class</span>
+        <span class="ruby-keyword">end</span>
+        <span class="ruby-identifier">_normalize</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- set-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- set-method -->
+
+      
+      </section><!-- public-instance-method-details -->
+    
+    </section><!-- 5Buntitled-5D -->
+  
+
+  </div><!-- documentation -->
+
+
+<footer id="validator-badges">
+  <p>Generated by <a href="https://github.com/rdoc/rdoc">RDoc</a> 3.12.2.
+  <p>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish Rdoc Generator</a> 3.
+</footer>
+

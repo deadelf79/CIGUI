@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<title>class Rect - RDoc Documentation</title>
+
+<link type="text/css" media="screen" href="./rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script type="text/javascript" charset="utf-8" src="./js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/darkfish.js"></script>
+
+
+<body id="top" class="class">
+  <div id="documentation">
+    <h1 class="class">class Rect</h1>
+
+    <div id="description" class="description">
+      
+<p>Класс абстрактного (невизуального) прямоугольника. Хранит значения о
+положении и размере прямоугольника</p>
+
+    </div><!-- description -->
+
+    <!-- Metadata -->
+    	<!--<div id="metadata"> -->
+		<div id="file-metadata">
+			<div id="file-list-section" class="section">
+				<h3 class="section-header">In Files</h3>
+				<div class="section-body">
+					<ul>
+					
+						<li>cigui.rb</li>
+					
+					</ul>
+				</div>
+			</div>
+
+		<div id="class-metadata">
+
+			<!-- Parent Class -->
+			
+			<div id="parent-class-section" class="section">
+				<h3 class="section-header">Parent</h3>
+				
+				<p class="link">Object</p>
+				
+			</div>
+			
+
+			<!-- Included Modules -->
+			
+		</div>
+
+	<!-- </div> -->
+
+
+    
+    
+    
+    <section id="5Buntitled-5D" class="documentation-section">
+      
+
+      
+
+      
+
+      
+      <!-- Attributes -->
+      <section id="attribute-method-details" class="method-section section">
+        <h3 class="section-header">Attributes</h3>
+
+        
+        <div id="attribute-i-height" class="method-detail">
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">height</span><span
+              class="attribute-access-type">[RW]</span>
+          </div>
+
+          <div class="method-description">
+          
+          <p>Высота прямоугольника</p>
+          
+          </div>
+        </div>
+        
+        <div id="attribute-i-width" class="method-detail">
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">width</span><span
+              class="attribute-access-type">[RW]</span>
+          </div>
+
+          <div class="method-description">
+          
+          <p>Ширина прямоугольника</p>
+          
+          </div>
+        </div>
+        
+        <div id="attribute-i-x" class="method-detail">
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">x</span><span
+              class="attribute-access-type">[RW]</span>
+          </div>
+
+          <div class="method-description">
+          
+          <p>Координата X</p>
+          
+          </div>
+        </div>
+        
+        <div id="attribute-i-y" class="method-detail">
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">y</span><span
+              class="attribute-access-type">[RW]</span>
+          </div>
+
+          <div class="method-description">
+          
+          <p>Координата Y</p>
+          
+          </div>
+        </div>
+        
+      </section><!-- attribute-method-details -->
+      
+
+      <!-- Methods -->
+      
+       <section id="public-class-5Buntitled-5D-method-details" class="method-section section">
+        <h3 class="section-header">Public Class Methods</h3>
+
+      
+        <div id="method-c-new" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">new</span><span
+              class="method-args">(x,y,width,height)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Создание прямоугольника</p>
+<ul><li>
+<p>x, y - назначает положение прямоуголника в пространстве</p>
+</li><li>
+<p>width, height - устанавливает ширину и высоту прямоугольника</p>
+</li></ul>
+            
+
+            
+            <div class="method-source-code" id="new-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 381</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">x</span>,<span class="ruby-identifier">y</span>,<span class="ruby-identifier">width</span>,<span class="ruby-identifier">height</span>)
+        <span class="ruby-ivar">@x</span>,<span class="ruby-ivar">@y</span>,<span class="ruby-ivar">@width</span>,<span class="ruby-ivar">@height</span> = <span class="ruby-identifier">x</span>,<span class="ruby-identifier">y</span>,<span class="ruby-identifier">width</span>,<span class="ruby-identifier">height</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- new-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- new-method -->
+
+      
+      </section><!-- public-class-method-details -->
+    
+       <section id="public-instance-5Buntitled-5D-method-details" class="method-section section">
+        <h3 class="section-header">Public Instance Methods</h3>
+
+      
+        <div id="method-i-empty" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">empty</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Устанавливает все параметры прямоугольника равными нулю.</p>
+            
+
+            
+            <div class="method-source-code" id="empty-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 403</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">empty</span>
+        <span class="ruby-ivar">@x</span>,<span class="ruby-ivar">@y</span>,<span class="ruby-ivar">@width</span>,<span class="ruby-ivar">@height</span> = <span class="ruby-value">0</span>, <span class="ruby-value">0</span>, <span class="ruby-value">0</span>, <span class="ruby-value">0</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- empty-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- empty-method -->
+
+      
+        <div id="method-i-set" class="method-detail ">
+          
+          <div class="method-heading">
+            <span class="method-name">set</span><span
+              class="method-args">(*args)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Задает все параметры единовременно Может принимать значения:</p>
+<ul><li>
+<p><a href="Rect.html">Rect</a> - другой экземпляр класса <a
+href="Rect.html">Rect</a>, все значения копируются из него</p>
+</li><li>
+<p>x, y, width, height - позиция и размер прямоугольника</p>
+
+<pre># Оба варианта работают аналогично:
+set(Rect.new(0,0,192,64))
+set(0,0,192,64)</pre>
+</li></ul>
+            
+
+            
+            <div class="method-source-code" id="set-source">
+              <pre><span class="ruby-comment"># File cigui.rb, line 392</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">set</span>(*<span class="ruby-identifier">args</span>)
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">1</span>
+                <span class="ruby-ivar">@x</span>,<span class="ruby-ivar">@y</span>,<span class="ruby-ivar">@width</span>,<span class="ruby-ivar">@height</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">x</span>, <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">y</span>, <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">width</span>, <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">height</span>
+        <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">4</span>
+                <span class="ruby-ivar">@x</span>,<span class="ruby-ivar">@y</span>,<span class="ruby-ivar">@width</span>,<span class="ruby-ivar">@height</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>], <span class="ruby-identifier">args</span>[<span class="ruby-value">1</span>], <span class="ruby-identifier">args</span>[<span class="ruby-value">2</span>], <span class="ruby-identifier">args</span>[<span class="ruby-value">3</span>]
+        <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">size</span>.<span class="ruby-identifier">between?</span>(<span class="ruby-value">2</span>,<span class="ruby-value">3</span>)
+                <span class="ruby-comment"># throw error, but i don&#39;t remember which error O_o</span>
+        <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- set-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- set-method -->
+
+      
+      </section><!-- public-instance-method-details -->
+    
+    </section><!-- 5Buntitled-5D -->
+  
+
+  </div><!-- documentation -->
+
+
+<footer id="validator-badges">
+  <p>Generated by <a href="https://github.com/rdoc/rdoc">RDoc</a> 3.12.2.
+  <p>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish Rdoc Generator</a> 3.
+</footer>
+

@@ -1,0 +1,32 @@
+[OPTIONS]
+Auto Index=Yes
+Compatibility=1.1 or later
+Compiled file=chmdoc.chm
+Contents file=contents.hhc
+Default topic=index.html
+Full-text search=Yes
+Index file=index.hhk
+Language=0x409 English(United States)
+Title=RDoc Documentation
+
+[FILES]
+index.html
+classindex.html
+fileindex.html
+LICENSE.html
+CIGUI.html
+CIGUIERR.html
+CIGUIERR/CannotCreateWindow.html
+CIGUIERR/CantInterpretCommand.html
+CIGUIERR/CantReadNumber.html
+CIGUIERR/CantReadString.html
+CIGUIERR/CantStart.html
+CIGUIERR/WrongWindowIndex.html
+Color.html
+Rect.html
+Spr3.html
+Text.html
+Tone.html
+Win3.html
+
+

@@ -1,0 +1,420 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</HEAD>
+<BODY>
+  <OBJECT type="text/site properties">
+    <param name="Foreground" value="0x80">
+    <param name="Window Styles" value="0x800025">
+    <param name="ImageType" value="Folder">
+  </OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap">
+          <param name="Name" value="Classes/Modules">
+          <param name="Local" value="classindex.html">
+        </OBJECT>
+    <UL>
+    
+      <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="CIGUI">
+            <param name="Local" value="CIGUI.html">
+          </OBJECT>
+      
+      <UL>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::bool">
+               <param name="Local" value="CIGUI.html#method-c-bool">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::boolean">
+               <param name="Local" value="CIGUI.html#method-c-boolean">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::dec">
+               <param name="Local" value="CIGUI.html#method-c-dec">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::decimal">
+               <param name="Local" value="CIGUI.html#method-c-decimal">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::frac">
+               <param name="Local" value="CIGUI.html#method-c-frac">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::fraction">
+               <param name="Local" value="CIGUI.html#method-c-fraction">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::last">
+               <param name="Local" value="CIGUI.html#method-c-last">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::rect">
+               <param name="Local" value="CIGUI.html#method-c-rect">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::setup">
+               <param name="Local" value="CIGUI.html#method-c-setup">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::substr">
+               <param name="Local" value="CIGUI.html#method-c-substr">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::substring">
+               <param name="Local" value="CIGUI.html#method-c-substring">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::update">
+               <param name="Local" value="CIGUI.html#method-c-update">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::update_by_user">
+               <param name="Local" value="CIGUI.html#method-c-update_by_user">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::update_internal_objects">
+               <param name="Local" value="CIGUI.html#method-c-update_internal_objects">
+            </OBJECT>
+          </LI>
+            </UL>
+          
+      <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="CIGUIERR">
+            <param name="Local" value="CIGUIERR.html">
+          </OBJECT>
+          
+      <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="CIGUIERR::CannotCreateWindow">
+            <param name="Local" value="CIGUIERR/CannotCreateWindow.html">
+          </OBJECT>
+          
+      <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="CIGUIERR::CantInterpretCommand">
+            <param name="Local" value="CIGUIERR/CantInterpretCommand.html">
+          </OBJECT>
+          
+      <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="CIGUIERR::CantReadNumber">
+            <param name="Local" value="CIGUIERR/CantReadNumber.html">
+          </OBJECT>
+          
+      <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="CIGUIERR::CantReadString">
+            <param name="Local" value="CIGUIERR/CantReadString.html">
+          </OBJECT>
+          
+      <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="CIGUIERR::CantStart">
+            <param name="Local" value="CIGUIERR/CantStart.html">
+          </OBJECT>
+          
+      <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="CIGUIERR::WrongWindowIndex">
+            <param name="Local" value="CIGUIERR/WrongWindowIndex.html">
+          </OBJECT>
+          
+      <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="Color">
+            <param name="Local" value="Color.html">
+          </OBJECT>
+      
+      <UL>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::new">
+               <param name="Local" value="Color.html#method-c-new">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#alpha">
+               <param name="Local" value="Color.html#method-i-alpha">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#blue">
+               <param name="Local" value="Color.html#method-i-blue">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#green">
+               <param name="Local" value="Color.html#method-i-green">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#red">
+               <param name="Local" value="Color.html#method-i-red">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#set">
+               <param name="Local" value="Color.html#method-i-set">
+            </OBJECT>
+          </LI>
+            </UL>
+          
+      <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="Rect">
+            <param name="Local" value="Rect.html">
+          </OBJECT>
+      
+      <UL>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::new">
+               <param name="Local" value="Rect.html#method-c-new">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#empty">
+               <param name="Local" value="Rect.html#method-i-empty">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#set">
+               <param name="Local" value="Rect.html#method-i-set">
+            </OBJECT>
+          </LI>
+            </UL>
+          
+      <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="Spr3">
+            <param name="Local" value="Spr3.html">
+          </OBJECT>
+      
+      <UL>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::new">
+               <param name="Local" value="Spr3.html#method-c-new">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#dispose">
+               <param name="Local" value="Spr3.html#method-i-dispose">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#refresh">
+               <param name="Local" value="Spr3.html#method-i-refresh">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#update">
+               <param name="Local" value="Spr3.html#method-i-update">
+            </OBJECT>
+          </LI>
+            </UL>
+          
+      <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="Text">
+            <param name="Local" value="Text.html">
+          </OBJECT>
+      
+      <UL>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::new">
+               <param name="Local" value="Text.html#method-c-new">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#default_colorset">
+               <param name="Local" value="Text.html#method-i-default_colorset">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#empty">
+               <param name="Local" value="Text.html#method-i-empty">
+            </OBJECT>
+          </LI>
+            </UL>
+          
+      <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="Tone">
+            <param name="Local" value="Tone.html">
+          </OBJECT>
+      
+      <UL>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::new">
+               <param name="Local" value="Tone.html#method-c-new">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#blue">
+               <param name="Local" value="Tone.html#method-i-blue">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#gray">
+               <param name="Local" value="Tone.html#method-i-gray">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#green">
+               <param name="Local" value="Tone.html#method-i-green">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#red">
+               <param name="Local" value="Tone.html#method-i-red">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#set">
+               <param name="Local" value="Tone.html#method-i-set">
+            </OBJECT>
+          </LI>
+            </UL>
+          
+      <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="Win3">
+            <param name="Local" value="Win3.html">
+          </OBJECT>
+      
+      <UL>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="::new">
+               <param name="Local" value="Win3.html#method-c-new">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#add_item">
+               <param name="Local" value="Win3.html#method-i-add_item">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#add_text">
+               <param name="Local" value="Win3.html#method-i-add_text">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#delete_item">
+               <param name="Local" value="Win3.html#method-i-delete_item">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#disable_item">
+               <param name="Local" value="Win3.html#method-i-disable_item">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#dispose">
+               <param name="Local" value="Win3.html#method-i-dispose">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#draw_items">
+               <param name="Local" value="Win3.html#method-i-draw_items">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#enable_item">
+               <param name="Local" value="Win3.html#method-i-enable_item">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#inspect">
+               <param name="Local" value="Win3.html#method-i-inspect">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#label=">
+               <param name="Local" value="Win3.html#method-i-label-3D">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#refresh">
+               <param name="Local" value="Win3.html#method-i-refresh">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#resize">
+               <param name="Local" value="Win3.html#method-i-resize">
+            </OBJECT>
+          </LI>
+      
+        <LI> <OBJECT type="text/sitemap">
+               <param name="Name" value="#update">
+               <param name="Local" value="Win3.html#method-i-update">
+            </OBJECT>
+          </LI>
+            </UL>
+              </UL>
+  </UL>
+  <UL>
+    <LI><OBJECT type="text/sitemap">
+          <param name="Name" value="Files">
+          <param name="Local" value="fileindex.html">
+        </OBJECT>
+    <UL>
+        
+        <LI><OBJECT type="text/sitemap">
+              <param name="Name" value="LICENSE">
+              <param name="Local" value="LICENSE.html">
+            </OBJECT>
+            </UL>
+  </UL>
+</BODY>
+</HTML>
