@@ -19,26 +19,9 @@ OR
 Simple configurations
 ---
 
-__Title menu on map__
-
-`CIGUI.setup`
-
-`$do<<'go to map indexed 1'`
-
-`$do<<'screen fade in'`
-
-`$do<<'create window at x=244,y=240 with width=192,height=96'`
-
-`$do<<'last add command "New command"'`
-
-`$do<<'last add command "Continue"'`
-
-`$do<<'last add command "Exit game"'`
-
-`$do<<'last select command=0'`
-
-`CIGUI.update`
-
+```
+there is not a single configuration
+```
 FAQ
 ---
 ###What is it?
@@ -49,11 +32,33 @@ FAQ
 
 
 ###How to use help?
- - Open 'doc' dir, find 'index.html' file and open it in any browser
+ - Open `doc` dir, find `index.html` file and open it in any browser - you can you search feature here
+ - Open last version `CIGUI.chm`
 
 
 
 ###How to update help?
+####Pre-generated
+ - [Just download it from 'doc' directory](https://github.com/deadelf79/CIGUI/tree/work-with-text/doc)
+OR
+ - [Download CHM version](https://github.com/deadelf79/CIGUI/blob/work-with-text/CIGUI.chm)
+####Generate manually from code
+#####HTML version
  - Install [last stable version of Ruby](http://rubyinstaller.org/ ) (this link for Windows)
  - Run 'gendoc.bat' in root OR open command line, move to dir where cigui is and call command like this:
+
 `rdoc --format=darkfish --encoding=UTF-8 --line-numbers cigui.rb`
+
+
+#####CHM version
+ - Install [last stable version of Ruby](http://rubyinstaller.org/ )
+ - Install  gem `rdoc_chm` with command prompt with this command:
+
+`gem install rdoc_chm`
+
+(May cause bugs with download and install, read manual for rdoc_chm).
+ 
+ - Install last version of Microsoft HTML Help Workshop [from here](http://www.microsoft.com/en-us/download/confirmation.aspx?id=21138)
+ - Run `genchm.bat` from dir where cigui is
+ 
+If you have problem with CHM generating then try to use HTM2CHM to compile `CIGUI.chm` using source file from `chmdoc` directory
