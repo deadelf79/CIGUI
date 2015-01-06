@@ -110,7 +110,7 @@ if RUBY_VERSION.to_f>=1.9
 				@label=nil
 				@items=[]
 				@texts=[]
-				@speed=1
+				@speed=:auto
 			end
 			
 			# Обновляет окно. Влияет только на положение курсора (параметр cursor_rect),
@@ -269,7 +269,9 @@ if RUBY_VERSION.to_f>=1.9
 			# то отрисовка выключенных команд производиться не будет.
 			#
 			def draw_items(ignore_disabled=false)
-				
+				@items.each{|item|
+					
+				}
 			end
 			
 			# Устанавливает новые размеры окна дополнительно изменяя
@@ -317,7 +319,30 @@ if RUBY_VERSION.to_f>=1.9
 			private
 			
 			def _movement
-				
+				# X
+				if @old_x!=@x
+					if @speed==:auto
+						if (@x-@old_x).abs>5
+							@x=(@x-@old_x).abs/10
+						else
+							@x+=((@x-@old_x)>0 ? 1 : -1)*1
+						end
+					elsif @speed.is_a? Fixnum
+						@x+=(@speed>0 ? 1 : -1)*1
+					end
+				end
+				# Y
+				if @old_y!=@y
+					if @speed==:auto
+						if (@y-@old_y).abs>5
+							@y=(@y-@old_y).abs/10
+						else
+							@y+=((@y-@old_y)>0 ? 1 : -1)*1
+						end
+					elsif @speed.is_a? Fiynum
+						@y+=(@speed>0 ? 1 : -1)*1
+					end
+				end
 			end
 		end
 	# Если классы инициировать не удалось (ошибка в отсутствии родительских классов),
