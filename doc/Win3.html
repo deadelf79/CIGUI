@@ -287,6 +287,8 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
                         <span class="ruby-value">:enabled=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">enabled</span>,
                         <span class="ruby-value">:x=</span><span class="ruby-operator">&gt;</span><span class="ruby-value">:auto</span>,
                         <span class="ruby-value">:y=</span><span class="ruby-operator">&gt;</span><span class="ruby-value">:auto</span>,
+                        <span class="ruby-value">:width=</span><span class="ruby-operator">&gt;</span><span class="ruby-value">:auto</span>,
+                        <span class="ruby-value">:height=</span><span class="ruby-operator">&gt;</span><span class="ruby-value">:auto</span>,
                         <span class="ruby-value">:text_only=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">text_only</span>
                 }
         ]
@@ -364,7 +366,7 @@ href="CIGUI.html#attribute-c-windows">CIGUI.windows</a> при выборе ок
 
           
           <div class="method-source-code" id="delete_item-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 174</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 176</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">delete_item</span>(<span class="ruby-identifier">indexORcomORproc</span>)
         <span class="ruby-identifier">i</span>=<span class="ruby-identifier">indexORcomORproc</span>
         <span class="ruby-keyword">case</span> <span class="ruby-identifier">i</span>.<span class="ruby-identifier">class</span>
@@ -427,7 +429,7 @@ href="Win3.html#method-i-add_text">add_text</a>).</p>
 
           
           <div class="method-source-code" id="disable_item-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 241</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 243</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">disable_item</span>(<span class="ruby-identifier">commandORindex</span>)
         <span class="ruby-keyword">case</span> <span class="ruby-identifier">commandORindex</span>.<span class="ruby-identifier">class</span>
         <span class="ruby-keyword">when</span> <span class="ruby-constant">Integer</span>, <span class="ruby-constant">Float</span>
@@ -485,7 +487,7 @@ href="Win3.html#method-i-add_text">add_text</a>).</p>
 
           
           <div class="method-source-code" id="dispose-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 300</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 302</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">dispose</span>
         <span class="ruby-keyword">super</span>
 <span class="ruby-keyword">end</span></pre>
@@ -522,10 +524,10 @@ href="Win3.html#method-i-add_text">add_text</a>).</p>
 
           
           <div class="method-source-code" id="draw_items-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 271</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 273</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">draw_items</span>(<span class="ruby-identifier">ignore_disabled</span>=<span class="ruby-keyword">false</span>)
         <span class="ruby-ivar">@items</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">item</span><span class="ruby-operator">|</span>
-                
+                <span class="ruby-identifier">_draw_item</span> <span class="ruby-identifier">item</span>
         }
 <span class="ruby-keyword">end</span></pre>
           </div>
@@ -570,7 +572,7 @@ href="Win3.html#method-i-add_text">add_text</a>).</p>
 
           
           <div class="method-source-code" id="enable_item-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 209</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 211</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">enable_item</span>(<span class="ruby-identifier">commandORindex</span>)
         <span class="ruby-keyword">case</span> <span class="ruby-identifier">commandORindex</span>.<span class="ruby-identifier">class</span>
         <span class="ruby-keyword">when</span> <span class="ruby-constant">Fixnum</span>
@@ -623,7 +625,7 @@ href="Win3.html#method-i-add_text">add_text</a>).</p>
 
           
           <div class="method-source-code" id="inspect-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 307</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 309</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">inspect</span>
         <span class="ruby-node">&quot;&lt;#{self.class}:&quot;</span><span class="ruby-operator">+</span>
         <span class="ruby-node">&quot; @back_opacity=#{back_opacity},&quot;</span><span class="ruby-operator">+</span>
@@ -747,7 +749,7 @@ href="Win3.html#method-i-update">update</a>, влияет только на со
 
           
           <div class="method-source-code" id="resize-source">
-            <pre><span class="ruby-comment"># File cigui.rb, line 282</span>
+            <pre><span class="ruby-comment"># File cigui.rb, line 284</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">resize</span>(<span class="ruby-identifier">new_width</span>, <span class="ruby-identifier">new_height</span>)
         <span class="ruby-identifier">temp</span>=<span class="ruby-constant">Sprite</span>.<span class="ruby-identifier">new</span>
         <span class="ruby-identifier">temp</span>.<span class="ruby-identifier">bitmap</span>=<span class="ruby-keyword">self</span>.<span class="ruby-identifier">contents</span>
