@@ -100,6 +100,8 @@ if RUBY_VERSION.to_f>=1.9
 			# Метка окна. Строка, по которой происходит поиск экземпляра
 			# в массиве CIGUI.windows при выборе окна по метке (select by label)
 			attr_reader :label
+			# Список текстов и кнопок, принадлежащих окну.
+			attr_reader :items
 			
 			# Создает окно. По умолчанию задается размер 192х64 и
 			# помещается в координаты 0, 0
@@ -109,7 +111,6 @@ if RUBY_VERSION.to_f>=1.9
 				@old_x, @old_y = x,y
 				@label=nil
 				@items=[]
-				@texts=[]
 				@speed=:auto
 			end
 			
@@ -311,6 +312,7 @@ if RUBY_VERSION.to_f>=1.9
 				" @back_opacity=#{back_opacity},"+
 				" @contents_opacity=#{contents_opacity}"+
 				" @height=#{height},"+
+				" @items=#{@items.inspect},"+
 				" @opacity=#{opacity},"+
 				" @speed=#{@speed},"+
 				" @width=#{width},"+
@@ -636,7 +638,21 @@ if RUBY_VERSION.to_f>=1.9
 			end
 			
 			def add_text(text)
-				add_item(text, "text_#{@index.last}".to_sym, false, true)
+				add_item(text, "text_#{@items.size}".to_sym, false, true)
+			end
+			
+			def has_text?(index)
+				if index.between?(0...@items.size)
+					return true if @items[index][:text_only]
+					return false
+				end
+			end
+			
+			def has_button?(index)
+				if index.between?(0...@items.size)
+					return true if !@items[index][:text_only]
+					return false
+				end
 			end
 		end
 		
@@ -1058,6 +1074,7 @@ module CIGUI
 				:auto=>'auto',
 		:resize=>'resize',
 		:set=>'set',
+		:add=>'add',
 		:x=>'x',
 		:y=>'y',
 		:z=>'z',
@@ -1130,8 +1147,7 @@ module CIGUI
 	:window_openness_equal=>"(?:#{VOCAB[:window][:openness]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_tone_equal=>"(?:#{VOCAB[:window][:tone]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 	:window_visibility_equal=>"(?:#{VOCAB[:window][:visibility]})+(?:#{VOCAB[:equal]}|[\s]*)+",
-	:window_set_text=>"(?:(?:#{VOCAB[:window][:set]})*[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})"+
-		"+[\s]*(?:#{VOCAB[:window][:text]})+(?:#{VOCAB[:equal]}|[\s]*)+)",
+	:window_text_equal=>"(?:#{VOCAB[:text][:main]})+(?:#{VOCAB[:equal]}|[\s]*)+",
 		# commands
 	:window_create=>"(((?:#{VOCAB[:window][:create]})+[\s]*(?:#{VOCAB[:window][:main]})+)+)|"+
 		"((?:#{VOCAB[:window][:main]})+[\s\.\,]*(?:#{VOCAB[:window][:create]})+)",
@@ -1157,6 +1173,8 @@ module CIGUI
 		"(?:(?:#{VOCAB[:window][:close]})+[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]}))",
 	:window_visible=>"(?:(?:#{VOCAB[:window][:set]})*[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:visible]})+)",
 	:window_invisible=>"(?:(?:#{VOCAB[:window][:set]})*[\s]*(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:invisible]})+)",
+	:window_add_text=>"(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:window][:add]})+[\s]*(?:#{VOCAB[:text][:main]})",
+	:window_select_text=>"(?:#{VOCAB[:last]})+[\s]*(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:select]})+[\s]*(?:#{VOCAB[:text][:main]})",
   }
   
   # 
@@ -1315,7 +1333,7 @@ module CIGUI
 	#	substring("set window label='SomeSome' and no more else") # => SomeSome
 	#
 	def substring(source_string)
-		match='(?:[\[\(\"\'])[\s]*([\w\s _\!\#\$\%\^\&\*]*)[\s]*(?:[\]|"\)\'])'
+		match='(?:[\[\(\"\'])[\s]*([\w\s _\!\?\#\$\%\^\&\*\\\/\:\;\@]*)[\s]*(?:[\]|"\)\'])'
 		return source_string.match(match)[1]
 	rescue
 		raise "#{CIGUIERR::CantReadString}\n\tcurrent line of $do: #{source_string}"
@@ -1431,7 +1449,7 @@ module CIGUI
 	# запускать для вычисления #setup и #update.
 	#
 	def substr(source_string, prefix='', postfix='')
-		match=prefix+'(?:[\[\(\"\'])[\s]*([\w\s _\!\#\$\%\^\&\*]*)[\s]*(?:[\]|"\)\'])'+postfix
+		match=prefix+'(?:[\[\(\"\'])[\s]*([\w\s _\!\?\#\$\%\^\&\*\\\/\:\;\@]*)[\s]*(?:[\]|"\)\'])'+postfix
 		return source_string.match(/#{match}/i)[1]
 	rescue
 		raise "#{CIGUIERR::CantReadString}\n\tcurrent line of $do: #{source_string}"
@@ -1475,14 +1493,17 @@ module CIGUI
 	  @selection = {
 		:type => nil, # may be window or sprite
 		:index => 0,   # index in internal array
-		:label => nil # string in class to find index
+		:label => nil, # string in class to find index
+		# work with text, included to windows/sprites
+		:parent_type => nil,
+		:parent_index => 0
 	  }
 	  @global_text.is_a?(NilClass) ? @global_text=Text.new('') : @global_text.empty
 	end
 	
 	# RESTART
 	def _restart?(string)
-		matches=string.match(/#{CMB[:cigui_restart]}/)
+		matches=string.match(/#{CMB[:cigui_restart]}/i)
 		if matches
 			__flush?('cigui flush') if not @finished
 			_setup
@@ -1497,14 +1518,15 @@ module CIGUI
 	def _common?(string)
 		# select, please and other
 		__swindow? string
+		__stext? string
 	end
 	
 	def __swindow?(string)
-		matches=string.match(/#{CMB[:select_window]}/)
+		matches=string.match(/#{CMB[:select_window]}/i)
 		# Only match
 		if matches
 			# Read index or label
-			if string.match(/#{CMB[:select_by_index]}/)
+			if string.match(/#{CMB[:select_by_index]}/i)
 				index = dec(string,CMB[:select_by_index])
 				if index>-1
 					@selection[:type]=:window
@@ -1513,7 +1535,7 @@ module CIGUI
 						@selection[:label]=@windows[index].label if @windows[index]!=nil && @windows[index].is_a?(Win3)
 					end
 				end
-			elsif string.match(/#{CMB[:select_by_label]}/)
+			elsif string.match(/#{CMB[:select_by_label]}/i)
 				label = substr(string,CMB[:select_by_label])
 				if label!=nil
 					@selection[:type]=:window
@@ -1528,10 +1550,36 @@ module CIGUI
 					end
 				end
 			end
+			@selection[:parent_type]=nil
+			@selection[:parent_index]=0
 			@last_action = @selection
 			@last_log << @last_action if @logging
 		end
 	end#--------------------end of '__swindow?'-------------------------
+	
+	def __stext?(string)
+		matches=string.match(/#{CMB[:window_select_text]}/i)
+		# Only match
+		if matches
+			# Read index
+			index = dec(string,CMB[:select_by_index])
+			if @selection[:type]==:window
+				if @windows[@selection[:index]].has_text?(index)
+					@selection[:parent_type]=:window
+					@selection[:parent_index]=@selection[:index]
+					@selection[:type]=:text
+					@selection[:label]=@windows[@selection[:parent_index]].items[index][:procname]
+					@selection[:index]=index
+				end
+			end
+			@last_action = @selection
+			@last_log << @last_action if @logging
+		end
+	end#--------------------end of '__stext?'-------------------------
+	
+	def __sbutton?(string)
+		###
+	end
 	
 	# CIGUI BRANCH
     def _cigui?(string)
@@ -1587,6 +1635,7 @@ module CIGUI
 		__wclose? string
 		__wvisible? string
 		__winvisible? string
+		__wadd_text? string
 	end
 	
 	# Examples:
@@ -1850,17 +1899,16 @@ module CIGUI
 		end
 	end#--------------------end of '__winvisible?'-------------------------
 	
-	def __wset_text?(string)
-		matches=string.match(/#{CMB[:window_set_text]}/i)
+	def __wadd_text?(string)
+		matches=string.match(/#{CMB[:window_add_text]}/i)
 		if matches
-			new_text = substr(string,CMB[:window_set_text])
 			if @selection[:type]==:window
-				@windows[@selection[:index]].add_text = new_text
-				@last_action = @windows[@selection[:index]]
-				@last_log << @last_action if @logging
+				p string
+				new_text = substring(string)
+				@windows[@selection[:index]].add_text(new_text)
 			end
 		end
-	end#--------------------end of '__wset_text?'-------------------------
+	end#--------------------end of '__winvisible?'-------------------------
   end# END OF CIGUI CLASS
 end# END OF CIGUI MODULE
 
@@ -1870,9 +1918,9 @@ begin
 	$do=[
 		'create window',
 		'this window add text [Choose number:]',
-		'this window add buttons [Number 1, Number 2]',
-		'this window link button=0 to switch=23',
-		'cigui set global switch=23 to [true]'
+		#'this window add buttons [Number 1, Number 2]',
+		#'this window link button=0 to switch=23',
+		#'cigui set global switch=23 to [true]'
 	]
 	CIGUI.setup
 	CIGUI.update
