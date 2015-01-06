@@ -42,6 +42,8 @@ FAQ
  - [Just download it from 'doc' directory](https://github.com/deadelf79/CIGUI/tree/work-with-text/doc)
 OR
  - [Download CHM version](https://github.com/deadelf79/CIGUI/blob/work-with-text/CIGUI.chm)
+
+
 ####Generate manually from code
 #####HTML version
  - Install [last stable version of Ruby](http://rubyinstaller.org/ ) (this link for Windows)
