@@ -159,7 +159,7 @@ if RUBY_VERSION.to_f>=1.9
 						:enabled=>enabled,
 						:x=>:auto,
 						:y=>:auto,
-						:text_only=text_only
+						:text_only=>text_only
 					}
 				]
 			end
@@ -616,7 +616,7 @@ if RUBY_VERSION.to_f>=1.9
 						:enabled=>enabled,
 						:x=>:auto,
 						:y=>:auto,
-						:text_only=text_only
+						:text_only=>text_only
 					}
 				]
 			end
