@@ -1,0 +1,2 @@
+ruby genchm.rb
+pause
