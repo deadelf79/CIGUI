@@ -105,7 +105,8 @@ if RUBY_VERSION.to_f>=1.9
 			# помещается в координаты 0, 0
 			#
 			def initialize(x=0,y=0,w=192,h=64)
-				super 0,0,192,64
+				super x,y,w,h
+				@old_x, @old_y = x,y
 				@label=nil
 				@items=[]
 				@texts=[]
@@ -114,7 +115,9 @@ if RUBY_VERSION.to_f>=1.9
 			
 			# Обновляет окно. Влияет только на положение курсора (параметр cursor_rect),
 			# прозрачность и цветовой тон окна.
-			def update;end
+			def update
+				_movement
+			end
 			
 			# Обновляет окно. В отличие от #update, влияет только
 			# на содержимое окна (производит повторную отрисовку).
@@ -309,6 +312,12 @@ if RUBY_VERSION.to_f>=1.9
 				" @width=#{width},"+
 				" @x=#{x},"+
 				" @y=#{y}>"
+			end
+			
+			private
+			
+			def _movement
+				
 			end
 		end
 	# Если классы инициировать не удалось (ошибка в отсутствии родительских классов),
