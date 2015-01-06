@@ -159,6 +159,8 @@ if RUBY_VERSION.to_f>=1.9
 						:enabled=>enabled,
 						:x=>:auto,
 						:y=>:auto,
+						:width=>:auto,
+						:height=>:auto,
 						:text_only=>text_only
 					}
 				]
@@ -270,7 +272,7 @@ if RUBY_VERSION.to_f>=1.9
 			#
 			def draw_items(ignore_disabled=false)
 				@items.each{|item|
-					
+					_draw_item item
 				}
 			end
 			
@@ -344,11 +346,23 @@ if RUBY_VERSION.to_f>=1.9
 					end
 				end
 			end
+			
+			def _draw_item(item)
+				__draw_text item
+			end
+			
+			def __draw_text(item)
+				if item[:text_only]
+					
+				end
+			end
 		end
 	# Если классы инициировать не удалось (ошибка в отсутствии родительских классов),
 	# то в память загружаются исключительно консольные версии (console-only) классов
 	# необходимые для работы с командной строкой.
 	rescue
+		$global_variables=[nil]
+		$global_switches=[nil]
 		# Класс абстрактного (невизуального) прямоугольника.
 		# Хранит значения о положении и размере прямоугольника
 		class Rect
@@ -825,6 +839,7 @@ module CIGUI
       :finish=>'finish',
       :flush=>'flush',
 	  :restart=>'restart|resetup',
+	  :set=>'',# to use as - set global switch=DEC to [BOOL]
     },
 	#--EVENT branch
 	:event=>{
@@ -1853,15 +1868,13 @@ end# END OF CIGUI MODULE
 # delete this when copy to 'Script editor' in RPG Maker
 begin
 	$do=[
-		'create window at x=1540,y=9000 with width=900,height=560',
-		'this window set ox=22,oy=33,tone=[255;123;40;20],label=[Current],speed=0,windowskin="Something other"',
-		'close this window',
-		'deactivate this window',
-		'this window set active=true',
-		'cigui restart'
+		'create window',
+		'this window add text [Choose number:]',
+		'this window add buttons [Number 1, Number 2]',
+		'this window link button=0 to switch=23',
+		'cigui set global switch=23 to [true]'
 	]
 	CIGUI.setup
 	CIGUI.update
 	puts CIGUI.last
-	puts CIGUI.decimal('[-100]')
 end
