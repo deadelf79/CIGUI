@@ -5,22 +5,22 @@ CIGUI
 Installation
 ---
  1. Open RPG Maker VX Ace
- 2. Open Script Editor (hotkey is F11)
- 3. Open 'cigui.rb' in Notepad
- 4. Copy all text from this file
+ 2. Open Script Editor (hotkey is **F11**)
+ 3. Open `cigui.rb` with Notepad (or with any other text editor)
+ 4. Copy **all** text from this file
  5. Paste in new page in <Material> section
  
 OR
 
- 1. Download test project from here: https://github.com/deadelf79/CIGUI/tree/master/test
+ 1. Download test project from here: [https://github.com/deadelf79/CIGUI/tree/master/test](http://https://github.com/deadelf79/CIGUI/tree/master/tes)
  2. Test cigui working (if not - [e-mail it to me](mailto:deadelf79@gmail.com))
- 3. Copy script 'CIGUI' into your project
+ 3. Copy script `CIGUI` into your project and paste above `Main`
  
 Simple configurations
 ---
 
 ```
-there is not a single configuration
+there is not a single configuration yet
 ```
 FAQ
 ---
@@ -33,15 +33,17 @@ FAQ
 
 ###How to use help?
  - Open `doc` dir, find `index.html` file and open it in any browser - you can you search feature here
- - Open last version `CIGUI.chm`
+ - Open last version of `CIGUI.chm`
 
 
 
 ###How to update help?
-####Pre-generated
+####Download pregenerated help
  - [Just download it from 'doc' directory](https://github.com/deadelf79/CIGUI/tree/work-with-text/doc)
+ 
 OR
- - [Download CHM version](https://github.com/deadelf79/CIGUI/blob/work-with-text/CIGUI.chm)
+ 
+- [Download CHM version](https://github.com/deadelf79/CIGUI/blob/work-with-text/CIGUI.chm)
 
 
 ####Generate manually from code
