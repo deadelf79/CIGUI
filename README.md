@@ -8,7 +8,7 @@ Installation
  2. Open Script Editor (hotkey is **F11**)
  3. Open `cigui.rb` with Notepad (or with any other text editor)
  4. Copy **all** text from this file
- 5. Paste in new page in <Material> section
+ 5. Paste in new page in *<Material>* section
  
 OR
 

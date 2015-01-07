@@ -1908,7 +1908,7 @@ module CIGUI
 				@windows[@selection[:index]].add_text(new_text)
 			end
 		end
-	end#--------------------end of '__winvisible?'-------------------------
+	end#--------------------end of '__wadd_text?'-------------------------
   end# END OF CIGUI CLASS
 end# END OF CIGUI MODULE
 
