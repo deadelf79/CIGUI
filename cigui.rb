@@ -845,8 +845,8 @@ module CIGUI
 	:false=>'false',
 	:equal=>'[\s]*[\=]?[\s]*',
 	:global=>'global',
-		:switch=>'s[wv]it[ch]',
-		:variable=>'var(?:iable)?',
+		:switch=>'s[wv]it[ch][es]*',
+		:variable=>'var(?:iable[s]*)?',
 	:local=>'local',
 	#--CIGUI branch
     :cigui=>{
@@ -855,7 +855,8 @@ module CIGUI
       :finish=>'finish',
       :flush=>'flush',
 	  :restart=>'restart|resetup',
-	  :set=>'',# to use as - set global switch=DEC to [BOOL]
+	  :set=>'set',# to use as - set global switch=DEC to [BOOL]
+		:to=>'to',
     },
 	#--EVENT branch
 	:event=>{
@@ -1112,7 +1113,7 @@ module CIGUI
   # составления регулярных выражений не рекомендуется.
   CMB={
 	#~COMMON unbranch
-		# selection window
+		# select window
 	:select_window=>"(?:(?:#{VOCAB[:select]})+[\s]*(?:#{VOCAB[:window][:main]})+)|"+
 		"(?:(?:#{VOCAB[:window][:main]})+[\s]*(?:#{VOCAB[:select]})+)",
 	:select_by_index=>"(?:(?:(?:#{VOCAB[:window][:index]})+(?:#{VOCAB[:equal]}|[\s]*)+)|"+
@@ -1120,11 +1121,17 @@ module CIGUI
 	:select_by_label=>"(?:(?:(?:#{VOCAB[:window][:label]})+(?:#{VOCAB[:equal]}|[\s]*)+)|"+
 		"(?:(?:#{VOCAB[:window][:labeled]})+[\s]*(?:#{VOCAB[:window][:as]})?(?:#{VOCAB[:equal]}|[\s]*)?))",
 	#~CIGUI branch
+		# experssions
+	:cigui_gs_equal=>"(?:#{VOCAB[:global]})+[\s]*(?:#{VOCAB[:switch]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+	:cigui_gv_equal=>"(?:#{VOCAB[:global]})+[\s]*(?:#{VOCAB[:variable]})+(?:#{VOCAB[:equal]}|[\s]*)+",
+	:cigui_gsb_equal=>"(?:(?:#{VOCAB[:to]})?(?:#{VOCAB[:equal]}|[\s]*)?)+",
+	:cigui_gvd_equal=>"(?:(?:#{VOCAB[:to]})?(?:#{VOCAB[:equal]}|[\s]*)?)+",
 		# commands only
 	:cigui_start=>"(?:(?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:start]})+)+",
 	:cigui_finish=>"(?:(?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:finish]})+)+",
 	:cigui_flush=>"(?:(?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:flush]})+)+",
 	:cigui_restart=>"(?:(?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:restart]})+)+",
+	:cigui_set=>"(?:(?:#{VOCAB[:cigui][:main]})+[\s]*(?:#{VOCAB[:cigui][:set]})+)",
 	#~TEXT branch
 		# expressions
 	:text_font_size=>"(?:#{VOCAB[:text][:font]})+[\s]*(?:#{VOCAB[:text][:size]})+(?:#{VOCAB[:equal]}|[\s]*)+",
@@ -1430,6 +1437,7 @@ module CIGUI
 	# 
 	def frac(source_string, prefix='', postfix='', std_conversion=true)
 	  match=prefix+'([\-\+]?[\d\s_]*(?:[\s]*[\,\.][\s]*(?:[\d\s_]*))*)'+postfix
+	  p source_string.match(/#{match}/i)[1].to_f
 	  return source_string.match(/#{match}/i)[1].gsub!(/[\s_]*/){}.to_f if !std_conversion
 	  source_string.match(/#{match}/i)[1].to_f
 	rescue
@@ -1586,10 +1594,11 @@ module CIGUI
 		__start? string
 		__finish? string
 		__flush? string
+		__set? string
     end
 	
 	def __start?(string)
-		matches=string.match(/#{CMB[:cigui_start]}/)
+		matches=string.match(/#{CMB[:cigui_start]}/i)
 		if matches
 			begin
 				@finished = false
@@ -1602,7 +1611,7 @@ module CIGUI
 	end
 	
 	def __finish?(string)
-		matches=string.match(/#{CMB[:cigui_finish]}/)
+		matches=string.match(/#{CMB[:cigui_finish]}/i)
 		if matches
 			@finished = true
 			@last_action = 'CIGUI finished'
@@ -1611,7 +1620,7 @@ module CIGUI
 	end
 	
 	def __flush?(string)
-		matches=string.match(/#{CMB[:cigui_flush]}/)
+		matches=string.match(/#{CMB[:cigui_flush]}/i)
 		if matches
 			@windows.each{|item|item.dispose}
 			@windows.clear
@@ -1619,6 +1628,32 @@ module CIGUI
 			@sprites.clear
 			@last_action = 'CIGUI cleared'
 			@last_log << @last_action if @logging
+		end
+	end
+	
+	def __set?(string)
+		matches=string.match(/#{CMB[:cigui_set]}/i)
+		if matches
+			# Read indexes
+			gs_index = string[/#{CMB[:cigui_gs_equal]}/i] ? dec(string, CMB[:cigui_gs_equal]) : 0
+			p string
+			#p CMB[:cigui_gs_equal]
+			gv_index = string[/#{CMB[:cigui_gv_equal]}/i] ? dec(string, CMB[:cigui_gv_equal]) : 0
+			# Find boolean value
+			if gs_index>0
+				new_gs = string[/#{CMB[:cigui_gsb_equal]}/i] ? bool(string, CMB[:cigui_gsb_equal]) : false
+			else
+				new_gs=false
+			end
+			# Find fixnum value
+			if gv_index>0
+				new_gv = string[/#{CMB[:cigui_gvd_equal]}/i] ? bool(string, CMB[:cigui_gvd_equal]) : 0
+			else
+				new_gv=0
+			end
+			# Set new values to globals
+			$global_switches[gs_index] = new_gs
+			$global_variables[gv_index] = new_gv
 		end
 	end
 	
@@ -1757,7 +1792,7 @@ module CIGUI
 	# example:
 	# this resize to width=DEC,height=DEC
 	def __wresize?(string)
-		matches=string.match(/#{CMB[:window_resize]}/)
+		matches=string.match(/#{CMB[:window_resize]}/i)
 		# Only move
 		if matches
 			begin
@@ -1785,7 +1820,7 @@ module CIGUI
 	# this window set cursor rect=[RECT]
 	# this window set tone=[RECT]
 	def __wset?(string)
-		matches=string.match(/#{CMB[:window_set]}/)
+		matches=string.match(/#{CMB[:window_set]}/i)
 		# Only move
 		if matches
 			begin
@@ -1903,7 +1938,6 @@ module CIGUI
 		matches=string.match(/#{CMB[:window_add_text]}/i)
 		if matches
 			if @selection[:type]==:window
-				p string
 				new_text = substring(string)
 				@windows[@selection[:index]].add_text(new_text)
 			end
@@ -1917,12 +1951,15 @@ end# END OF CIGUI MODULE
 begin
 	$do=[
 		'create window',
+		'this window set x=23',
 		'this window add text [Choose number:]',
+		'this window add button [Number 0]',
 		#'this window add buttons [Number 1, Number 2]',
 		#'this window link button=0 to switch=23',
-		#'cigui set global switch=23 to [true]'
+		'cigui set global switch=23 to [true]'
 	]
 	CIGUI.setup
 	CIGUI.update
 	puts CIGUI.last
+	puts $global_switches.inspect
 end
