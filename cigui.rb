@@ -320,6 +320,24 @@ if RUBY_VERSION.to_f>=1.9
 				" @y=#{y}>"
 			end
 			
+			def has_item?(index)
+				index.between?(0...@items.size)&&!@items[index].nil?
+			end
+			
+			def has_text?(index)
+				if index.between?(0...@items.size)
+					return true if @items[index][:text_only]
+					return false
+				end
+			end
+			
+			def has_button?(index)
+				if index.between?(0...@items.size)
+					return true if !@items[index][:text_only]
+					return false
+				end
+			end
+			
 			private
 			
 			def _movement
